@@ -1,0 +1,108 @@
+body {
+    background-color: beige;
+    margin: 0 auto;
+    font-size: 10px;
+    /* width: 75%; */
+    width: 1500px;
+    height: 2000px;
+}
+
+header {
+    top: 0px;
+    margin: 0 auto;
+    font-size: 2.5em;
+    /* text-align: center; */
+    position: fixed;
+    background: beige;
+    /* display: inline-block; */
+    /* margin-top: 3em; */
+    /* margin-bottom: 3em; */
+    width: 1500px;
+}
+
+main {
+    margin-top:160px;
+    /* width: 80%; */
+}
+
+.headerwrapper {
+    /* margin-top: 31px; */
+    margin-top: 20px;
+    margin-bottom: 31px;
+    align-content: center;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    border-bottom: 5px dotted black;
+    padding-bottom: 10px;
+}
+
+header .headeritem h2 {
+    width: min-content;
+    height: min-content;
+    margin: 0;
+    line-height: 80%;
+    color: black;
+}
+
+header a {
+    text-decoration: none;
+}
+
+.user {
+    margin-right: 1em;
+    justify-self: end;
+}
+
+.searchbox {
+    height: 40px;
+    width: 500px;
+    align-self: center;
+    justify-self: center;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1),0 2px 4px 1px rgba(0,0,0,.18);
+    border-radius: 6px;
+    background-color: white;
+    text-align: center;
+    display: flex;
+}
+
+.searchbox input {
+    font-weight: 550;
+    height: 20px;
+    margin-top: 10px;
+    width: 450px;
+    padding: 0;
+    border: none;
+    margin-left: 10px;
+}
+
+.search {
+    /* display: inline-block; */
+    height: 40px;
+    width: 40px;
+}
+
+.searchbox .b_searchboxSubmit {
+    background-image: url(SharedSpriteDesktop_2x_040919.png);
+    background-repeat: no-repeat;
+    background-position: -242px 0;
+    height: 40px;
+    width: 40px;
+    align-self: center;
+    margin: 0;
+    background-color: white;
+    text-indent: -99em;
+    transform: scale(.5);
+    cursor: pointer;
+}
+
+.headertitle {
+    justify-self: center;
+}
+
+.headertitle h1 {
+    margin: 0;
+}
+
+.user i {
+    font-size: 70px;
+}
