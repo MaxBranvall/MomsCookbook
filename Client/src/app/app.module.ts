@@ -1,22 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { MainHeaderComponent } from './main-header/main-header.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    MainHeaderComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot([
-      { path: '', component: MainHeaderComponent}
-    ])
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]
