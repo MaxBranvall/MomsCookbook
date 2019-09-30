@@ -1,0 +1,36 @@
+.main-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 4em;
+}
+
+.categories {
+    justify-self: center;
+    grid-column: 2;
+
+    .category-container {
+        margin-top: 1.5em;
+
+        img {
+            height: 50%;
+            width: auto;
+        }
+    }
+
+    .category-container:first-child {
+        margin-top: 3em;
+    }
+
+}
+
+.recent-tiles {
+    grid-column: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    column-gap: .5em;
+
+    .tile {
+        width: min-content;
+    }
+
+}
