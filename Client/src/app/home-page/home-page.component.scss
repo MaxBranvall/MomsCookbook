@@ -1,62 +1,87 @@
-.main-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 4em;
-    margin-top: 3em;
-    width: 100%;
+// mobile first
+
+@media only screen and (max-width: 599px)
+{
+    .categories {
+        margin-top: 1em;
+        img {
+            margin-top: 1em;
+            max-width: 100%;
+        }
+    }
+
+    .recent-container {
+
+        h2 {
+            font-size: 2.5em;
+        }
+
+        .recent-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+        }
+
+    }
 }
 
 @media only screen and (min-width: 600px)
 {
+    // if screen is larger than 600px
+
     .main-grid {
-        // background-color: blue;
-    }
-}
-
-.categories {
-    justify-self: center;
-    grid-column: 2;
-
-    .category-container {
-        margin-top: 1.5em;
-
-        img {
-            // height: 75px;
-        }
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 4em;
+        margin-top: 3em;
+        width: 100%;
     }
 
-    .category-container:first-child {
-        margin-top: 0;
-    }
+    .categories {
+        justify-self: center;
+        grid-column: 2;
 
-}
+        .category-container {
+            margin-top: 1.5em;
 
-.recent-container {
-    h2 {
-        font-size: 3em;
-        margin-top: 0;
-    }
-
-    margin-left: 4em;
-}
-
-.recent-tiles {
-    grid-column: 3;
-    display: grid;
-    // grid-template-columns: 1fr 1fr 2fr;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    column-gap: 1.5em;
-
-    .tile {
-
-        img {
-            height: 100px;
-            // margin-right: 1.2em;
-            margin-bottom: 1em;
-            object-fit: cover;
+            img {
+                // height: 75px;
+            }
         }
 
-        width: min-content;
+        .category-container:first-child {
+            margin-top: 0;
+        }
+
+    }
+
+    .recent-container {
+        h2 {
+            font-size: 3em;
+            margin-top: 0;
+        }
+
+        margin-left: 4em;
+    }
+
+    .recent-tiles {
+        grid-column: 3;
+        display: grid;
+        // grid-template-columns: 1fr 1fr 2fr;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        column-gap: 1.5em;
+
+        .tile {
+
+            img {
+                height: 100px;
+                // margin-right: 1.2em;
+                margin-bottom: 1em;
+                object-fit: cover;
+            }
+
+            width: min-content;
+        }
+
     }
 
 }
