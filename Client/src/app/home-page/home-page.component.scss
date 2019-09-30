@@ -2,6 +2,15 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: 4em;
+    margin-top: 3em;
+    width: 100%;
+}
+
+@media only screen and (min-width: 600px)
+{
+    .main-grid {
+        // background-color: blue;
+    }
 }
 
 .categories {
@@ -12,24 +21,41 @@
         margin-top: 1.5em;
 
         img {
-            height: 50%;
-            width: auto;
+            // height: 75px;
         }
     }
 
     .category-container:first-child {
-        margin-top: 3em;
+        margin-top: 0;
     }
 
+}
+
+.recent-container {
+    h2 {
+        font-size: 3em;
+        margin-top: 0;
+    }
+
+    margin-left: 4em;
 }
 
 .recent-tiles {
     grid-column: 3;
     display: grid;
-    grid-template-columns: 1fr 1fr 2fr;
-    column-gap: .5em;
+    // grid-template-columns: 1fr 1fr 2fr;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    column-gap: 1.5em;
 
     .tile {
+
+        img {
+            height: 100px;
+            // margin-right: 1.2em;
+            margin-bottom: 1em;
+            object-fit: cover;
+        }
+
         width: min-content;
     }
 
