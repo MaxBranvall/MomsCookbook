@@ -1,10 +1,30 @@
 // mobile-first
 
+header {
 
+    background-color: grey;
+    height: 25px;
 
-@media only screen and (min-width: 600px)
+    .title {
+        h2 {
+            font-size: 1.75em;
+            margin-top: 0;
+            color: white;
+            margin-left: .5em;
+        }
+    }
+
+    .searchbox, .account {
+        display: none;
+    }
+
+}
+
+@media screen and (min-width: 600px)
 {
     header {
+        background-color: beige;
+        display: block;
         margin: 0 auto;
         width: inherit;
         height: 100%;
@@ -15,7 +35,9 @@
         position: sticky;
         top: 0;
 
-        // background-color: darkblue;
+        .searchbox, .account {
+            display: initial;
+        }
 
         .head-outer {
             display: grid;
@@ -31,6 +53,7 @@
                     line-height: 80%;
                     font-size: 3.75em;
                     height: min-content;
+                    color: initial;
                 }
             }
         }

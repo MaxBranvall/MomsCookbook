@@ -6,10 +6,18 @@ body {
     background-color: $bgcolor;
     font-size: 10px;
     padding: 0;
-    width: 75%;
-    margin: 0 auto;
+    margin: 0;
 }
 
 header {
     background-color: $bgcolor;
+}
+
+
+@media screen and (min-width: 600px)
+{
+    body {
+        margin: 0 auto;
+        width: 75%;
+    }
 }
