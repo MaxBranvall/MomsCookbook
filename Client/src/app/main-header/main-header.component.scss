@@ -11,6 +11,7 @@ header {
     .title {
 
         width: min-content;
+        margin-right: auto;
 
         h2 {
             font-size: 1.75em;
@@ -25,12 +26,13 @@ header {
 
 .head-outer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
 }
 
 .account {
     max-height: 48px;
+    margin-left: auto;
 
     img {
         margin-right: .5em;
