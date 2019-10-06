@@ -1,20 +1,23 @@
 <app-main-header></app-main-header>
 
 <main>
+    <h2>{{title | uppercase}}</h2>
     <div class="list-wrapper">
-        <div class="list-item">
-            <img class="thumbnail" src="../../assets/placeholders/recipeplaceholder.jpg">
-            <div class="recipeTitle-wrapper">
-                <span class="dash"> - </span>
-                <span class="title">Breaded Chicken Cutlets</span>
-            </div>
+        <a class="list-hyperlink" title="To Recipe" routerLink="/{{ title }}/recipe" >
+            <div class="list-item">
+                <img class="thumbnail" src="../../assets/placeholders/recipeplaceholder.jpg">
+                <div class="recipeTitle-wrapper">
+                    <span class="dash"> - </span>
+                    <span class="title">Breaded Chicken Cutlets</span>
+                </div>
 
-            <div class="timeDetails">
-                <span class="time-title">Prep:</span>
-                <span class="time-title">Cook:</span>
-                <span class="time-value">1 hour 30 minutes</span>
-                <span class="time-value">30 Minutes</span>
+                <div class="timeDetails">
+                    <span class="time-title">Prep:</span>
+                    <span class="time-title">Cook:</span>
+                    <span class="time-value">1 hour 30 minutes</span>
+                    <span class="time-value">30 Minutes</span>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </main>

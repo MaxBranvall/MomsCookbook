@@ -6,19 +6,20 @@ import { AppComponent } from './app.component';
 import { MainHeaderComponent } from './main-header/main-header.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
+import { AppRoutingModule } from './app-routing.module';
+import { RecipePageComponent } from './recipe-page/recipe-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainHeaderComponent,
     HomePageComponent,
-    RecipeListComponent
+    RecipeListComponent,
+    RecipePageComponent
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot([
-      { path: '', component: HomePageComponent}
-    ])
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

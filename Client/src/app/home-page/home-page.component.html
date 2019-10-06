@@ -3,7 +3,7 @@
 <div class="main-grid">
     <div class="categories">
         <div *ngFor="let category of categories" class="category-container">
-            <a><img src="../../assets/placeholders/placeholder.jpg"></a>
+            <a [routerLink]=category.titleL title={{category.title}} ><img src="../../assets/placeholders/placeholder.jpg"></a>
         </div>
     </div>
 

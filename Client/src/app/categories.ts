@@ -1,17 +1,22 @@
 export const categories = [
     {
-        title: 'Breakfast'
+        title: 'Breakfast',
+        titleL: 'breakfast'
     },
     {
-        title: 'Lunch'
+        title: 'Lunch',
+        titleL: 'lunch'
     },
     {
-        title: 'Appetizers'
+        title: 'Appetizers',
+        titleL: 'appetizers'
     },
     {
-        title: 'Dinner'
+        title: 'Dinner',
+        titleL: 'dinner'
     },
     {
-        title: 'Sides'
+        title: 'Sides',
+        titleL: 'sides'
     },
 ]
