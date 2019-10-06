@@ -1,3 +1,5 @@
+@import '../base/variables';
+
 .searchbox {
 
     background-color: white;
@@ -17,7 +19,7 @@
 
 }
 
-@media screen and (min-width: 600px)
+@media screen and (min-width: $desktop-width)
 {
     .searchbox {
         width: 70%;
