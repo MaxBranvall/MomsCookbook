@@ -25,12 +25,8 @@
 
     .recent-tiles {
 
-        .tile {
-            width: min-content;
-        }
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        column-gap: 2em;
+        grid-template-columns: repeat(3, auto);
         justify-items: center;
 
         img {
@@ -87,13 +83,10 @@
         .recent-tiles {
             grid-column: 3;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 100px));
+            grid-template-columns: repeat(auto-fit, 100px);
             column-gap: 1.5em;
 
             .tile {
-
-                width: min-content;
-
                 img {
                     height: 100px;
                     // margin-right: 1.2em;
