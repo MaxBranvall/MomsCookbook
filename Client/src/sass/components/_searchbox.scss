@@ -1,0 +1,42 @@
+.searchbox {
+
+    background-color: white;
+    height: 2.5em;
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
+    display: flex;
+    width: 40%;
+
+    input {
+        align-self: center;
+        margin: 0 auto;
+        height: 60%;
+        width: 95%;
+        border: none;
+    }
+
+}
+
+@media screen and (min-width: 600px)
+{
+    .searchbox {
+        width: 70%;
+        height: 4em;
+        margin-top: 10px;
+        align-self: center;
+        justify-self: center;
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
+        display: flex;
+
+        input {
+            width: 95%;
+            height: 60%;
+            margin: 0 auto;
+            align-self: center;
+            vertical-align: middle;
+            border: none;
+        }
+    }
+}
