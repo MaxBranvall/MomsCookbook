@@ -1,12 +1,45 @@
+@import '../../sass/base/variables';
 
 .form-outer-wrapper {
-    display: table;
+    margin: 2em;
 }
 
-.form-group {
-    display: table-cell;
+.main-details {
+    display: grid;
+    grid-template-columns: 80%;
+    grid-template-rows: auto;
+    grid-row-gap: 1em;
+
+    label {
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .textinput {
+        background-color: $mainBG;
+        box-shadow: none;
+        border: none;
+        border-bottom: 1px black solid;
+        text-indent: 5px;
+    }
+
+    textarea {
+        height: 5em;
+        font-family: initial;
+        text-indent: 5px;
+    }
+
+    input, textarea {
+        font-size: 1.6em;
+    }
+
+    img {
+        max-height: 16em;
+    }
+
 }
 
-label, input {
-    display: table-cell;
+@media screen and (min-width: $desktop-width)
+{
+
 }

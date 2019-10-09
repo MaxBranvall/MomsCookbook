@@ -1,17 +1,34 @@
 <app-main-header></app-main-header>
 
-<div class="form-outer-wrapper" style="margin-top: 2em">
+<div class="form-outer-wrapper">
+    <!-- {{diagnostic}} -->
     <form #entryForm="ngForm">
-        {{diagnostic}}
-        <div class="form-group">
-            <label for="recipe-name">Recipe Name: </label>
-            <input type="text" id="recipe-name" name="recipe-name" [(ngModel)]='t.name'>
-            TODO: {{t.name}}
+        <div class="main-details">
+            <label for="name">Recipe Name: </label>
+            <input class="textinput" type="text" id="name" name="Name" [(ngModel)]='model.Name' placeholder="Name of Recipe">
+            <label for="description">Description: </label>
+            <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
+            <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
+            <label for="ImagePath">Photo: </label>
+            <input #file type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="preview(file.files)">
+            <label>Image Preview: </label>
+            <img [src]="imgURL" *ngIf="imgURL">
         </div>
-        <div class="form-group">
-            <label for="recipe-description">Description: </label>
-            <input type="text" id ="recipe-description">
-            <button type="button" (click)=testFunc()>Test</button>
-        </div>
+        <!-- <div class="form-group">
+            <ul>
+                <div>
+                    <li>
+                        <input type="text" id=0>
+                    </li>
+                </div>
+                <div *ngFor="let item of items; first as first, last as last">
+                    <p>{{item.index}}</p>
+                    <li>
+                        <input *ngIf='!last' type="text" id={{item.index}}>
+                        <input class="last" *ngIf='last' type="text" id={{item.index}} on-focus="addListItem()">
+                    </li>
+                </div>
+            </ul>
+        </div> -->
     </form>
 </div>
