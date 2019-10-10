@@ -3,6 +3,7 @@ export class Tip {
         public RecipeID: number,
         public LocalTipID: number,
         public Content: string,
-        public SubTips: Tip[],
+        public SubTips?: Tip[],
+        public SubTipID?: number
     ) { }
 }

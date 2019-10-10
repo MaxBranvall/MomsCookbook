@@ -16,6 +16,9 @@
     .recipe-image {
         height: 180px;
         margin: 0 auto;
+        border: 2px solid black;
+        box-shadow: 2px -2px 5px 1px #242424, -1px 1px 5px 0 #303030;
+        border-radius: 5px;
     }
 
     .description-outer {

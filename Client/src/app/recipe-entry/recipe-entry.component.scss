@@ -1,7 +1,24 @@
 @import '../../sass/base/variables';
+@import '../../sass/components/material-button';
+
+
+input[type=text] {
+    background-color: $mainBG;
+    border: none;
+    border-bottom: 1px solid black;
+}
 
 .form-outer-wrapper {
     margin: 2em;
+    label {
+        font-size: 2em;
+        font-weight: bold;
+    }
+}
+
+.form-inner-wrapper {
+    display: grid;
+    grid-row-gap: 1em;
 }
 
 .main-details {
@@ -9,11 +26,7 @@
     grid-template-columns: 80%;
     grid-template-rows: auto;
     grid-row-gap: 1em;
-
-    label {
-        font-size: 2em;
-        font-weight: bold;
-    }
+    // margin-bottom: 1em;
 
     .textinput {
         background-color: $mainBG;
@@ -36,6 +49,100 @@
     img {
         max-height: 16em;
     }
+
+}
+
+.time-entry-wrapper {
+    h2 {
+        font-size: 2em;
+        width: min-content;
+    }
+}
+
+.time-entry-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .num-input {
+        max-width: 30%;
+        background-color: $mainBG;
+        border: none;
+        border-bottom: 1px black solid;
+        margin-top: .5em;
+    }
+
+    p {
+        display: inline;
+        font-size: 1.6em;
+    }
+
+}
+
+.ingredient-entry-wrapper {
+    table {
+        font-size: 1.6em;
+        text-align: left;
+        border-spacing: .5em;
+    }
+
+    input[type=number] {
+        background-color: $mainBG;
+        border: none;
+        border-bottom: 1px solid black;
+        width: 80%;
+        text-align: center;
+    }
+
+    td {
+        width: 33%;
+    }
+
+    input[type=text] {
+        width: 100%;
+    }
+
+    .low-opacity {
+        opacity: .4;
+    }
+
+    .but-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-right: .5em;
+    }
+
+}
+
+.step-entry-wrapper {
+    ul {
+        padding-left: 10px;
+    }
+
+    li {
+        margin-top: .5em;
+        input {
+            width: 80%;
+            font-size: 1.5em;
+        }
+    }
+}
+
+.tip-entry-wrapper {
+    ul {
+        padding-left: 10px;
+    }
+
+    li {
+        margin-top: .5em;
+        input {
+            width: 80%;
+            font-size: 1.5em;
+        }
+    }
+}
+
+.additional-photo-entry-wrapper {
+
 
 }
 

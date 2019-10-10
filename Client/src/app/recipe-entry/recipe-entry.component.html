@@ -3,32 +3,120 @@
 <div class="form-outer-wrapper">
     <!-- {{diagnostic}} -->
     <form #entryForm="ngForm">
-        <div class="main-details">
-            <label for="name">Recipe Name: </label>
-            <input class="textinput" type="text" id="name" name="Name" [(ngModel)]='model.Name' placeholder="Name of Recipe">
-            <label for="description">Description: </label>
-            <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
-            <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
-            <label for="ImagePath">Photo: </label>
-            <input #file type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="preview(file.files)">
-            <label>Image Preview: </label>
-            <img [src]="imgURL" *ngIf="imgURL">
+
+        <div class="form-inner-wrapper">
+            <div class="main-details">
+                <label for="name">Recipe Name: </label>
+                <input class="textinput" type="text" id="name" name="Name" [(ngModel)]='model.Name' placeholder="Name of Recipe">
+                <label for="description">Description: </label>
+                <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
+                <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
+                <label for="ImagePath">Photo: </label>
+                <input #file type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="photoPreview(file.files)">
+                <label>Image Preview: </label>
+                <img [src]="imgURL" *ngIf="imgURL">
+            </div>
+
+            <div class="time-entry-wrapper">
+                <div class="time-entry-inner">
+                    <label for="prep">Prep Time: </label>
+                    <label for="cook">Cook Time: </label>
+                    <span class="num-entry">
+                        <input class="num-input" type="number" min="0" def placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH'>
+                        <p *ngIf="model.PrepTimeH == 1"> Hour</p>
+                        <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null"> Hours</p>
+                        <br>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimem" name="PrepTimeM" [(ngModel)]='model.PrepTimeM'>
+                        <p *ngIf="model.PrepTimeM == 1"> Minute</p>
+                        <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null"> Minutes</p>
+                    </span>
+                    <span class="num-entry">
+                        <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH'>
+                        <p *ngIf="model.CookTimeH == 1"> Hour</p>
+                        <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null"> Hours</p>
+                        <br>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="cooktimem" name="CookTimeM" [(ngModel)]='model.CookTimeM'>
+                        <p *ngIf="model.CookTimeM == 1"> Minute</p>
+                        <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null"> Minutes</p>
+                    </span>
+                </div>
+            </div>
+
+            <!-- {{diagnostic}} -->
+            <div class="list-entry-wrapper">
+                <div class="ingredient-entry-wrapper">
+                    <label>Ingredients: </label>
+                    <table>
+
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Ingredient</th>
+
+                        <tr *ngFor="let ingredient of ingredientList; let i=LocalIngredientID; first as first, last as last;">
+
+                            <td *ngIf="last && !first" class="low-opacity">
+                                <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
+                            </td>
+                            <td *ngIf="last && !first" class="low-opacity">
+                                <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
+                                    <option *ngFor="let unit of units">{{unit}}</option>
+                                </select>
+                            </td>
+                            <td *ngIf="last && !first" class="low-opacity">
+                                <input #name *ngIf="first && !last || !last" [(ngModel)]="ingredient.Name" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
+                                <input
+                                    *ngIf="first && last || last" on-focus="addIngredient()"
+                                    [(ngModel)]="ingredient.Name" name="name" type="text" placeholder="garlic powder">
+                            </td>
+
+                            <td *ngIf="first && last || !last">
+                                <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
+                            </td>
+                            <td *ngIf="first && last || !last">
+                                <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
+                                    <option *ngFor="let unit of units">{{unit}}</option>
+                                </select>
+                            </td>
+                            <td *ngIf="first && last || !last">
+                                <input #name *ngIf="first && !last || !last" [(ngModel)]="ingredient.Name" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
+                                <input
+                                    *ngIf="first && last || last || last && !first"
+                                    [(ngModel)]="ingredient.Name" on-focus="addIngredient()" name="name" type="text" placeholder="garlic powder">
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="but-container">
+                        <button class="materialButton" type="button" (click)="addIngredient()">Add Ingredient.. </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-entry-wrapper">
+                <label>Steps: </label>
+                <ul>
+                    <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
+                        <input type="text" [(ngModel)]="step.Content" name="Step-{{step.LocalStepID}}">
+                    </li>
+                </ul>
+                <button class="materialButton" type="button" (click)="addStep()">Add Step.. </button>
+            </div>
+
+            <div class="tip-entry-wrapper">
+                <label>Tips: </label>
+                <ul>
+                    <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
+                        <input type="text" [(ngModel)]="tip.Content" name="Tip-{{tip.LocalTipID}}">
+                    </li>
+                </ul>
+                <button class="materialButton" type="button" (click)="addTip()">Add Tip.. </button>
+            </div>
+
+            <div class="additional-photo-entry-wrapper">
+                <label>Additional Photos: </label>
+                <input type="file" name="file">
+
+            </div>
+
         </div>
-        <!-- <div class="form-group">
-            <ul>
-                <div>
-                    <li>
-                        <input type="text" id=0>
-                    </li>
-                </div>
-                <div *ngFor="let item of items; first as first, last as last">
-                    <p>{{item.index}}</p>
-                    <li>
-                        <input *ngIf='!last' type="text" id={{item.index}}>
-                        <input class="last" *ngIf='last' type="text" id={{item.index}} on-focus="addListItem()">
-                    </li>
-                </div>
-            </ul>
-        </div> -->
     </form>
 </div>
