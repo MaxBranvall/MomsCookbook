@@ -125,6 +125,10 @@ input[type=text] {
             font-size: 1.5em;
         }
     }
+
+    button {
+        margin-left: 1em;
+    }
 }
 
 .tip-entry-wrapper {
@@ -139,12 +143,17 @@ input[type=text] {
             font-size: 1.5em;
         }
     }
+
+    button {
+        margin-left: 1em;
+    }
+
 }
 
-.additional-photo-entry-wrapper {
+// .additional-photo-entry-wrapper {
 
 
-}
+// }
 
 @media screen and (min-width: $desktop-width)
 {

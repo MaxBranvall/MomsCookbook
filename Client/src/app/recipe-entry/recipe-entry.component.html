@@ -54,7 +54,7 @@
 
                         <tr *ngFor="let ingredient of ingredientList; let i=LocalIngredientID; first as first, last as last;">
 
-                            <td *ngIf="last && !first" class="low-opacity">
+                            <!-- <td *ngIf="last && !first" class="low-opacity">
                                 <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
                             </td>
                             <td *ngIf="last && !first" class="low-opacity">
@@ -67,21 +67,21 @@
                                 <input
                                     *ngIf="first && last || last" on-focus="addIngredient()"
                                     [(ngModel)]="ingredient.Name" name="name" type="text" placeholder="garlic powder">
-                            </td>
+                            </td> -->
 
-                            <td *ngIf="first && last || !last">
+                            <td *ngIf="first && last || !last || last && !first">
                                 <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
                             </td>
-                            <td *ngIf="first && last || !last">
+                            <td *ngIf="first && last || !last || last && !first">
                                 <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
                                     <option *ngFor="let unit of units">{{unit}}</option>
                                 </select>
                             </td>
-                            <td *ngIf="first && last || !last">
+                            <td *ngIf="first && last || !last || last && !first">
                                 <input #name *ngIf="first && !last || !last" [(ngModel)]="ingredient.Name" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
                                 <input
                                     *ngIf="first && last || last || last && !first"
-                                    [(ngModel)]="ingredient.Name" on-focus="addIngredient()" name="name" type="text" placeholder="garlic powder">
+                                    [(ngModel)]="ingredient.Name" name="name" type="text" placeholder="garlic powder">
                             </td>
                         </tr>
                     </table>
@@ -96,9 +96,19 @@
                 <ul>
                     <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
                         <input type="text" [(ngModel)]="step.Content" name="Step-{{step.LocalStepID}}">
+
+                        <div *ngIf="step.SubSteps">
+                            <ul *ngFor="let subStep of subStepList">
+                                <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
+                                    <input type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
+                                </li>
+                            </ul>
+                        </div>
+
                     </li>
                 </ul>
                 <button class="materialButton" type="button" (click)="addStep()">Add Step.. </button>
+                <button class="materialButton" type="button" (click)="addSubStep()">Add Sub-Step.. </button>
             </div>
 
             <div class="tip-entry-wrapper">
@@ -106,9 +116,19 @@
                 <ul>
                     <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
                         <input type="text" [(ngModel)]="tip.Content" name="Tip-{{tip.LocalTipID}}">
+
+                        <div *ngIf="tip.SubTips">
+                            <ul *ngFor="let subTip of subTipList">
+                                <li *ngIf="checkForSubItem(subTip.LocalTipID, tip.LocalTipID)">
+                                    <input type="text" [(ngModel)]="subTip.Content" name="SubTip-{{subTip.SubTipID}}">
+                                </li>
+                            </ul>
+                        </div>
+
                     </li>
                 </ul>
                 <button class="materialButton" type="button" (click)="addTip()">Add Tip.. </button>
+                <button class="materialButton" type="button" (click)="addSubTip()">Add Sub-Tip.. </button>
             </div>
 
             <div class="additional-photo-entry-wrapper">

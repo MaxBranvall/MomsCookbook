@@ -1,6 +1,7 @@
 import { Ingredient } from './Ingredient';
 import { Step } from './Step';
 import { Tip } from './Tip';
+import { Photo } from './Photo';
 
 export class Entry {
     constructor(
@@ -14,6 +15,6 @@ export class Entry {
         public Ingredients: Ingredient[],
         public Steps: Step[],
         public Tips: Tip[],
-        public AdditionalPhotos?: string[]
+        public AdditionalPhotos?: Photo[]
     ) { }
 }
