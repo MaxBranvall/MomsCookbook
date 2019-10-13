@@ -3,6 +3,6 @@ export class Photo {
         public RecipeID: number,
         public LocalPhotoID: number,
         public PhotoName: string,
-        public PhotoURL: string
+        public FilePath: string
     ) { }
 }

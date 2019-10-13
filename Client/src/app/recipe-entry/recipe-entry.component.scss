@@ -1,11 +1,11 @@
 @import '../../sass/base/variables';
 @import '../../sass/components/material-button';
+@import '../../sass/components/material-textinput';
 
+// OH MY GOODNESS youve got to refactor
 
-input[type=text] {
-    background-color: $mainBG;
-    border: none;
-    border-bottom: 1px solid black;
+.materialButton {
+    margin-top: .5em;
 }
 
 .form-outer-wrapper {
@@ -150,10 +150,21 @@ input[type=text] {
 
 }
 
-// .additional-photo-entry-wrapper {
+.additional-photo-grid {
 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14em, 1fr));
+    grid-column-gap: .5em;
 
-// }
+    .inside {
+        margin-top: 1em;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+}
 
 @media screen and (min-width: $desktop-width)
 {

@@ -1,0 +1,7 @@
+@import "../base/variables";
+
+input[type=text] {
+    background-color: $mainBG;
+    border: none;
+    border-bottom: 1px solid black;
+}

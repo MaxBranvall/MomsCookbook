@@ -8,6 +8,7 @@ export class Entry {
         public Name: string,
         public ImagePath: string,
         public Description: string,
+        public Category: string,
         public PrepTimeH: number,
         public PrepTimeM: number,
         public CookTimeH: number,

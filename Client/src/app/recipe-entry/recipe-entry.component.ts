@@ -6,6 +6,7 @@ import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
 import { TouchSequence } from 'selenium-webdriver';
+import { categories } from '../Models/categories';
 
 
 @Component({
@@ -25,15 +26,26 @@ export class RecipeEntryComponent implements OnInit {
   public LocalSubStepID: number = 0;
   public localSubTipID: number = 0;
 
+  public currentStepElement: number = null;
+  public currentTipElement: number = null;
+
   constructor() {}
 
   ngOnInit() {
   }
 
+  rawPhotos: any[] = [];
+  additionalPhotoPreview: any[] = [];
+
   units:string[] = [
     "--Select Unit--", "cup(s)", "tablespoon(s)", "teaspoon(s)",
     "quart(s)", "pinch(es)", "glob(s)"
   ]
+
+  categories:string[] = [
+    "--Select Unit--","Breakfast", "Lunch", "Dinner",
+     "Appetizer", "Side"
+  ];
 
   ingredientModel = new Ingredient(
     null, 0, '',
@@ -55,7 +67,7 @@ export class RecipeEntryComponent implements OnInit {
   additionalPhotoList: Photo[] = [this.photoModel];
 
   model = new Entry(
-    "", "", "",
+    "", "", "", this.categories[0],
     null, null, null, null,
     this.ingredientList,
     this.stepList, this.tipList,
@@ -68,21 +80,37 @@ export class RecipeEntryComponent implements OnInit {
 
   addStep() {
     this.stepList.push(new Step(null, ++this.LocalStepID, null))
-    console.log(this.LocalStepID);
   }
 
-  addSubTip() {
-    this.subTipList.push(new Tip(null, this.LocalTipID, '', null, ++this.localSubTipID));
-    this.tipList[this.LocalTipID].SubTips = this.subTipList;
-  }
-
-  addSubStep() {
-    this.subStepList.push(new Step(null, this.LocalStepID, '', null, ++this.LocalSubStepID));
-    this.stepList[this.LocalStepID].SubSteps = this.subStepList;
+  addSubStep(index?: number) {
+    if (index != undefined)
+    {
+      this.subStepList.push(new Step(null, index, '', null, ++this.LocalSubStepID));
+      this.stepList[index].SubSteps = this.subStepList;
+    }
+    else
+    {
+      this.subStepList.push(new Step(null, this.LocalStepID, '', null, ++this.LocalSubStepID));
+      this.stepList[this.LocalStepID].SubSteps = this.subStepList;
+    }
   }
 
   addTip() {
     this.tipList.push(new Tip(null, ++this.LocalTipID, null));
+  }
+
+  addSubTip(index?: number) {
+
+    if (index != undefined)
+    {
+      this.subTipList.push(new Tip(null, index, '', null, ++this.localSubTipID));
+      this.tipList[index].SubTips = this.subTipList;
+    }
+    else
+    {
+      this.subTipList.push(new Tip(null, this.LocalTipID, '', null, ++this.localSubTipID));
+      this.tipList[this.LocalTipID].SubTips = this.subTipList;
+    }
   }
 
   checkForSubItem(id1: number, id2: number) {
@@ -92,19 +120,23 @@ export class RecipeEntryComponent implements OnInit {
     return false;
   }
 
-
-  get diagnostic() {
-    return JSON.stringify(this.stepList);
-  }
-
   photoPreview(files) {
     let reader = new FileReader();
     this.imagePath = files;
-    console.log(this.imagePath[0]);
     reader.readAsDataURL(files[0]);
     reader.onload = (_event) => {
       this.imgURL = reader.result;
     }
   }
 
+  additionalPhotoRender(files) {
+    for (let i = 0; i < files.length; i++)
+    {
+      let reader = new FileReader();
+      reader.readAsDataURL(files[i]);
+      reader.onload = (_event) => {
+        this.additionalPhotoPreview.push(reader.result);
+      }
+    }
+  }
 }

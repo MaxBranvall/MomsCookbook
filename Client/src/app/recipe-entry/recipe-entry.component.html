@@ -8,6 +8,10 @@
             <div class="main-details">
                 <label for="name">Recipe Name: </label>
                 <input class="textinput" type="text" id="name" name="Name" [(ngModel)]='model.Name' placeholder="Name of Recipe">
+                <label for="category">Category: </label>
+                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}">
+                    <option *ngFor="let cat of categories">{{cat}}</option>
+                </select>
                 <label for="description">Description: </label>
                 <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
                 <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
@@ -42,7 +46,7 @@
                 </div>
             </div>
 
-            <!-- {{diagnostic}} -->
+            {{diagnostic}}
             <div class="list-entry-wrapper">
                 <div class="ingredient-entry-wrapper">
                     <label>Ingredients: </label>
@@ -95,27 +99,31 @@
                 <label>Steps: </label>
                 <ul>
                     <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
-                        <input type="text" [(ngModel)]="step.Content" name="Step-{{step.LocalStepID}}">
-
+                        <input #stepInput type="text" [(ngModel)]="step.Content" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
                         <div *ngIf="step.SubSteps">
-                            <ul *ngFor="let subStep of subStepList">
-                                <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
-                                    <input type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
-                                </li>
+                            <ul>
+                                <div *ngFor="let subStep of subStepList">
+                                    <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
+                                        <input type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
+                                    </li>
+                                </div>
                             </ul>
                         </div>
+
+                        <!-- <button *ngIf="last && currentElement == step.LocalStepID" class="materialButton" type="button" (click)="addSubStep(stepInput.id)">Add Sub-Step.. </button> -->
+                        <button *ngIf="currentStepElement == step.LocalStepID" class="materialButton" type="button" (click)="addSubStep(stepInput.id)">Add Sub-Step.. </button>
 
                     </li>
                 </ul>
                 <button class="materialButton" type="button" (click)="addStep()">Add Step.. </button>
-                <button class="materialButton" type="button" (click)="addSubStep()">Add Sub-Step.. </button>
+                <!-- <button *ngIf="!subButtonActive" class="materialButton" type="button" (click)="addSubStep()">Add Sub-Step.. </button> -->
             </div>
 
             <div class="tip-entry-wrapper">
                 <label>Tips: </label>
                 <ul>
                     <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
-                        <input type="text" [(ngModel)]="tip.Content" name="Tip-{{tip.LocalTipID}}">
+                        <input #tipInput type="text" [(ngModel)]="tip.Content" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
 
                         <div *ngIf="tip.SubTips">
                             <ul *ngFor="let subTip of subTipList">
@@ -125,18 +133,26 @@
                             </ul>
                         </div>
 
+                        <button *ngIf="currentTipElement == tip.LocalTipID" class="materialButton" type="button" (click)="addSubTip(tipInput.id)">Add Sub-Tip.. </button>
+
                     </li>
                 </ul>
                 <button class="materialButton" type="button" (click)="addTip()">Add Tip.. </button>
-                <button class="materialButton" type="button" (click)="addSubTip()">Add Sub-Tip.. </button>
             </div>
 
             <div class="additional-photo-entry-wrapper">
                 <label>Additional Photos: </label>
-                <input type="file" name="file">
+                <input #inp type="file" name="additional-photos" (change)="additionalPhotoRender(inp.files)" multiple>
+
+                <div class="additional-photo-grid">
+                    <div class="inside" *ngFor="let image of additionalPhotoPreview">
+                        <img [src]="image">
+                    </div>
+                </div>
 
             </div>
 
+            <button type="submit" class="materialButton">Submit</button>
         </div>
     </form>
 </div>
