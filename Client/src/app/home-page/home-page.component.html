@@ -3,10 +3,22 @@
 <button type="button" routerLink=newentry>New Entry</button>
 
 <div class="main-grid">
-    <div class="categories">
-        <div *ngFor="let category of categories" class="category-container">
-            <a [routerLink]=category.titleL title={{category.title}} ><img src="../../assets/placeholders/placeholder.jpg"></a>
+    <div class="categories" *ngFor="let category of categories">
+      <a [routerLink]=category.titleL title={{category.title}} >
+        <div class="category-container">
+          <!-- <a [routerLink]=category.titleL title="{{category.title}}">
+          </a> -->
+          <div class="bg-image" [style.background-image]="'url(../../../../assets/placeholders/' + category.title + '.jpg)'"></div>
+          <div class="text">
+                <h2>{{category.title}}</h2>
+            </div>
+
+          <div class="dark-overlay">
+          </div>
+          <!-- <div class="bg"></div> -->
+            <!-- <a [routerLink]=category.titleL title={{category.title}} ><img src="../../assets/placeholders/placeholder.jpg"></a> -->
         </div>
+      </a>
     </div>
 
     <div class="recent-container">

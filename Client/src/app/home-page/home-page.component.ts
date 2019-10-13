@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { categories } from '../categories';
+import { categories } from '../Models/categories';
 
 @Component({
   selector: 'app-home-page',
