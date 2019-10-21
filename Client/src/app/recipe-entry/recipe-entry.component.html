@@ -15,8 +15,9 @@
                 <label for="description">Description: </label>
                 <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
                 <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
-                <label for="ImagePath">Photo: </label>
-                <input #file type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="photoPreview(file.files)">
+                <label for="ImagePath">Main Photo: </label>
+                <input #file style="display: none" type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="photoPreview(file.files); onFileChange($event)">
+                <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
                 <label>Image Preview: </label>
                 <img [src]="imgURL" *ngIf="imgURL">
             </div>
@@ -26,7 +27,7 @@
                     <label for="prep">Prep Time: </label>
                     <label for="cook">Cook Time: </label>
                     <span class="num-entry">
-                        <input class="num-input" type="number" min="0" def placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH'>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH'>
                         <p *ngIf="model.PrepTimeH == 1"> Hour</p>
                         <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null"> Hours</p>
                         <br>
@@ -142,7 +143,14 @@
 
             <div class="additional-photo-entry-wrapper">
                 <label>Additional Photos: </label>
-                <input #inp type="file" name="additional-photos" (change)="additionalPhotoRender(inp.files)" multiple>
+                <input
+                style="display: none"
+                type="file" name="additional-photos"
+                (change)="additionalPhotoRender(additionalPhotos.files);onAdditionalFileChange($event)"
+                multiple #additionalPhotos>
+                <button type="button" class="materialButton" (click)="additionalPhotos.click()">
+                    Choose Photos..
+                </button>
 
                 <div class="additional-photo-grid">
                     <div class="inside" *ngFor="let image of additionalPhotoPreview">

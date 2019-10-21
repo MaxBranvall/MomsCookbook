@@ -26,15 +26,6 @@
     grid-template-columns: 80%;
     grid-template-rows: auto;
     grid-row-gap: 1em;
-    // margin-bottom: 1em;
-
-    .textinput {
-        background-color: $mainBG;
-        box-shadow: none;
-        border: none;
-        border-bottom: 1px black solid;
-        text-indent: 5px;
-    }
 
     textarea {
         height: 5em;
@@ -48,6 +39,11 @@
 
     img {
         max-height: 16em;
+    }
+
+    p {
+        font-size: 1.5em;
+        margin: 0;
     }
 
 }

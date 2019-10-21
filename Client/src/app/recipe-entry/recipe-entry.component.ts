@@ -5,7 +5,6 @@ import { Ingredient } from '../Models/Ingredient';
 import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
-import { TouchSequence } from 'selenium-webdriver';
 import { categories } from '../Models/categories';
 
 
@@ -18,6 +17,9 @@ export class RecipeEntryComponent implements OnInit {
 
   public imagePath;
   public imgURL: any;
+
+  public fileSelected: boolean = false;
+  public additionalPhotosSelected: boolean = false;
 
   public LocalIngredientID: number = 0;
   public LocalStepID: number = 0;
@@ -136,7 +138,21 @@ export class RecipeEntryComponent implements OnInit {
       reader.readAsDataURL(files[i]);
       reader.onload = (_event) => {
         this.additionalPhotoPreview.push(reader.result);
+        console.log(reader.result);
       }
     }
   }
+
+  onFileChange(event)
+  {
+    this.fileSelected = true;
+    console.log(event);
+  }
+
+  onAdditionalFileChange(event)
+  {
+    this.additionalPhotosSelected = true;
+    console.log(event);
+  }
+
 }
