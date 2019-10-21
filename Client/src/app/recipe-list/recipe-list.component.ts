@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Entry } from '../Models/Entry';
 
+import { RecipeService } from '../Services/recipe.service';
+import { TouchSequence } from 'selenium-webdriver';
+
 @Component({
   selector: 'app-recipe-list',
   templateUrl: './recipe-list.component.html',
@@ -10,14 +13,17 @@ import { Entry } from '../Models/Entry';
 })
 export class RecipeListComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute,) { }
+  constructor(private route: ActivatedRoute, private recipeService: RecipeService) { }
 
   ngOnInit() {
     this.title = this.route.snapshot.paramMap.get('categoryTitle').toString();
-    this.initTimes();
+    this.getEntries();
   }
 
   title;
+
+  entries: Entry[];
+
   recipeSorted: boolean = false;
   prepTimeSorted: boolean = false;
   cookTimeSorted: boolean = false;
@@ -29,7 +35,12 @@ export class RecipeListComponent implements OnInit {
   model2 = new Entry("Areaded Chicken Cutlet",
   '../../assets/placeholders/recipeplaceholder.jpg', null, null, 1, 30, 0, 20, null, null, null);
 
-  entries = [this.model, this.model2];
+  // entries = [this.model, this.model2];
+
+  getEntries() {
+    this.entries = this.recipeService.getEntries();
+    this.initTimes();
+  }
 
   initTimes()
   {
