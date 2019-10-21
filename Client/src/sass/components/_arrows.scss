@@ -1,0 +1,25 @@
+@import '../base/variables';
+
+.arrow-up {
+    margin: 0 auto;
+    margin-top: 4px;
+    content: '';
+    display: block;
+    height: 0;
+    width: 0;
+    border-left: $arrowSize solid transparent;
+    border-right: $arrowSize solid transparent;
+    border-bottom: $arrowSize solid black;
+}
+
+.arrow-down {
+    margin: 0 auto;
+    margin-top: 4px;
+    content: '';
+    display: block;
+    height: 0;
+    width: 0;
+    border-left: $arrowSize solid transparent;
+    border-right: $arrowSize solid transparent;
+    border-top: $arrowSize solid black;
+}

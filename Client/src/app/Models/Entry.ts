@@ -16,6 +16,8 @@ export class Entry {
         public Ingredients: Ingredient[],
         public Steps: Step[],
         public Tips: Tip[],
-        public AdditionalPhotos?: Photo[]
+        public AdditionalPhotos?: Photo[],
+        public PrepTime?: string,
+        public CookTime?: string,
     ) { }
 }
