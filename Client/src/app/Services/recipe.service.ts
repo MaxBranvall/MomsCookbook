@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Observable} from 'rxjs';
+import { tap, map} from 'rxjs/operators';
+import { HttpClient} from '@angular/common/http';
 
 import { Entry } from '../Models/Entry';
 import { ENTRIES } from '../Models/Mock-Entries';
@@ -8,10 +11,18 @@ import { ENTRIES } from '../Models/Mock-Entries';
 })
 export class RecipeService {
 
-  constructor() { }
+  private apiUrl = "https://localhost:5001/api/"
 
-  getEntries(): Entry[] {
-    return ENTRIES;
+  constructor(
+    private http: HttpClient,
+  ) { }
+
+  getAllEntries(): Observable<Entry[]> {
+    return this.http.get<Entry[]>(this.apiUrl + 'recipe');
+  }
+
+  getEntry(Name : string): Observable<Entry[]> {
+    return this.http.get<Entry[]>(this.apiUrl + 'recipe/' + Name);
   }
 
 }

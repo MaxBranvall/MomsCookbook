@@ -12,6 +12,7 @@ import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
+import { RecipeService} from './Services/recipe.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
     OrderModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [RecipeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
