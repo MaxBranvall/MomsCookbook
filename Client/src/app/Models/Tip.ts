@@ -4,7 +4,6 @@ export class Tip {
         public LocalTipID: number,
         public Content: string,
         // optional parameters
-        public SubTips?: Tip[],
         public SubTipID?: number
     ) { }
 }

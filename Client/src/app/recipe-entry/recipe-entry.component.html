@@ -1,31 +1,44 @@
 <app-main-header></app-main-header>
 
 <div class="form-outer-wrapper">
-    <!-- {{diagnostic}} -->
-    <form #entryForm="ngForm">
+    <!-- TODO: Remove -->
+    {{diagnostic}}
+    <form (ngSubmit)="onSubmit()" #entryForm="ngForm">
 
         <div class="form-inner-wrapper">
             <div class="main-details">
+
                 <label for="name">Recipe Name: </label>
-                <input class="textinput" type="text" id="name" name="Name" [(ngModel)]='model.Name' placeholder="Name of Recipe">
+                <input
+                class="textinput" type="text" id="name" name="Name"
+                [(ngModel)]='model.Name' placeholder="Name of Recipe" required>
+
                 <label for="category">Category: </label>
-                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}">
+                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" required>
                     <option *ngFor="let cat of categories">{{cat}}</option>
                 </select>
+
                 <label for="description">Description: </label>
-                <!-- <input type="text" id="description" name="Description" [(ngModel)]='model.Description'> -->
-                <textarea id="description" name="Description" [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
+                <textarea id="description" name="Description"
+                [(ngModel)]='model.Description' placeholder="Description of Recipe" required></textarea>
+
                 <label for="ImagePath">Main Photo: </label>
-                <input #file style="display: none" type="file" id="ImagePath" name="Photo" [(ngModel)]='model.ImagePath' (change)="photoPreview(file.files); onFileChange($event)">
+                <input #file style="display: none" type="file" id="ImagePath"
+                name="Photo" [(ngModel)]='model.Image.Name'
+                (change)="photoPreview(file.files)" required>
                 <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
+
                 <label>Image Preview: </label>
                 <img [src]="imgURL" *ngIf="imgURL">
+
             </div>
 
             <div class="time-entry-wrapper">
                 <div class="time-entry-inner">
+
                     <label for="prep">Prep Time: </label>
                     <label for="cook">Cook Time: </label>
+
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH'>
                         <p *ngIf="model.PrepTimeH == 1"> Hour</p>
@@ -35,6 +48,7 @@
                         <p *ngIf="model.PrepTimeM == 1"> Minute</p>
                         <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null"> Minutes</p>
                     </span>
+
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH'>
                         <p *ngIf="model.CookTimeH == 1"> Hour</p>
@@ -44,9 +58,11 @@
                         <p *ngIf="model.CookTimeM == 1"> Minute</p>
                         <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null"> Minutes</p>
                     </span>
+
                 </div>
             </div>
 
+            <!-- TODO: Remove -->
             {{diagnostic}}
             <div class="list-entry-wrapper">
                 <div class="ingredient-entry-wrapper">
@@ -59,40 +75,29 @@
 
                         <tr *ngFor="let ingredient of ingredientList; let i=LocalIngredientID; first as first, last as last;">
 
-                            <!-- <td *ngIf="last && !first" class="low-opacity">
+                            <td>
                                 <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
                             </td>
-                            <td *ngIf="last && !first" class="low-opacity">
+                            <td>
                                 <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
                                     <option *ngFor="let unit of units">{{unit}}</option>
                                 </select>
                             </td>
-                            <td *ngIf="last && !first" class="low-opacity">
-                                <input #name *ngIf="first && !last || !last" [(ngModel)]="ingredient.Name" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
-                                <input
-                                    *ngIf="first && last || last" on-focus="addIngredient()"
-                                    [(ngModel)]="ingredient.Name" name="name" type="text" placeholder="garlic powder">
-                            </td> -->
+                            <td >
+                                <input #name [(ngModel)]="ingredient.Content" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
+                            </td>
 
-                            <td *ngIf="first && last || !last || last && !first">
-                                <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
-                            </td>
-                            <td *ngIf="first && last || !last || last && !first">
-                                <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
-                                    <option *ngFor="let unit of units">{{unit}}</option>
-                                </select>
-                            </td>
-                            <td *ngIf="first && last || !last || last && !first">
-                                <input #name *ngIf="first && !last || !last" [(ngModel)]="ingredient.Name" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
-                                <input
-                                    *ngIf="first && last || last || last && !first"
-                                    [(ngModel)]="ingredient.Name" name="name" type="text" placeholder="garlic powder">
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="but-container">
+                                    <button class="materialButton tableButton" type="button" (click)="addIngredient()">Add Ingredient.. </button>
+                                </div>
                             </td>
                         </tr>
                     </table>
-                    <div class="but-container">
-                        <button class="materialButton" type="button" (click)="addIngredient()">Add Ingredient.. </button>
-                    </div>
                 </div>
             </div>
 
@@ -101,7 +106,7 @@
                 <ul>
                     <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
                         <input #stepInput type="text" [(ngModel)]="step.Content" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
-                        <div *ngIf="step.SubSteps">
+                        <div>
                             <ul>
                                 <div *ngFor="let subStep of subStepList">
                                     <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
@@ -111,13 +116,13 @@
                             </ul>
                         </div>
 
-                        <!-- <button *ngIf="last && currentElement == step.LocalStepID" class="materialButton" type="button" (click)="addSubStep(stepInput.id)">Add Sub-Step.. </button> -->
-                        <button *ngIf="currentStepElement == step.LocalStepID" class="materialButton" type="button" (click)="addSubStep(stepInput.id)">Add Sub-Step.. </button>
+                        <div>
+                            <button *ngIf="currentStepElement == step.LocalStepID" class="materialButton" type="button" (click)="addSubStep(stepInput.id)">Add Sub-Step.. </button>
+                        </div>
 
                     </li>
                 </ul>
                 <button class="materialButton" type="button" (click)="addStep()">Add Step.. </button>
-                <!-- <button *ngIf="!subButtonActive" class="materialButton" type="button" (click)="addSubStep()">Add Sub-Step.. </button> -->
             </div>
 
             <div class="tip-entry-wrapper">
@@ -126,7 +131,7 @@
                     <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
                         <input #tipInput type="text" [(ngModel)]="tip.Content" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
 
-                        <div *ngIf="tip.SubTips">
+                        <div>
                             <ul *ngFor="let subTip of subTipList">
                                 <li *ngIf="checkForSubItem(subTip.LocalTipID, tip.LocalTipID)">
                                     <input type="text" [(ngModel)]="subTip.Content" name="SubTip-{{subTip.SubTipID}}">
@@ -134,7 +139,9 @@
                             </ul>
                         </div>
 
-                        <button *ngIf="currentTipElement == tip.LocalTipID" class="materialButton" type="button" (click)="addSubTip(tipInput.id)">Add Sub-Tip.. </button>
+                        <div>
+                            <button *ngIf="currentTipElement == tip.LocalTipID" class="materialButton" type="button" (click)="addSubTip(tipInput.id)">Add Sub-Tip.. </button>
+                        </div>
 
                     </li>
                 </ul>
@@ -146,7 +153,7 @@
                 <input
                 style="display: none"
                 type="file" name="additional-photos"
-                (change)="additionalPhotoRender(additionalPhotos.files);onAdditionalFileChange($event)"
+                (change)="additionalPhotoRender(additionalPhotos.files)"
                 multiple #additionalPhotos>
                 <button type="button" class="materialButton" (click)="additionalPhotos.click()">
                     Choose Photos..
@@ -160,7 +167,7 @@
 
             </div>
 
-            <button type="submit" class="materialButton">Submit</button>
+            <button type="submit"  class="materialButton">Submit</button>
         </div>
     </form>
 </div>

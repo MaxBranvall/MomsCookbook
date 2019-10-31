@@ -5,7 +5,11 @@ import { Ingredient } from '../Models/Ingredient';
 import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
-import { categories } from '../Models/categories';
+import { RecipeService } from '../Services/recipe.service';
+import { NgModel } from '@angular/forms';
+import { pipe } from 'rxjs';
+import { tap, map} from 'rxjs/operators';
+import { Recipe } from '../Models/Recipe';
 
 
 @Component({
@@ -17,6 +21,9 @@ export class RecipeEntryComponent implements OnInit {
 
   public imagePath;
   public imgURL: any;
+  public f: File;
+
+  public submitted: boolean = false;
 
   public fileSelected: boolean = false;
   public additionalPhotosSelected: boolean = false;
@@ -31,17 +38,19 @@ export class RecipeEntryComponent implements OnInit {
   public currentStepElement: number = null;
   public currentTipElement: number = null;
 
-  constructor() {}
+  public RecipeID: number = 0;
+
+  constructor(private recipeService: RecipeService) {}
 
   ngOnInit() {
   }
 
-  rawPhotos: any[] = [];
   additionalPhotoPreview: any[] = [];
 
   units:string[] = [
-    "--Select Unit--", "cup(s)", "tablespoon(s)", "teaspoon(s)",
-    "quart(s)", "pinch(es)", "glob(s)"
+    "--Select Unit--", "pinch(s)", "teaspoon(s)", "tablespoon(s)",
+    "cup(s)",
+    "glob(s)"
   ]
 
   categories:string[] = [
@@ -50,81 +59,161 @@ export class RecipeEntryComponent implements OnInit {
   ];
 
   ingredientModel = new Ingredient(
-    null, 0, '',
-    null, this.units[0]
+    this.RecipeID, 0, 't',
+    1, this.units[0]
   );
-  ingredientList:Ingredient[] = [this.ingredientModel];
+  ingredientList:Ingredient[] = [this.ingredientModel, new Ingredient(this.RecipeID, ++this.LocalIngredientID, 'y', 3, this.units[2])];
 
-  subStepModel = new Step(null, 0, '', null, null);
+  subStepModel = new Step(this.RecipeID, 0, 't', null);
   subStepList:Step[] = [];
-  stepModel = new Step(null, 0, '', this.subStepList)
+  stepModel = new Step(this.RecipeID, 0, 't')
   stepList:Step[] = [this.stepModel];
 
-  subTipModel = new Tip(null, 0, '', null, null);
+  subTipModel = new Tip(this.RecipeID, 0, 't', null);
   subTipList:Tip[] = [];
-  tipModel = new Tip(null, 0, '', this.subTipList);
+  tipModel = new Tip(this.RecipeID, 0, 't');
   tipList: Tip[] = [this.tipModel];
 
-  photoModel = new Photo(null, 0, '', '');
-  additionalPhotoList: Photo[] = [this.photoModel];
+  photoModel = new Photo(null, null, null);
+  additionalPhotoList: Photo[] = [];
 
   model = new Entry(
-    "", "", "", this.categories[0],
-    null, null, null, null,
+    this.RecipeID,
+    "test",
+    new Photo(this.RecipeID, null, ''),
+    "1",
+    this.categories[0],
+    1,
+    1,
+    1,
+    1,
     this.ingredientList,
-    this.stepList, this.tipList,
-    this.additionalPhotoList
+    this.stepList,
+    this.subStepList,
+    this.tipList,
+    this.subTipList,
+    this.additionalPhotoList,
+    null,
+    null,
+    null,
+    null,
   );
 
+  // cleanUpModel()
+  // {
+  //   this.cleanUpSteps();
+  //   this.cleanUpTips();
+  // }
+
+  onSubmit()
+  {
+
+    this.setCreationTime();
+    this.formatTimes();
+
+    // this.cleanUpModel();
+
+    // console.log(this.model.Ingredients);
+    // console.log(this.model.Image.File);
+    console.log(this.f[0]);
+    this.recipeService.addPhoto(this.f[0]).subscribe
+    (res => console.log(res));
+    // this.recipeService.addRecipe(this.model).subscribe
+    // (res => console.log(res));
+
+    // console.log(this.f);
+
+    // console.log(this.f[0]);
+
+    // this.recipeService.addPhoto(this.f[0]).subscribe
+    // (res => console.log(res));
+
+  }
+
+  isEmptyOrNull(s: any)
+  {
+    if (s == null || s == undefined || s == '')
+    {
+      return true;
+    }
+    return false;
+  }
+
+  setCreationTime()
+  {
+    if (this.isEmptyOrNull(this.model.Created))
+    {
+      this.model.Created = new Date().getTime();
+    }
+
+    this.model.LastModified = new Date().getTime();
+
+  }
+
+  formatTimes()
+  {
+    this.model.PrepTime = this.model.PrepTimeH + ":" + this.model.PrepTimeM;
+    this.model.CookTime = this.model.CookTimeH + ":" + this.model.CookTimeM;
+  }
+
   addIngredient() {
-    this.ingredientList.push(new Ingredient(null,++this.LocalIngredientID,'',null,this.units[0]));
+    this.ingredientList.push(new Ingredient(this.RecipeID,++this.LocalIngredientID,'',null,this.units[0]));
   }
 
   addStep() {
-    this.stepList.push(new Step(null, ++this.LocalStepID, null))
+    this.stepList.push(new Step(this.RecipeID, ++this.LocalStepID, null))
   }
 
   addSubStep(index?: number) {
-    if (index != undefined)
-    {
-      this.subStepList.push(new Step(null, index, '', null, ++this.LocalSubStepID));
-      this.stepList[index].SubSteps = this.subStepList;
-    }
-    else
-    {
-      this.subStepList.push(new Step(null, this.LocalStepID, '', null, ++this.LocalSubStepID));
-      this.stepList[this.LocalStepID].SubSteps = this.subStepList;
-    }
+
+    var i = +index;
+    console.log(typeof(i));
+
+    this.subStepList.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
+    // if (index != undefined)
+    // {
+    //   this.subStepList.push(new Step(this.RecipeID, index, '', null, ++this.LocalSubStepID));
+    //   this.stepList[index].SubSteps = this.subStepList;
+    // }
+    // else
+    // {
+    //   this.subStepList.push(new Step(this.RecipeID, this.LocalStepID, '', null, ++this.LocalSubStepID));
+    //   this.stepList[this.LocalStepID].SubSteps = this.subStepList;
+    // }
   }
 
   addTip() {
-    this.tipList.push(new Tip(null, ++this.LocalTipID, null));
+    this.tipList.push(new Tip(this.RecipeID, ++this.LocalTipID, null));
   }
 
   addSubTip(index?: number) {
 
-    if (index != undefined)
-    {
-      this.subTipList.push(new Tip(null, index, '', null, ++this.localSubTipID));
-      this.tipList[index].SubTips = this.subTipList;
-    }
-    else
-    {
-      this.subTipList.push(new Tip(null, this.LocalTipID, '', null, ++this.localSubTipID));
-      this.tipList[this.LocalTipID].SubTips = this.subTipList;
-    }
+    var i = +index;
+    console.log(typeof(i));
+    console.log(i);
+
+    this.subTipList.push(new Tip(this.RecipeID, i, '', ++this.localSubTipID));
   }
 
-  checkForSubItem(id1: number, id2: number) {
-    if (id1 == id2) {
+
+  checkForSubItem(subTipLocalID: number, mainTipLocalID: number) {
+
+    /*
+      Used by <li> for subtips and substeps. If true
+      the sub tip gets placed under the current tip
+      referenced by the mainTipLocalID.
+    */
+
+    if (subTipLocalID == mainTipLocalID) {
       return true;
     }
     return false;
   }
 
   photoPreview(files) {
+    this.f = files;
+    // this.model.Image.File = files[0];
     let reader = new FileReader();
-    this.imagePath = files;
     reader.readAsDataURL(files[0]);
     reader.onload = (_event) => {
       this.imgURL = reader.result;
@@ -143,16 +232,8 @@ export class RecipeEntryComponent implements OnInit {
     }
   }
 
-  onFileChange(event)
-  {
-    this.fileSelected = true;
-    console.log(event);
-  }
-
-  onAdditionalFileChange(event)
-  {
-    this.additionalPhotosSelected = true;
-    console.log(event);
+  get diagnostic() {
+    return JSON.stringify(this.model);
   }
 
 }

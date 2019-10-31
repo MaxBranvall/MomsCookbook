@@ -79,6 +79,11 @@
         font-size: 1.6em;
         text-align: left;
         border-spacing: .5em;
+
+        .tableButton {
+
+        };
+
     }
 
     input[type=number] {
@@ -105,6 +110,9 @@
         display: flex;
         justify-content: flex-end;
         margin-right: .5em;
+        // button {
+        //     max-height: 15px;
+        // }
     }
 
 }

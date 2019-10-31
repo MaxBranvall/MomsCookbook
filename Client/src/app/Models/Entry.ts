@@ -6,6 +6,7 @@ import { Photo } from './Photo';
 export class Entry {
 
     constructor(
+        public RecipeID: number,
         public Name: string,
         public Image: Photo,
         public Description: string,
@@ -16,12 +17,14 @@ export class Entry {
         public CookTimeM: number,
         public Ingredients: Ingredient[],
         public Steps: Step[],
+        public SubSteps: Step[],
         public Tips: Tip[],
+        public SubTips: Tip[],
         // optional parameters
         public AdditionalPhotos?: Photo[],
         public PrepTime?: string,
         public CookTime?: string,
-        public Created?: Date,
-        public LastModified?: Date,
+        public Created?: number,
+        public LastModified?: number,
     ) { }
 }
