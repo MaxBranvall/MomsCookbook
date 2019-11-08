@@ -79,8 +79,6 @@ export class RecipeEntryComponent implements OnInit {
 
   fileList: File[] = [];
 
-  t = new Testing(this.RecipeID, this.fileList, '');
-
   model = new Entry(
     this.RecipeID,
     "test",
@@ -232,7 +230,7 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   get diagnostic() {
-    return JSON.stringify(this.t.f);
+    return JSON.stringify(this.model);
   }
 
 }
