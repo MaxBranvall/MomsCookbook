@@ -20,6 +20,7 @@ export class Entry {
         public SubSteps: Step[],
         public Tips: Tip[],
         public SubTips: Tip[],
+        public f: File[],
         // optional parameters
         public AdditionalPhotos?: Photo[],
         public PrepTime?: string,

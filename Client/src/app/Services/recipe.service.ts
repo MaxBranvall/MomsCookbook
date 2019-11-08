@@ -4,9 +4,10 @@ import { tap, map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Entry } from '../Models/Entry';
-import { ENTRIES } from '../Models/Mock-Entries';
 import { Recipe } from '../Models/Recipe';
+import { ENTRIES } from '../Models/Mock-Entries';
 import { ObserveOnSubscriber } from 'rxjs/internal/operators/observeOn';
+import { Identifiers } from '@angular/compiler/src/render3/r3_identifiers';
 
 @Injectable({
   providedIn: 'root'
@@ -23,22 +24,24 @@ export class RecipeService {
     private http: HttpClient,
   ) { }
 
-  getAllEntries(): Observable<Entry[]> {
-    return this.http.get<Entry[]>(this.apiUrl + 'recipe');
+  getAllEntries(): Observable<Recipe[]> {
+    return this.http.get<Recipe[]>(this.apiUrl + 'recipe');
   }
 
   getEntry(Name : string): Observable<Entry[]> {
     return this.http.get<Entry[]>(this.apiUrl + 'recipe/' + Name);
   }
 
-  addRecipe(s: Entry): Observable<Entry> {
-    return this.http.post<Entry>(this.apiUrl + "Recipe", s);
+  addRecipe(s: Entry): Observable<number> {
+    return this.http.post<number>(this.apiUrl + "Recipe", s);
   }
 
-  addPhoto(file: any) {
-    let input = new FormData();
-    input.append("filesData", file);
-    return this.http.post(this.apiUrl + "Media", input);
+  addPhoto(file: any, ID: string) {
+    let formModel= new FormData();
+    formModel.append("File", file);
+    formModel.append("ID", ID);
+
+    return this.http.post(this.apiUrl + "Media", formModel);
   }
 
   // addRecipe(recipe: string): Observable<string> {

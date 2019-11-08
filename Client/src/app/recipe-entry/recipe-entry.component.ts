@@ -9,7 +9,7 @@ import { RecipeService } from '../Services/recipe.service';
 import { NgModel } from '@angular/forms';
 import { pipe } from 'rxjs';
 import { tap, map} from 'rxjs/operators';
-import { Recipe } from '../Models/Recipe';
+import { Testing } from '../Models/Testing';
 
 
 @Component({
@@ -21,7 +21,7 @@ export class RecipeEntryComponent implements OnInit {
 
   public imagePath;
   public imgURL: any;
-  public f: File;
+  public mainImage: File;
 
   public submitted: boolean = false;
 
@@ -38,7 +38,7 @@ export class RecipeEntryComponent implements OnInit {
   public currentStepElement: number = null;
   public currentTipElement: number = null;
 
-  public RecipeID: number = 0;
+  public RecipeID: number = 1;
 
   constructor(private recipeService: RecipeService) {}
 
@@ -74,13 +74,17 @@ export class RecipeEntryComponent implements OnInit {
   tipModel = new Tip(this.RecipeID, 0, 't');
   tipList: Tip[] = [this.tipModel];
 
-  photoModel = new Photo(null, null, null);
+  photoModel = new Photo(null, null);
   additionalPhotoList: Photo[] = [];
+
+  fileList: File[] = [];
+
+  t = new Testing(this.RecipeID, this.fileList, '');
 
   model = new Entry(
     this.RecipeID,
     "test",
-    new Photo(this.RecipeID, null, ''),
+    new Photo(this.RecipeID, null),
     "1",
     this.categories[0],
     1,
@@ -92,6 +96,7 @@ export class RecipeEntryComponent implements OnInit {
     this.subStepList,
     this.tipList,
     this.subTipList,
+    this.fileList,
     this.additionalPhotoList,
     null,
     null,
@@ -105,7 +110,7 @@ export class RecipeEntryComponent implements OnInit {
   //   this.cleanUpTips();
   // }
 
-  onSubmit()
+  async onSubmit()
   {
 
     this.setCreationTime();
@@ -113,21 +118,15 @@ export class RecipeEntryComponent implements OnInit {
 
     // this.cleanUpModel();
 
-    // console.log(this.model.Ingredients);
-    // console.log(this.model.Image.File);
-    console.log(this.f[0]);
-    this.recipeService.addPhoto(this.f[0]).subscribe
+    await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
+    console.log(this.RecipeID);
+    await this.recipeService.addPhoto(this.mainImage, this.RecipeID.toString()).subscribe
     (res => console.log(res));
-    // this.recipeService.addRecipe(this.model).subscribe
-    // (res => console.log(res));
 
-    // console.log(this.f);
+  }
 
-    // console.log(this.f[0]);
-
-    // this.recipeService.addPhoto(this.f[0]).subscribe
-    // (res => console.log(res));
-
+  async addRecipe() {
+    return await this.recipeService.addRecipe(this.model).toPromise();
   }
 
   isEmptyOrNull(s: any)
@@ -211,7 +210,7 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   photoPreview(files) {
-    this.f = files;
+    this.mainImage = files[0];
     // this.model.Image.File = files[0];
     let reader = new FileReader();
     reader.readAsDataURL(files[0]);
@@ -233,7 +232,7 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   get diagnostic() {
-    return JSON.stringify(this.model);
+    return JSON.stringify(this.t.f);
   }
 
 }

@@ -28,7 +28,7 @@
                 <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort">
                     <td>
                         <a title="To Recipe" routerLink="/{{title}}/recipe">
-                            <img class="thumbnail" [src]="entry.ImagePath">
+                            <img class="thumbnail" [src]="sanitizeUrl(entry.ImagePath)">
                         </a>
                     </td>
                     <td>
