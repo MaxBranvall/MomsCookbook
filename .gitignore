@@ -1,7 +1,6 @@
 api/Properties/launchSettings.json
 api/appsettings.json
 api/uploads
-api/Startup.cs
 api/Contexts/RecipeContext.cs
 Client/src/assets/images/mainimages
 /images
