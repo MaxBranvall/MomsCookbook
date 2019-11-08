@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 using api.Models;
+using api.Controllers;
 
 namespace api.Controllers
 {
@@ -29,11 +30,9 @@ namespace api.Controllers
 
         // GET: api/Recipe
         [HttpGet]
-        public IEnumerable<FullRecipe> Get()
+        public IEnumerable<Recipe> Get()
         {
-            List<FullRecipe> list = new List<FullRecipe>();
-
-            return list;
+            return _context.recipe.ToList();
         }
 
         // GET: api/Recipe/5
@@ -45,22 +44,11 @@ namespace api.Controllers
             return new FullRecipe() { Name = "test" };
         }
 
-        ////POST: api/UploadImage
-        //[HttpPost]
-        //public 
 
-        //POST: api/Recipe
+       //POST: api/Recipe
        [HttpPost]
-        public async Task<Recipe> Post([FromBody] FullRecipe value)
-        //public void Post(IFormFile filesData)
+        public async Task<int> Post([FromBody] FullRecipe value)
         {
-            //var filePath = _env.ContentRootPath + "newImage.jpeg";
-
-
-            //using (var stream = new FileStream(filePath, FileMode.Create))
-            //{
-            //    filesData.CopyTo(stream);
-            //}
 
             Recipe r = new Recipe()
             {
@@ -75,54 +63,29 @@ namespace api.Controllers
             };
 
             await _context.recipe.AddAsync(r);
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            AddIngredients(value.Ingredients);
-            AddSteps(value.Steps);
-            AddSubSteps(value.SubSteps);
-            AddTips(value.Tips);
-            AddSubTips(value.SubTips);
-            //UploadImage(value.Image.File, value.RecipeID);
+            int id = r.ID;
+
+            AddIngredients(value.Ingredients, id);
+            AddSteps(value.Steps, id);
+            AddSubSteps(value.SubSteps, id);
+            AddTips(value.Tips, id);
+            AddSubTips(value.SubTips, id);
+
 
             await _context.SaveChangesAsync();
 
-            return r;
+            return r.ID;
         }
 
-        [HttpPost("Uploadimage")]
-        //[Route("UploadImage")]
-        public async Task<Photo> UploadImage(Photo photo)
-        {
-
-            Photo p = new Photo()
-            {
-                RecipeID = photo.RecipeID,
-                File = photo.File,
-                Name = photo.Name,
-            };
-
-            // filename = recipeid_year/month/day_hh:mm:ss_name.ext
-
-            string dt = DateTime.Now.ToString("yyyy/mm/dd_hh:mm:ss");
-            string fileName = string.Format("{0}_{1}_{2}", p.RecipeID, dt, p.File.FileName);
-            string filePath = _env.ContentRootPath + "/uploads/" + fileName;
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await p.File.CopyToAsync(stream);
-            }
-
-            return photo;
-
-        }
-
-        public async void AddIngredients(List<Ingredient> ingredientList)
+        public async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
         {
             foreach (Ingredient i in ingredientList)
             {
                 Ingredient y = new Ingredient()
                 {
-                    RecipeID = i.RecipeID,
+                    RecipeID = recipeID,
                     LocalIngredientID = i.LocalIngredientID,
                     Content = i.Content,
                     Quantity = i.Quantity,
@@ -130,29 +93,27 @@ namespace api.Controllers
                 };
 
                 await _context.ingredients.AddAsync(y);
-                //await _context.SaveChangesAsync();
 
             }
         }
 
-        private async void AddSteps(List<Steps> stepList)
+        private async void AddSteps(List<Steps> stepList, int recipeID)
         {
             foreach (Steps s in stepList)
             {
                 Steps step = new Steps()
                 {
-                    RecipeID = s.RecipeID,
+                    RecipeID = recipeID,
                     LocalStepID = s.LocalStepID,
                     Content = s.Content
                 };
 
                 await _context.steps.AddAsync(step);
-                //await _context.SaveChangesAsync();
 
             }
         }
 
-        private async void AddSubSteps(List<SubSteps> subStepList)
+        private async void AddSubSteps(List<SubSteps> subStepList, int recipeID)
         {
 
             foreach (SubSteps step in subStepList)
@@ -160,48 +121,45 @@ namespace api.Controllers
 
                 SubSteps s = new SubSteps()
                 {
-                    RecipeID = step.RecipeID,
+                    RecipeID = recipeID,
                     LocalStepID = step.LocalStepID,
                     Content = step.Content,
                     SubStepID = step.SubStepID
                 };
 
                 await _context.substeps.AddAsync(s);
-                //await _context.SaveChangesAsync();
             }
 
         }
 
-        private async void AddTips(List<Tips> tipList)
+        private async void AddTips(List<Tips> tipList, int recipeID)
         {
             foreach (Tips tip in tipList)
             {
                 Tips t = new Tips()
                 {
-                    RecipeID = tip.RecipeID,
+                    RecipeID = recipeID,
                     LocalTipID = tip.LocalTipID,
                     Content = tip.Content,
                 };
 
                 await _context.tips.AddAsync(t);
-                //await _context.SaveChangesAsync();
             }
         }
 
-        private async void AddSubTips(List<SubTips> subTipList)
+        private async void AddSubTips(List<SubTips> subTipList, int recipeID)
         {
             foreach (SubTips tip in subTipList)
             {
                 SubTips t = new SubTips()
                 {
-                    RecipeID = tip.RecipeID,
+                    RecipeID = recipeID,
                     LocalTipID = tip.LocalTipID,
                     Content = tip.Content,
                     SubTipID = (int)tip.SubTipID
                 };
 
                 await _context.subtips.AddAsync(t);
-                //await _context.SaveChangesAsync();
             }
         }
 

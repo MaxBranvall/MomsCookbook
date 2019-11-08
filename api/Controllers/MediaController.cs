@@ -25,6 +25,8 @@ namespace api.Controllers
             _env = env;
         }
 
+        RecipeContext _context = new RecipeContext();
+
         //// GET: api/Media
         //[HttpGet]
         //public IEnumerable<string> Get()
@@ -41,17 +43,34 @@ namespace api.Controllers
 
         //POST: api/Media
         [HttpPost]
-        public async void UploadImage(IFormFile filesData)
+        public async void UploadImage([FromForm] FormModel formModel)
         {
 
-            string dt = DateTime.Now.ToString("yyyy-mm-dd_hh-mm-ss");
-            string fileName = string.Format("{0}_{1}_{2}", 0, dt, "newimg.jpg");
-            string filePath = _env.ContentRootPath + "/uploads/" + string.Format("{0}", fileName);
+            /*
+             Upload renamed image to specified folder. Update recipe entry with generated
+             file path.
+             */
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var id = int.Parse(formModel.ID);
+            IFormFile file = formModel.File;
+
+            string dt = DateTime.Now.ToString("yyyymmddhhmmss");
+            string fileName = string.Format("{0}{1}{2}", id, dt, file.FileName);
+            string actualFilePath = "../../../../images/mainImages/" + string.Format("{0}", fileName);
+
+            string apiFilePath = _env.ContentRootPath + "/../images/mainImages/" + string.Format("{0}", fileName);
+
+            await using (var stream = new FileStream(apiFilePath, FileMode.Create))
             {
-                await filesData.CopyToAsync(stream);
+                file.CopyTo(stream);
+                //await file.CopyToAsync(stream);
             }
+
+            Recipe recipe = new Recipe() { ID = id, ImagePath = actualFilePath };
+
+            _context.recipe.Attach(recipe);
+            _context.Entry(recipe).Property(p => p.ImagePath).IsModified = true;
+            await _context.SaveChangesAsync();
 
         }
 
