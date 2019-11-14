@@ -16,12 +16,12 @@ namespace api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecipeController : ControllerBase
+    public class RecipesController : ControllerBase
     {
 
         private IWebHostEnvironment _env;
 
-        public RecipeController(IWebHostEnvironment env)
+        public RecipesController(IWebHostEnvironment env)
         {
             _env = env;
         }
@@ -39,14 +39,66 @@ namespace api.Controllers
         [HttpGet("{name}", Name = "Get")]
         public FullRecipe Get(string name)
         {
-            List<FullRecipe> list = new List<FullRecipe>();
 
-            return new FullRecipe() { Name = "test" };
+            FullRecipe recipe = new FullRecipe();
+
+            IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.Name == name);
+
+            foreach(Recipe x in recipeFromDB)
+            {
+                recipe.RecipeID = x.ID;
+                recipe.Name = x.Name;
+                recipe.ImagePath = x.ImagePath;
+                recipe.Description = x.Description;
+                recipe.Category = x.Category;
+                recipe.PrepTime = x.PrepTime;
+                recipe.CookTime = x.CookTime;
+
+                recipe.Created = x.Created;
+                recipe.LastModified = x.LastModified;
+                recipe.Ingredients = new List<Ingredient>();
+                recipe.Steps = new List<Steps>();
+                recipe.SubSteps = new List<SubSteps>();
+                recipe.Tips = new List<Tips>();
+                recipe.SubTips = new List<SubTips>();
+            }
+
+            IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == recipe.RecipeID);
+            IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == recipe.RecipeID);
+            IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == recipe.RecipeID);
+            IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == recipe.RecipeID);
+            IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == recipe.RecipeID);
+
+            foreach(Ingredient i in ingredientsFromDB)
+            {
+                recipe.Ingredients.Add(i);
+            }
+
+            foreach(Steps s in stepsFromDB)
+            {
+                recipe.Steps.Add(s);
+            }
+
+            foreach(SubSteps s in subStepsFromDB)
+            {
+                recipe.SubSteps.Add(s);
+            }
+
+            foreach(Tips t in tipsFromDB)
+            {
+                recipe.Tips.Add(t);
+            }
+
+            foreach(SubTips t in subTipsFromDB)
+            {
+                recipe.SubTips.Add(t);
+            }
+
+            return recipe;
         }
 
-
-       //POST: api/Recipe
-       [HttpPost]
+        //POST: api/Recipe
+        [HttpPost]
         public async Task<int> Post([FromBody] FullRecipe value)
         {
 
@@ -73,11 +125,34 @@ namespace api.Controllers
             AddTips(value.Tips, id);
             AddSubTips(value.SubTips, id);
 
-
             await _context.SaveChangesAsync();
 
-            return r.ID;
+            return id;
         }
+
+        // PUT: api/Recipe/5
+        [HttpPut]
+        public async void Put(FirebaseURL url)
+        {
+
+            Recipe r = new Recipe()
+            {
+                ID = url.id,
+                ImagePath = url.downloadURL
+            };
+
+            Console.WriteLine(r.ID + " " + r.ImagePath);
+
+            _context.recipe.Attach(r);
+            _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
+        //// DELETE: api/ApiWithActions/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
 
         public async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
         {
@@ -163,16 +238,5 @@ namespace api.Controllers
             }
         }
 
-        //// PUT: api/Recipe/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }
