@@ -14,6 +14,11 @@ import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 import { RecipeService} from './Services/recipe.service';
 
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +33,9 @@ import { RecipeService} from './Services/recipe.service';
     AppRoutingModule,
     FormsModule,
     OrderModule,
-    HttpClientModule
+    HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule
   ],
   providers: [RecipeService],
   bootstrap: [AppComponent]
