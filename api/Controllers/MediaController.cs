@@ -35,11 +35,28 @@ namespace api.Controllers
         //}
 
         //// GET: api/Media/5
-        //[HttpGet("{name}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        [HttpGet("{id}", Name = "getPhoto")]
+        //public IEnumerable<Recipe> GetImage(int id)
+        public string GetImage(int id)
+        {
+
+            byte[] b;
+
+            List<Recipe> r = _context.recipe.Where(x => x.ID == id).ToList();
+
+            try
+            {
+                b = System.IO.File.ReadAllBytes(r[0].ImagePath);
+            } catch(FileNotFoundException)
+            {
+                return "error";
+            }
+
+            string x = Convert.ToBase64String(b);
+            //Console.WriteLine(x);
+
+            return "data:image/jpeg;base64," + x;
+        }
 
         //POST: api/Media
         [HttpPost]
@@ -54,11 +71,11 @@ namespace api.Controllers
             var id = int.Parse(formModel.ID);
             IFormFile file = formModel.File;
 
-            string dt = DateTime.Now.ToString("yyyymmddhhmmss");
-            string fileName = string.Format("{0}{1}{2}", id, dt, file.FileName);
+            string dt = DateTime.Now.ToString("yyyy-mm-dd-hhmmss");
+            string fileName = string.Format("{0}-{1}-{2}", id, dt, file.FileName);
             string actualFilePath = "../../../../images/mainImages/" + string.Format("{0}", fileName);
 
-            string apiFilePath = _env.ContentRootPath + "/../images/mainImages/" + string.Format("{0}", fileName);
+            string apiFilePath = _env.ContentRootPath + "\\..\\images\\mainImages\\" + string.Format("{0}", fileName);
 
             await using (var stream = new FileStream(apiFilePath, FileMode.Create))
             {
@@ -66,7 +83,7 @@ namespace api.Controllers
                 //await file.CopyToAsync(stream);
             }
 
-            Recipe recipe = new Recipe() { ID = id, ImagePath = actualFilePath };
+            Recipe recipe = new Recipe() { ID = id, ImagePath = apiFilePath };
 
             _context.recipe.Attach(recipe);
             _context.Entry(recipe).Property(p => p.ImagePath).IsModified = true;
