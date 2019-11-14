@@ -6,11 +6,13 @@ import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
 import { RecipeService } from '../Services/recipe.service';
+import { FireStorageService } from '../Services/firestorage.service';
 import { NgModel } from '@angular/forms';
-import { pipe } from 'rxjs';
-import { tap, map} from 'rxjs/operators';
-import { Testing } from '../Models/Testing';
+import { finalize, tap, flatMap } from "rxjs/operators";
+import { Observable, from } from 'rxjs';
 
+import { HttpEventType } from '@angular/common/http'
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -22,6 +24,10 @@ export class RecipeEntryComponent implements OnInit {
   public imagePath;
   public imgURL: any;
   public mainImage: File;
+
+  public uploadPercent: Observable<number>;
+  public downloadURL: Observable<string>;
+  public loading: boolean = true;
 
   public submitted: boolean = false;
 
@@ -40,7 +46,7 @@ export class RecipeEntryComponent implements OnInit {
 
   public RecipeID: number = 1;
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private storageService: FireStorageService) {}
 
   ngOnInit() {
   }
@@ -82,7 +88,7 @@ export class RecipeEntryComponent implements OnInit {
   model = new Entry(
     this.RecipeID,
     "test",
-    new Photo(this.RecipeID, null),
+    null,
     "1",
     this.categories[0],
     1,
@@ -117,14 +123,69 @@ export class RecipeEntryComponent implements OnInit {
     // this.cleanUpModel();
 
     await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
-    console.log(this.RecipeID);
-    await this.recipeService.addPhoto(this.mainImage, this.RecipeID.toString()).subscribe
-    (res => console.log(res));
+    this.uploadSingleFile(this.mainImage, this.RecipeID);
+
+
+
+    // console.log(this.RecipeID);
+    // await this.storageService.uploadSingleFile(this.mainImage, this.RecipeID);
+    // this.uploadPercent$ = this.storageService.uploadPercent;
+    // this.storageService.downloadURL.subscribe(res => console.log(res));
+    // console.log(this.downloadURL$);
+
+    // await this.recipeService.addPhoto(this.mainImage, this.RecipeID.toString()).subscribe
+    // (res => console.log(res));
+
+  }
+
+  async uploadSingleFile(file: File, recipeID: number)
+  {
+    this.loading = true;
+    const basePath = "/Images/"
+
+    let fileName = recipeID + "-" + this.getDateTimeString() + "-" + file.name;
+    let filePath = basePath + fileName;
+    let fileRef = this.storage.ref(filePath);
+
+    let task = this.storage.upload(filePath, file);
+
+    this.uploadPercent = task.percentageChanges();
+
+    // await task.snapshotChanges().pipe(
+    //   finalize(
+    //     () =>
+    //   )
+    // )
+
+    await task.snapshotChanges().pipe(
+      finalize(
+      () => fileRef.getDownloadURL()
+      .subscribe(res => {
+        this.downloadURL = res;
+         this.recipeService.addDownloadURL(res, recipeID)
+         .subscribe((res : any) => {
+           this.loading = false;
+          });
+      }))
+    ).subscribe();
+
+    // console.log(fileName);
+    // console.log(this.downloadURL);
+    // console.log(this.uploadPercent);
+  }
+
+  private getDateTimeString(): string
+  {
+    let date = new Date();
+    let formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString() + "-" + date.getDate();
+    let formattedTime = date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
+
+    return formattedDate + "-" + formattedTime;
 
   }
 
   async addRecipe() {
-    return await this.recipeService.addRecipe(this.model).toPromise();
+    return await this.recipeService.addRecipe(this.model);
   }
 
   isEmptyOrNull(s: any)

@@ -2,7 +2,7 @@
 
 <div class="form-outer-wrapper">
     <!-- TODO: Remove -->
-    {{diagnostic}}
+    <!-- {{diagnostic}} -->
     <form (ngSubmit)="onSubmit()" #entryForm="ngForm">
 
         <div class="form-inner-wrapper">
@@ -24,7 +24,7 @@
 
                 <label for="ImagePath">Main Photo: </label>
                 <input #file style="display: none" type="file" id="ImagePath"
-                name="Photo" [(ngModel)]='model.Image.Name'
+                name="Photo"
                 (change)="photoPreview(file.files)" required>
                 <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
 
@@ -168,6 +168,14 @@
             </div>
 
             <button type="submit"  class="materialButton">Submit</button>
+            <div class="progress" *ngIf="uploadPercent | async as progress">
+                Progress: {{ progress | number: '1.0-0' }}%
+                <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': progress + '%' }">
+
+                    <span *ngIf="loading">Waiting...</span><span *ngIf="!loading">Done!</span>
+
+                </div>
+             </div>
         </div>
     </form>
 </div>

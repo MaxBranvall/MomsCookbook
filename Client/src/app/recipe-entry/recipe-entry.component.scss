@@ -11,7 +11,7 @@
 .form-outer-wrapper {
     margin: 2em;
     label {
-        font-size: 2em;
+        font-size: 2.5em;
         font-weight: bold;
     }
 }
@@ -34,7 +34,7 @@
     }
 
     input, textarea {
-        font-size: 1.6em;
+        font-size: 2em;
     }
 
     img {
@@ -44,6 +44,10 @@
     p {
         font-size: 1.5em;
         margin: 0;
+    }
+
+    select {
+        font-size: 1.5em;
     }
 
 }
@@ -65,11 +69,12 @@
         border: none;
         border-bottom: 1px black solid;
         margin-top: .5em;
+        font-size: 1.2em;
     }
 
     p {
         display: inline;
-        font-size: 1.6em;
+        font-size: 2em;
     }
 
 }
@@ -79,10 +84,6 @@
         font-size: 1.6em;
         text-align: left;
         border-spacing: .5em;
-
-        .tableButton {
-
-        };
 
     }
 
@@ -168,6 +169,17 @@
         max-width: 100%;
     }
 
+}
+
+.progress {
+    height: 20px;
+    background-color: black;
+    color: white;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: red;
 }
 
 @media screen and (min-width: $desktop-width)
