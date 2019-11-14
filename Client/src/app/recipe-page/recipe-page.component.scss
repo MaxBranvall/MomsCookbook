@@ -28,10 +28,14 @@
         }
 
         p {
-            font-size: 1.5em;
+            font-size: 1.6em;
             line-height: 95%;
-            max-height: 250px;
-            overflow: scroll;
+            overflow-wrap: break-word;
+            margin-left: 5px;
+            margin-right: 5px;
+            // max-width: 50%;
+            // max-height: 250px;
+            // overflow: scroll;
         }
 
         height: min-content;
@@ -40,10 +44,53 @@
 
     .recipe-mid-wrapper {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 50% 50%;
         grid-column-gap: .5em;
     }
 
+}
+
+.prep-wrapper, .cook-wrapper {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+
+    p {
+        font-size: 1.4em;
+    }
+
+}
+
+.ingredients {
+
+    table, td, tr, th {
+        border-bottom: 2px black solid;
+    }
+
+    table {
+        font-size: 1.6em;
+        border-collapse: collapse;
+        // width: 50%;
+    }
+
+    td {
+        width: 33%;
+    }
+
+    tr {
+        height: auto;
+        text-align: center;
+        font-size: 1.4em;
+    }
+
+    p {
+        margin: 0;
+    }
+
+}
+
+.steps {
+    font-size: 1em;
 }
 
 .time-outer {
@@ -65,16 +112,23 @@
 
 }
 
-.recipe-bottom-wrapper {
+.step-tip-wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-column-gap: .5em;
+    font-size: 1.4em;
+}
+
+.sub-wrapper {
+    li {
+        font-size: .5em;
+    }
 }
 
 .bot-inner {
     display: grid;
     grid-template-rows: auto 2fr;
-    align-items: center;
+    // align-items: center;
 
     h2 {
         margin-bottom: .5em;

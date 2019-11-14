@@ -1,57 +1,110 @@
 <app-main-header></app-main-header>
 <main>
     <div class="recipe-outer-wrapper">
-        <h2>Baked Chicken Breast</h2>
-        <img class="recipe-image" src="../../assets/placeholders/chicken.jpg">
+        <h2>{{recipe.Name}}</h2>
+        <img class="recipe-image" [src]=recipe.ImagePath>
         <div class="recipe-mid-wrapper">
             <div class="description-outer">
                 <h2>Description</h2>
-                <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim mi, vulputate nec sapien non, luctus convallis magna. Quisque blandit viverra consectetur. Donec placerat neque nulla, eu accumsan sapien vulputate quis. Suspendisse egestas ut libero id imperdiet. Sed vulputate sed massa non gravida. Suspendisse potenti. Integer nibh quam, vestibulum eget metus et, accumsan ullamcorper mauris. Vestibulum felis metus, sollicitudin eu fermentum sed, condimentum id quam. Phasellus vulputate ex fermentum ultricies scelerisque. Sed varius purus vel turpis lobortis efficitur.</p>
+                <p class="description">
+                    {{recipe.Description}}
+                </p>
             </div>
             <div class="time-outer">
                 <div class="prep-wrapper">
                     <h2>Prep Time:</h2>
-                    <span class="preptime"><p>1 hour 30 minutes</p></span>
+                    <span class="preptime">
+                        <p>
+                            <span *ngIf="recipe.PrepTimeH != 0">{{recipe.PrepTimeH}}</span>
+                            <span *ngIf="recipe.PrepTimeH == 0"></span>
+                            <span *ngIf="recipe.PrepTimeH == 1"> hour </span>
+                            <span *ngIf="recipe.PrepTimeH > 1"> hours </span>
+                            <br>
+
+                            <span *ngIf="recipe.PrepTimeM != 0">{{recipe.PrepTimeM}}</span>
+                            <span *ngIf="recipe.PrepTimeM == 0"></span>
+                            <span *ngIf="recipe.PrepTimeM == 1"> minute </span>
+                            <span *ngIf="recipe.PrepTimeM > 1"> minutes </span>
+                        </p>
+                    </span>
                 </div>
                 <div class="cook-wrapper">
                     <h2>Cook Time:</h2>
-                    <span class="cooktime"><p>1 hour 30 minutes</p></span>
+                    <span class="cooktime">
+                        <p>
+                            <span *ngIf="recipe.CookTimeH != 0">{{recipe.CookTimeH}}</span>
+                            <span *ngIf="recipe.CookTimeH == 0"></span>
+                            <span *ngIf="recipe.CookTimeH == 1"> hour </span>
+                            <span *ngIf="recipe.CookTimeH > 1"> hours </span>
+                            <br>
+
+                            <span *ngIf="recipe.CookTimeM != 0">{{recipe.CookTimeM}}</span>
+                            <span *ngIf="recipe.CookTimeM == 0"></span>
+                            <span *ngIf="recipe.CookTimeM == 1"> minute </span>
+                            <span *ngIf="recipe.CookTimeM > 1"> minutes </span>
+                        </p>
+                    </span>
                 </div>
             </div>
         </div>
         <div class="recipe-bottom-wrapper">
             <div class="ingredients bot-inner">
                 <h2>Ingredients</h2>
-                <ul>
-                    <li>pour breadcrumbs in bowl</li>
-                    <li>dunk chicken in breadcrumbs</li>
-                    <li>dunk chicken in egg milk mix</li>
-                    <li>dunk chicken in breadcrumbs</li>
-                    <li>dunk chicken in egg milk mix</li>
-                    <li>repeat x3</li>
-                </ul>
+                <div class="in-table-wrapper">
+                    <table>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Ingredient</th>
+
+                        <tbody>
+                            <tr *ngFor="let ingredient of recipe.Ingredients">
+                                <td>
+                                    <p>{{ingredient.Quantity}}</p>
+                                </td>
+                                <td>
+                                    <p>{{ingredient.Unit}}</p>
+                                </td>
+                                <td>
+                                    <p>{{ingredient.Content}}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="steps bot-inner">
-                <h2>Steps</h2>
-                <ul>
-                        <li>pour breadcrumbs in bowl</li>
-                        <li>dunk chicken in breadcrumbs</li>
-                        <li>dunk chicken in egg milk mix</li>
-                        <li>dunk chicken in breadcrumbs</li>
-                        <li>dunk chicken in egg milk mix</li>
-                        <li>repeat x3</li>
+            <div class="step-tip-wrapper">
+                <div class="steps bot-inner">
+                    <h2>Steps</h2>
+                    <ul>
+                        <li *ngFor="let step of recipe.Steps">
+                            <p>{{step.Content}}</p>
+
+                            <ul class="sub-wrapper">
+                                <div *ngFor="let subStep of recipe.SubSteps">
+                                    <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
+                                        <p>{{subStep.Content}}</p>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
                     </ul>
-            </div>
-            <div class="tips bot-inner">
-                <h2>Tips</h2>
-                <ul>
-                        <li>pour breadcrumbs in bowl</li>
-                        <li>dunk chicken in breadcrumbs</li>
-                        <li>dunk chicken in egg milk mix</li>
-                        <li>dunk chicken in breadcrumbs</li>
-                        <li>dunk chicken in egg milk mix</li>
-                        <li>repeat x3</li>
+                </div>
+                <div class="tips bot-inner">
+                    <h2>Tips</h2>
+                    <ul>
+                        <li *ngFor="let tip of recipe.Tips">
+                            <p>{{tip.Content}}</p>
+
+                            <ul class="sub-wrapper">
+                                <div *ngFor="let subtip of recipe.SubTips">
+                                    <li *ngIf="checkForSubItem(subtip.LocalTipID, tip.LocalTipID)">
+                                        <p>{{subtip.Content}}</p>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
                     </ul>
+                </div>
             </div>
         </div>
         <div class="additional-photos">
