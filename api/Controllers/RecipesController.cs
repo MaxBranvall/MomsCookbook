@@ -127,7 +127,7 @@ namespace api.Controllers
 
         // PUT: api/Recipe/5
         [HttpPut]
-        public async void Put(FirebaseURL url)
+        public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
 
             Recipe r = new Recipe()
@@ -140,7 +140,8 @@ namespace api.Controllers
 
             _context.recipe.Attach(r);
             _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
-            await _context.SaveChangesAsync();
+            var response = await _context.SaveChangesAsync();
+            return StatusCode(200);
         }
 
         //// DELETE: api/ApiWithActions/5
