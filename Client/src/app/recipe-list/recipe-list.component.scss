@@ -24,12 +24,13 @@ table {
 
     th:last-child, td:last-child {
         padding-right: 0;
-
     }
 
     tr:hover {
         background-color: rgb(170, 170, 148);
+        cursor: pointer;
     }
+
 }
 
 table, th, tr, td {

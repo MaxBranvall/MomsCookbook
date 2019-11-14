@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { tap, map} from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { Entry } from '../Models/Entry';
-import { Photo } from '../Models/Photo';
 import { Recipe } from '../Models/Recipe';
+import { Entry } from '../Models/Entry';
+import { ListEntry } from '../Models/ListEntry';
 
 import { RecipeService } from '../Services/recipe.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { JsonPipe } from '@angular/common';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
@@ -18,8 +16,10 @@ import { JsonPipe } from '@angular/common';
 })
 export class RecipeListComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService,
-    private sanitizer: DomSanitizer) { }
+  constructor(
+    private route: ActivatedRoute, private recipeService: RecipeService,
+    private storage: AngularFireStorage, private router: Router
+    ) { }
 
   ngOnInit() {
     this.title = this.route.snapshot.paramMap.get('categoryTitle').toString();
@@ -27,7 +27,10 @@ export class RecipeListComponent implements OnInit {
   }
 
   title;
-  entries: Recipe[] = [];
+
+  entries: ListEntry[] = [];
+
+  selectedRecipe: Recipe;
 
   timeInitialized: boolean = false;
 
@@ -37,80 +40,36 @@ export class RecipeListComponent implements OnInit {
   reverseSort = false;
   orderByField="Name";
 
-  model = new Entry(
-    null,
-    "test",
-    null,
-    "1",
-    null,
-    1,
-    1,
-    1,
-    1,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-  );
-
-  public sanitizeUrl(url : string)
+  public onSelect(recipe: Recipe)
   {
-    return this.sanitizer.bypassSecurityTrustUrl(url);
+    this.selectedRecipe = recipe;
+    this.router.navigateByUrl("/" + this.title + "/" + this.selectedRecipe.Name);
+    console.log(JSON.stringify(this.selectedRecipe));
   }
 
-  getEntries() {
+  async getEntries() {
 
     // Need to reformat preptimeh preptimem cooktimeh cooktimem since db
     // only holds the formatted prep and cook times.
 
-    this.recipeService.getAllEntries()
-    .subscribe(entries => this.entries = entries, res => console.log(res));
+    await this.recipeService.getAllEntries().toPromise().then(res => this.initEntries(res));
+
   }
 
-  img: any = null;
-
-  photoPreview(files) {
-    // this.model.Image.File = files[0];
-    let reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onload = (_event) => {
-      return reader.result;
-    }
-  }
-
-  get diagnostic()
+  initEntries(recipeList: Recipe[])
   {
-    return JSON.stringify(this.entries);
+    recipeList.forEach(entry => {
+      let p = this.formatTimes(entry.PrepTime);
+      let c = this.formatTimes(entry.CookTime);
+      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, +p[0], +p[1], +c[0], +c[1]))
+    });
   }
 
-  // initTimes()
-  // {
-
-  //   if (this.timeInitialized)
-  //   {
-  //     return;
-  //   }
-
-  //   this.entries.forEach(e => {
-  //     e.PrepTime = this.formatTimes(e.PrepTimeH, e.PrepTimeM);
-  //     e.CookTime = this.formatTimes(e.CookTimeH, e.CookTimeM);
-  //     console.log("Initialized times for " + e.Name + ".");
-  //   });
-
-  //   this.timeInitialized = true;
-
-  // }
-
-  formatTimes(hour: number, minute: number) : string
+  formatTimes(rawTime: string) : string[]
   {
-    return hour + ':' + minute;
+    let split = rawTime.split(":");
+    console.log(split);
+    return split;
   }
 
 }

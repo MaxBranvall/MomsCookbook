@@ -1,6 +1,7 @@
 <app-main-header></app-main-header>
 
 <main>
+    <!-- {{diagnostic}} -->
     <h2>{{title | uppercase}}</h2>
     <div class="table-wrapper">
         <table>
@@ -25,46 +26,40 @@
             </thead>
 
             <tbody>
-                <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort">
+                <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort" (click)="onSelect(entry)">
                     <td>
-                        <a title="To Recipe" routerLink="/{{title}}/recipe">
-                            <img class="thumbnail" [src]="sanitizeUrl(entry.ImagePath)">
-                        </a>
+                        <img class="thumbnail" (click)="onSelect(entry)" [src]="entry.ImagePath" onError="this.src='../../assets/placeholders/no_photo_1x.jpg'">
                     </td>
                     <td>
-                        <a title="To Recipe" routerLink="/{{title}}/recipe">
-                            <p>{{entry.Name}}</p>
-                        </a>
+                        <p>{{entry.Name}}</p>
                     </td>
                     <td>
-                        <a title="To Recipe" routerLink="/{{title}}/recipe">
-                            <p>
-                                <span *ngIf="entry.PrepTimeH != 0">{{entry.PrepTimeH}}</span>
-                                <span *ngIf="entry.PrepTimeH == 0"></span>
-                                <span *ngIf="entry.PrepTimeH == 1"> hour </span>
-                                <span *ngIf="entry.PrepTimeH > 1"> hours </span>
+                        <p>
+                            <span *ngIf="entry.PrepTimeH != 0">{{entry.PrepTimeH}}</span>
+                            <span *ngIf="entry.PrepTimeH == 0"></span>
+                            <span *ngIf="entry.PrepTimeH == 1"> hour </span>
+                            <span *ngIf="entry.PrepTimeH > 1"> hours </span>
+                            <br>
 
-                                <span *ngIf="entry.PrepTimeM != 0">{{entry.PrepTimeM}}</span>
-                                <span *ngIf="entry.PrepTimeM == 0"></span>
-                                <span *ngIf="entry.PrepTimeM == 1"> minute </span>
-                                <span *ngIf="entry.PrepTimeM > 1"> minutes </span>
-                            </p>
-                        </a>
+                            <span *ngIf="entry.PrepTimeM != 0">{{entry.PrepTimeM}}</span>
+                            <span *ngIf="entry.PrepTimeM == 0"></span>
+                            <span *ngIf="entry.PrepTimeM == 1"> minute </span>
+                            <span *ngIf="entry.PrepTimeM > 1"> minutes </span>
+                        </p>
                     </td>
                     <td>
-                        <a title="To Recipe" routerLink="/{{title}}/recipe">
-                            <p>
-                                <span *ngIf="entry.CookTimeH != 0">{{entry.CookTimeH}}</span>
-                                <span *ngIf="entry.CookTimeH == 0"></span>
-                                <span *ngIf="entry.CookTimeH == 1"> hour </span>
-                                <span *ngIf="entry.CookTimeH > 1"> hours </span>
+                        <p>
+                            <span *ngIf="entry.CookTimeH != 0">{{entry.CookTimeH}}</span>
+                            <span *ngIf="entry.CookTimeH == 0"></span>
+                            <span *ngIf="entry.CookTimeH == 1"> hour </span>
+                            <span *ngIf="entry.CookTimeH > 1"> hours </span>
+                            <br>
 
-                                <span *ngIf="entry.CookTimeM != 0">{{entry.CookTimeM}}</span>
-                                <span *ngIf="entry.CookTimeM == 0"></span>
-                                <span *ngIf="entry.CookTimeM == 1"> minute </span>
-                                <span *ngIf="entry.CookTimeM > 1"> minutes </span>
-                            </p>
-                        </a>
+                            <span *ngIf="entry.CookTimeM != 0">{{entry.CookTimeM}}</span>
+                            <span *ngIf="entry.CookTimeM == 0"></span>
+                            <span *ngIf="entry.CookTimeM == 1"> minute </span>
+                            <span *ngIf="entry.CookTimeM > 1"> minutes </span>
+                        </p>
                     </td>
                 </tr>
             </tbody>
