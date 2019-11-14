@@ -37,7 +37,7 @@ namespace api
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:5001")
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:5001", "https://192.168.1.45", "https://192.168.1.45:5001", "https://192.168.1.47", "http://192.168.1.45:5000")
                     .AllowAnyMethod()
                     .AllowAnyHeader();
                 });
