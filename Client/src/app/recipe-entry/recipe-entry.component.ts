@@ -5,14 +5,12 @@ import { Ingredient } from '../Models/Ingredient';
 import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
+
+import { Observable } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
+
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
-import { NgModel } from '@angular/forms';
-import { finalize, tap, flatMap } from "rxjs/operators";
-import { Observable, from } from 'rxjs';
-
-import { HttpEventType } from '@angular/common/http'
-import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -27,7 +25,7 @@ export class RecipeEntryComponent implements OnInit {
 
   public uploadPercent: Observable<number>;
   public downloadURL: Observable<string>;
-  public loading: boolean = true;
+  public loading: boolean = this.storageService.loading;
 
   public submitted: boolean = false;
 
@@ -46,7 +44,8 @@ export class RecipeEntryComponent implements OnInit {
 
   public RecipeID: number = 1;
 
-  constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private storageService: FireStorageService) {}
+  constructor(private storage: AngularFireStorage, private recipeService: RecipeService,
+     private storageService: FireStorageService) {}
 
   ngOnInit() {
   }
@@ -123,64 +122,7 @@ export class RecipeEntryComponent implements OnInit {
     // this.cleanUpModel();
 
     await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
-    this.uploadSingleFile(this.mainImage, this.RecipeID);
-
-
-
-    // console.log(this.RecipeID);
-    // await this.storageService.uploadSingleFile(this.mainImage, this.RecipeID);
-    // this.uploadPercent$ = this.storageService.uploadPercent;
-    // this.storageService.downloadURL.subscribe(res => console.log(res));
-    // console.log(this.downloadURL$);
-
-    // await this.recipeService.addPhoto(this.mainImage, this.RecipeID.toString()).subscribe
-    // (res => console.log(res));
-
-  }
-
-  async uploadSingleFile(file: File, recipeID: number)
-  {
-    this.loading = true;
-    const basePath = "/Images/"
-
-    let fileName = recipeID + "-" + this.getDateTimeString() + "-" + file.name;
-    let filePath = basePath + fileName;
-    let fileRef = this.storage.ref(filePath);
-
-    let task = this.storage.upload(filePath, file);
-
-    this.uploadPercent = task.percentageChanges();
-
-    // await task.snapshotChanges().pipe(
-    //   finalize(
-    //     () =>
-    //   )
-    // )
-
-    await task.snapshotChanges().pipe(
-      finalize(
-      () => fileRef.getDownloadURL()
-      .subscribe(res => {
-        this.downloadURL = res;
-         this.recipeService.addDownloadURL(res, recipeID)
-         .subscribe((res : any) => {
-           this.loading = false;
-          });
-      }))
-    ).subscribe();
-
-    // console.log(fileName);
-    // console.log(this.downloadURL);
-    // console.log(this.uploadPercent);
-  }
-
-  private getDateTimeString(): string
-  {
-    let date = new Date();
-    let formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString() + "-" + date.getDate();
-    let formattedTime = date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
-
-    return formattedDate + "-" + formattedTime;
+    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID);
 
   }
 

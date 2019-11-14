@@ -10,8 +10,8 @@ import { Recipe } from '../Models/Recipe';
 })
 export class RecipeService {
 
-  // private apiUrl = "https://localhost:5001/api/";
-  private apiUrl = "http://192.168.1.45:5000/api/";
+  private apiUrl = "https://localhost:5001/api/";
+  // private apiUrl = "http://192.168.1.45:5000/api/";
 
   constructor(
     private http: HttpClient,

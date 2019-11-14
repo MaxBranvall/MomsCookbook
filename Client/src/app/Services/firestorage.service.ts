@@ -14,9 +14,9 @@ export class FireStorageService {
 
   constructor(private storage: AngularFireStorage, private recipeService: RecipeService) { }
 
-  uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
-  loading: boolean = true;
+  public uploadPercent$: Observable<number>;
+  public loading: boolean = true;
 
   async uploadSingleFile(file: File, recipeID: number)
   {
@@ -28,13 +28,7 @@ export class FireStorageService {
 
     let task = this.storage.upload(filePath, file);
 
-    this.uploadPercent = task.percentageChanges();
-
-    // await task.snapshotChanges().pipe(
-    //   finalize(
-    //     () =>
-    //   )
-    // )
+    this.uploadPercent$ = task.percentageChanges();
 
     await task.snapshotChanges().pipe(
       finalize(

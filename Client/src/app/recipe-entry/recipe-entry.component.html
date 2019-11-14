@@ -168,11 +168,11 @@
             </div>
 
             <button type="submit"  class="materialButton">Submit</button>
-            <div class="progress" *ngIf="uploadPercent | async as progress">
+            <div class="progress" *ngIf="storageService.uploadPercent$ | async as progress">
                 Progress: {{ progress | number: '1.0-0' }}%
                 <div class="progress-bar progress-bar-animated" [ngStyle]="{ 'width': progress + '%' }">
 
-                    <span *ngIf="loading">Waiting...</span><span *ngIf="!loading">Done!</span>
+                    <span *ngIf="storageService.loading">Waiting...</span><span *ngIf="!storageService.loading">Done!</span>
 
                 </div>
              </div>
