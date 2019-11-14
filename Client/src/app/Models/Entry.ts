@@ -8,7 +8,7 @@ export class Entry {
     constructor(
         public RecipeID: number,
         public Name: string,
-        public Image: Photo,
+        public ImagePath: string,
         public Description: string,
         public Category: string,
         public PrepTimeH: number,
