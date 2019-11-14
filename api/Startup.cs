@@ -17,18 +17,22 @@ namespace api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
 
-        public IConfiguration Configuration { get; }
+        private string _connectionString = null;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            _connectionString = configuration["Cookbook:ConnectionString"];
+        }
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
+
             services.AddControllers()
                 .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddCors(options =>
@@ -37,7 +41,7 @@ namespace api
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:5001", "https://192.168.1.45", "https://192.168.1.45:5001", "https://192.168.1.47", "http://192.168.1.45:5000")
+                    builder.WithOrigins("http://localhost:4200", "https://localhost:5001", "https://192.168.1.45")
                     .AllowAnyMethod()
                     .AllowAnyHeader();
                 });

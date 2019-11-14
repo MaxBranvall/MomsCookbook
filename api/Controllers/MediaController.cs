@@ -18,14 +18,19 @@ namespace api.Controllers
     public class MediaController : ControllerBase
     {
 
+        private RecipeContext _context;
+
+        public MediaController(RecipeContext context)
+        {
+            _context = context;
+        }
+
         private IWebHostEnvironment _env;
 
         public MediaController(IWebHostEnvironment env)
         {
             _env = env;
         }
-
-        RecipeContext _context = new RecipeContext();
 
         //// GET: api/Media
         //[HttpGet]
@@ -36,7 +41,6 @@ namespace api.Controllers
 
         //// GET: api/Media/5
         [HttpGet("{id}", Name = "getPhoto")]
-        //public IEnumerable<Recipe> GetImage(int id)
         public string GetImage(int id)
         {
 
@@ -53,7 +57,6 @@ namespace api.Controllers
             }
 
             string x = Convert.ToBase64String(b);
-            //Console.WriteLine(x);
 
             return "data:image/jpeg;base64," + x;
         }

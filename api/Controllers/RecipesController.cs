@@ -6,9 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
 using api.Models;
 using api.Controllers;
 
@@ -19,14 +16,12 @@ namespace api.Controllers
     public class RecipesController : ControllerBase
     {
 
-        private IWebHostEnvironment _env;
+        private RecipeContext _context;
 
-        public RecipesController(IWebHostEnvironment env)
+        public RecipesController(RecipeContext recipeContext)
         {
-            _env = env;
+            _context = recipeContext;
         }
-
-        RecipeContext _context = new RecipeContext();
 
         // GET: api/Recipe
         [HttpGet]
@@ -105,7 +100,7 @@ namespace api.Controllers
             Recipe r = new Recipe()
             {
                 Name = value.Name,
-                ImagePath = _env.ContentRootPath,
+                ImagePath = null,
                 Description = value.Description,
                 Category = value.Category,
                 PrepTime = value.PrepTime,
