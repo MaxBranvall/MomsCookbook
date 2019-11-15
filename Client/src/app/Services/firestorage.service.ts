@@ -3,7 +3,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 import { RecipeService } from './recipe.service';
 
-import { finalize, tap, flatMap } from "rxjs/operators";
+import { finalize, tap, flatMap } from 'rxjs/operators';
 import { Observable, from } from 'rxjs';
 
 
@@ -16,17 +16,16 @@ export class FireStorageService {
 
   downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
-  public loading: boolean = true;
+  public loading = true;
 
-  async uploadSingleFile(file: File, recipeID: number)
-  {
-    const basePath = "/Images/"
+  async uploadSingleFile(file: File, recipeID: number) {
+    const basePath = '/Images/';
 
-    let fileName = recipeID + "-" + this.getDateTimeString() + "-" + file.name;
-    let filePath = basePath + fileName;
-    let fileRef = this.storage.ref(filePath);
+    const fileName = recipeID + '-' + this.getDateTimeString() + '-' + file.name;
+    const filePath = basePath + fileName;
+    const fileRef = this.storage.ref(filePath);
 
-    let task = this.storage.upload(filePath, file);
+    const task = this.storage.upload(filePath, file);
 
     this.uploadPercent$ = task.percentageChanges();
 
@@ -35,8 +34,8 @@ export class FireStorageService {
       () => fileRef.getDownloadURL()
       .subscribe(res => {
         this.downloadURL = res;
-         this.recipeService.addDownloadURL(res, recipeID)
-         .subscribe((res : any) => {
+        this.recipeService.addDownloadURL(res, recipeID)
+         .subscribe(() => {
            this.loading = false;
           });
       }))
@@ -47,13 +46,12 @@ export class FireStorageService {
     // console.log(this.uploadPercent);
   }
 
-  private getDateTimeString(): string
-  {
-    let date = new Date();
-    let formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString() + "-" + date.getDate();
-    let formattedTime = date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
+  private getDateTimeString(): string {
+    const date = new Date();
+    const formattedDate = date.getFullYear() + '-' + (date.getMonth() + 1).toString() + '-' + date.getDate();
+    const formattedTime = date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds();
 
-    return formattedDate + "-" + formattedTime;
+    return formattedDate + '-' + formattedTime;
 
   }
 
