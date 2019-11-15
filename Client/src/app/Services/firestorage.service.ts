@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 
-import { RecipeService } from './recipe.service';
+import { finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-import { finalize, tap, flatMap } from 'rxjs/operators';
-import { Observable, from } from 'rxjs';
+import { RecipeService } from './recipe.service';
 
 
 @Injectable({
@@ -40,10 +40,6 @@ export class FireStorageService {
           });
       }))
     ).subscribe();
-
-    // console.log(fileName);
-    // console.log(this.downloadURL);
-    // console.log(this.uploadPercent);
   }
 
   private getDateTimeString(): string {
