@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Recipe } from '../Models/Recipe';
-import { Entry } from '../Models/Entry';
 import { ListEntry } from '../Models/ListEntry';
 
 import { RecipeService } from '../Services/recipe.service';
-import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
@@ -16,9 +14,23 @@ import { AngularFireStorage } from '@angular/fire/storage';
 })
 export class RecipeListComponent implements OnInit {
 
+  title;
+
+  entries: ListEntry[] = [];
+
+  selectedRecipe: Recipe;
+
+  timeInitialized = false;
+
+  recipeSorted = false;
+  prepTimeSorted = false;
+  cookTimeSorted = false;
+  reverseSort = false;
+  orderByField = 'Name';
+
   constructor(
     private route: ActivatedRoute, private recipeService: RecipeService,
-    private storage: AngularFireStorage, private router: Router
+    private router: Router
     ) { }
 
   ngOnInit() {
@@ -26,24 +38,9 @@ export class RecipeListComponent implements OnInit {
     this.getEntries();
   }
 
-  title;
-
-  entries: ListEntry[] = [];
-
-  selectedRecipe: Recipe;
-
-  timeInitialized: boolean = false;
-
-  recipeSorted: boolean = false;
-  prepTimeSorted: boolean = false;
-  cookTimeSorted: boolean = false;
-  reverseSort = false;
-  orderByField="Name";
-
-  public onSelect(recipe: Recipe)
-  {
+  public onSelect(recipe: Recipe) {
     this.selectedRecipe = recipe;
-    this.router.navigateByUrl("/" + this.title + "/" + this.selectedRecipe.Name);
+    this.router.navigateByUrl('/' + this.title + '/' + this.selectedRecipe.Name);
     console.log(JSON.stringify(this.selectedRecipe));
   }
 
@@ -56,19 +53,17 @@ export class RecipeListComponent implements OnInit {
 
   }
 
-  initEntries(recipeList: Recipe[])
-  {
+  initEntries(recipeList: Recipe[]) {
     recipeList.forEach(entry => {
-      let p = this.formatTimes(entry.PrepTime);
-      let c = this.formatTimes(entry.CookTime);
-      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, +p[0], +p[1], +c[0], +c[1]))
+      const p = this.formatTimes(entry.PrepTime);
+      const c = this.formatTimes(entry.CookTime);
+      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, entry.PrepTime, entry.CookTime, +p[0], +p[1], +c[0], +c[1]));
+      console.log(entry.PrepTime);
     });
   }
 
-  formatTimes(rawTime: string) : string[]
-  {
-    let split = rawTime.split(":");
-    console.log(split);
+  formatTimes(rawTime: string): string[] {
+    const split = rawTime.split(':');
     return split;
   }
 

@@ -13,12 +13,12 @@
                     <span *ngIf="orderByField != 'Name' || reverseSort" class="arrow-up"></span>
                     <span *ngIf="orderByField == 'Name' && !reverseSort" class="arrow-down"></span>
                 </th>
-                <th (click)="initTimes();orderByField='PrepTime';reverseSort = !reverseSort">
+                <th (click)="orderByField='PrepTime';reverseSort = !reverseSort">
                     Prep Time
                     <span *ngIf="orderByField != 'PrepTime' || reverseSort" class="arrow-up"></span>
                     <span *ngIf="orderByField == 'PrepTime' && !reverseSort" class="arrow-down"></span>
                 </th>
-                <th (click)="initTimes();orderByField='CookTime';reverseSort = !reverseSort">
+                <th (click)="orderByField='CookTime';reverseSort = !reverseSort">
                     Cook Time
                     <span *ngIf="orderByField != 'CookTime' || reverseSort" class="arrow-up"></span>
                     <span *ngIf="orderByField == 'CookTime' && !reverseSort" class="arrow-down"></span>
