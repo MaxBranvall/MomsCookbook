@@ -1,20 +1,24 @@
 <app-main-header></app-main-header>
 
+<!-- TODO: This button is only temporary. -->
 <button type="button" routerLink=newentry>New Entry</button>
 
 <div class="main-grid">
+  <div class="category-outer">
     <div class="categories" *ngFor="let category of categories">
       <a [routerLink]=category.titleL title={{category.title}} >
         <div class="category-container">
+          <div class="bg-image"></div>
           <div class="bg-image" [style.background-image]="'url(../../../../assets/placeholders/' + category.title + '.jpg)'"></div>
           <div class="text">
-                <h2>{{category.title}}</h2>
-            </div>
+            <h2>{{category.title}}</h2>
+          </div>
           <div class="dark-overlay">
           </div>
         </div>
       </a>
     </div>
+  </div>
 
     <div class="recent-container">
         <h2>Recently Added</h2>

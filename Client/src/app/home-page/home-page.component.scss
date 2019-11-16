@@ -1,32 +1,30 @@
-// mobile first
-// TODO: REFACTOR
+$overlayOpacity: .6;
 
 .main-grid {
     width: 75%;
     margin: 0 auto;
 }
 
-.categories {
+.category-outer {
 
-    margin-top: 1em;
+    display: grid;
+    grid-row-gap: 1.2em;
 
-    a {
-        text-decoration: none;
-        color: white;
-        text-shadow: -1px 1px 1px grey;
-        height: 90px;
-        margin: 0;
+    .categories {
+        min-height: 90px;
+        background-color: red;
     }
 
-    img {
-        margin-top: 1em;
-        width: 100%;
-        height: 90px;
+    a {
+        margin: 0;
+        color: white;
+        text-decoration: none;
+        text-shadow: -1px 1px 1px grey;
     }
 
     .category-container {
-        margin-top: 1em;
         display: grid;
+        min-height: 90px;
     }
 
     .bg-image {
@@ -36,26 +34,32 @@
         grid-column: 1;
     }
 
-    .dark-overlay {
-        background-color: rgba($color: #000000, $alpha: .6);
-        widows: 100%;
-        height: 90px;
-        grid-row-start: 1;
-        grid-column: 1;
-    }
-
     .text {
-        text-align: center;
-        font-size: 2em;
-        color: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         grid-row: 1;
         grid-column: 1;
         z-index: 1;
 
+        font-size: 2em;
+        color: white;
+
+        min-height: 90px;
+
         h2 {
             text-shadow: -1px 1px 1px grey;
+            margin: 0;
         }
 
+    }
+
+    .dark-overlay {
+        grid-row-start: 1;
+        grid-column: 1;
+        background-color: rgba($color: #000000, $alpha: $overlayOpacity);
     }
 
 }
@@ -81,65 +85,62 @@
 
 }
 
-@media only screen and (min-width: 600px)
-{
+@media only screen and (min-width: 600px) {
 
     // Screens larger than 600px
 
-    .main-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 4em;
-        margin-top: 3em;
-        width: 100%;
+    // .main-grid {
+    //     display: grid;
+    //     grid-template-columns: 2fr 1fr;
+    //     column-gap: 4em;
+    //     margin-top: 3em;
+    //     width: 100%;
 
 
-        .categories {
-            justify-self: center;
-            grid-column: 2;
+    //     .categories {
+    //         justify-self: center;
+    //         grid-column: 2;
 
-            .category-container {
-                margin-top: 1.5em;
+    //         .category-container {
+    //             margin-top: 1.5em;
 
-                img {
-                    height: initial;
-                }
+    //             img {
+    //                 height: initial;
+    //             }
 
-            }
+    //         }
 
-            .category-container:first-child {
-                margin-top: 0;
-            }
+    //         .category-container:first-child {
+    //             margin-top: 0;
+    //         }
 
-        }
+    //     }
 
 
-        .recent-container {
-            h2 {
-                text-align: left;
-                font-size: 3em;
-                margin-top: 0;
-            }
+    //     .recent-container {
+    //         h2 {
+    //             text-align: left;
+    //             font-size: 3em;
+    //             margin-top: 0;
+    //         }
 
-            margin-left: 4em;
-        }
+    //         margin-left: 4em;
+    //     }
 
-        .recent-tiles {
-            grid-column: 3;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, 100px);
-            column-gap: 1.5em;
+    //     .recent-tiles {
+    //         grid-column: 3;
+    //         display: grid;
+    //         grid-template-columns: repeat(auto-fit, 100px);
+    //         column-gap: 1.5em;
 
-            .tile {
-                img {
-                    height: 100px;
-                    margin-bottom: 1em;
-                    object-fit: cover;
-                }
-            }
+    //         .tile {
+    //             img {
+    //                 height: 100px;
+    //                 margin-bottom: 1em;
+    //                 object-fit: cover;
+    //             }
+    //         }
 
-        }
-
-    }
+    //     }
 
 }
