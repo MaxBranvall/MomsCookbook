@@ -19,6 +19,13 @@ import { FireStorageService } from '../Services/firestorage.service';
 })
 export class RecipeEntryComponent implements OnInit {
 
+  constructor(private storage: AngularFireStorage, private recipeService: RecipeService,
+              private storageService: FireStorageService) {}
+
+  get diagnostic() {
+    return JSON.stringify(this.model);
+  }
+
   public imagePath;
   public imgURL: any;
   public mainImage: File;
@@ -27,55 +34,49 @@ export class RecipeEntryComponent implements OnInit {
   public downloadURL: Observable<string>;
   public loading: boolean = this.storageService.loading;
 
-  public submitted: boolean = false;
+  public submitted = false;
 
-  public fileSelected: boolean = false;
-  public additionalPhotosSelected: boolean = false;
+  public fileSelected = false;
+  public additionalPhotosSelected = false;
 
-  public LocalIngredientID: number = 0;
-  public LocalStepID: number = 0;
-  public LocalTipID: number = 0;
+  public LocalIngredientID = 0;
+  public LocalStepID = 0;
+  public LocalTipID = 0;
 
-  public LocalSubStepID: number = 0;
-  public localSubTipID: number = 0;
+  public LocalSubStepID = 0;
+  public localSubTipID = 0;
 
   public currentStepElement: number = null;
   public currentTipElement: number = null;
 
-  public RecipeID: number = 1;
-
-  constructor(private storage: AngularFireStorage, private recipeService: RecipeService,
-     private storageService: FireStorageService) {}
-
-  ngOnInit() {
-  }
+  public RecipeID = 1;
 
   additionalPhotoPreview: any[] = [];
 
-  units:string[] = [
-    "--Select Unit--", "pinch(s)", "teaspoon(s)", "tablespoon(s)",
-    "cup(s)",
-    "glob(s)"
-  ]
+  units: string[] = [
+    '--Select Unit--', 'pinch(s)', 'teaspoon(s)', 'tablespoon(s)',
+    'cup(s)',
+    'glob(s)'
+  ];
 
-  categories:string[] = [
-    "--Select Unit--","Breakfast", "Lunch", "Dinner",
-     "Appetizer", "Side"
+  categories: string[] = [
+    '--Select Unit--', 'Breakfast', 'Lunch', 'Dinner',
+     'Appetizer', 'Side'
   ];
 
   ingredientModel = new Ingredient(
     this.RecipeID, 0, 't',
     1, this.units[0]
   );
-  ingredientList:Ingredient[] = [this.ingredientModel, new Ingredient(this.RecipeID, ++this.LocalIngredientID, 'y', 3, this.units[2])];
+  ingredientList: Ingredient[] = [this.ingredientModel, new Ingredient(this.RecipeID, ++this.LocalIngredientID, 'y', 3, this.units[2])];
 
   subStepModel = new Step(this.RecipeID, 0, 't', null);
-  subStepList:Step[] = [];
-  stepModel = new Step(this.RecipeID, 0, 't')
-  stepList:Step[] = [this.stepModel];
+  subStepList: Step[] = [];
+  stepModel = new Step(this.RecipeID, 0, 't');
+  stepList: Step[] = [this.stepModel];
 
   subTipModel = new Tip(this.RecipeID, 0, 't', null);
-  subTipList:Tip[] = [];
+  subTipList: Tip[] = [];
   tipModel = new Tip(this.RecipeID, 0, 't');
   tipList: Tip[] = [this.tipModel];
 
@@ -86,9 +87,9 @@ export class RecipeEntryComponent implements OnInit {
 
   model = new Entry(
     this.RecipeID,
-    "test",
+    'test',
     null,
-    "1",
+    '1',
     this.categories[0],
     1,
     1,
@@ -107,14 +108,16 @@ export class RecipeEntryComponent implements OnInit {
     null,
   );
 
+  ngOnInit() {
+  }
+
   // cleanUpModel()
   // {
   //   this.cleanUpSteps();
   //   this.cleanUpTips();
   // }
 
-  async onSubmit()
-  {
+  async onSubmit() {
 
     this.setCreationTime();
     this.formatTimes();
@@ -130,19 +133,15 @@ export class RecipeEntryComponent implements OnInit {
     return await this.recipeService.addRecipe(this.model);
   }
 
-  isEmptyOrNull(s: any)
-  {
-    if (s == null || s == undefined || s == '')
-    {
+  isEmptyOrNull(s: any) {
+    if (s === null || s === undefined || s === '') {
       return true;
     }
     return false;
   }
 
-  setCreationTime()
-  {
-    if (this.isEmptyOrNull(this.model.Created))
-    {
+  setCreationTime() {
+    if (this.isEmptyOrNull(this.model.Created)) {
       this.model.Created = new Date().getTime();
     }
 
@@ -150,23 +149,22 @@ export class RecipeEntryComponent implements OnInit {
 
   }
 
-  formatTimes()
-  {
-    this.model.PrepTime = this.model.PrepTimeH + ":" + this.model.PrepTimeM;
-    this.model.CookTime = this.model.CookTimeH + ":" + this.model.CookTimeM;
+  formatTimes() {
+    this.model.PrepTime = this.model.PrepTimeH + ':' + this.model.PrepTimeM;
+    this.model.CookTime = this.model.CookTimeH + ':' + this.model.CookTimeM;
   }
 
   addIngredient() {
-    this.ingredientList.push(new Ingredient(this.RecipeID,++this.LocalIngredientID,'',null,this.units[0]));
+    this.ingredientList.push(new Ingredient(this.RecipeID, ++this.LocalIngredientID, '', null, this.units[0]));
   }
 
   addStep() {
-    this.stepList.push(new Step(this.RecipeID, ++this.LocalStepID, null))
+    this.stepList.push(new Step(this.RecipeID, ++this.LocalStepID, null));
   }
 
   addSubStep(index?: number) {
 
-    var i = +index;
+    const i = +index;
     console.log(typeof(i));
 
     this.subStepList.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
@@ -188,7 +186,7 @@ export class RecipeEntryComponent implements OnInit {
 
   addSubTip(index?: number) {
 
-    var i = +index;
+    const i = +index;
     console.log(typeof(i));
     console.log(i);
 
@@ -204,7 +202,7 @@ export class RecipeEntryComponent implements OnInit {
       referenced by the mainTipLocalID.
     */
 
-    if (subTipLocalID == mainTipLocalID) {
+    if (subTipLocalID === mainTipLocalID) {
       return true;
     }
     return false;
@@ -213,27 +211,22 @@ export class RecipeEntryComponent implements OnInit {
   photoPreview(files) {
     this.mainImage = files[0];
     // this.model.Image.File = files[0];
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(files[0]);
-    reader.onload = (_event) => {
+    reader.onload = (event) => {
       this.imgURL = reader.result;
-    }
+    };
   }
 
   additionalPhotoRender(files) {
-    for (let i = 0; i < files.length; i++)
-    {
-      let reader = new FileReader();
-      reader.readAsDataURL(files[i]);
-      reader.onload = (_event) => {
+    for (const f of  files) {
+      const reader = new FileReader();
+      reader.readAsDataURL(f);
+      reader.onload = (event) => {
         this.additionalPhotoPreview.push(reader.result);
         console.log(reader.result);
-      }
+      };
     }
-  }
-
-  get diagnostic() {
-    return JSON.stringify(this.model);
   }
 
 }
