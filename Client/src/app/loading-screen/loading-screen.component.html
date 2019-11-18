@@ -1,1 +1,18 @@
-<p>loading-screen works!</p>
+<div class="loading-overlay">
+    <div class="loading-wrapper">
+        <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="progress-container">
+            <h2>Progress: </h2>
+            <div class="progress-bar-outer" *ngIf="progress$ | async as progress">
+                <div class="progress-bar-inner" [ngStyle]="{ 'width': progress + '%'}"></div>
+            </div>
+            <p>
+                Uploading Image:
+                <span *ngIf="progress$ | async as progress">
+                    <span *ngIf="progress != 100">{{progress | number: '1.0-0'}}%</span>
+                    <span *ngIf="progress == 100">Done!</span>
+                </span>
+            </p>
+        </div>
+    </div>
+</div>

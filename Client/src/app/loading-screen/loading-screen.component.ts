@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Input } from '@angular/core';
+
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-loading-screen',
@@ -6,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./loading-screen.component.scss']
 })
 export class LoadingScreenComponent implements OnInit {
+
+  @Input() progress$: Observable<number>;
 
   constructor() { }
 

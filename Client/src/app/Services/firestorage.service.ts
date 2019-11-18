@@ -14,11 +14,14 @@ export class FireStorageService {
 
   constructor(private storage: AngularFireStorage, private recipeService: RecipeService) { }
 
-  downloadURL: Observable<string>;
+  public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
-  public loading = true;
+  public loading = false;
 
   async uploadSingleFile(file: File, recipeID: number) {
+
+    this.loading = true;
+
     const basePath = '/Images/';
 
     const fileName = recipeID + '-' + this.getDateTimeString() + '-' + file.name;
