@@ -2,7 +2,8 @@
 <main>
     <div class="recipe-outer-wrapper">
         <h2>{{recipe.Name}}</h2>
-        <img class="recipe-image" [src]=recipe.ImagePath>
+        <img class="recipe-image" src="../../assets/placeholders/loading.gif" [hidden]="recipe.ImageLoaded">
+        <img class="recipe-image" [src]=recipe.ImagePath (load)="recipe.ImageLoaded=true" [hidden]="!recipe.ImageLoaded">
         <div class="recipe-mid-wrapper">
             <div class="description-outer">
                 <h2>Description</h2>

@@ -27,5 +27,6 @@ export class Entry {
         public CookTime?: string,
         public Created?: number,
         public LastModified?: number,
+        public ImageLoaded?: boolean
     ) { }
 }

@@ -41,7 +41,6 @@ export class RecipeListComponent implements OnInit {
   public onSelect(recipe: Recipe) {
     this.selectedRecipe = recipe;
     this.router.navigateByUrl('/' + this.title + '/' + this.selectedRecipe.Name);
-    console.log(JSON.stringify(this.selectedRecipe));
   }
 
   async getEntries() {
@@ -57,8 +56,8 @@ export class RecipeListComponent implements OnInit {
     recipeList.forEach(entry => {
       const p = this.formatTimes(entry.PrepTime);
       const c = this.formatTimes(entry.CookTime);
-      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, entry.PrepTime, entry.CookTime, +p[0], +p[1], +c[0], +c[1]));
-      console.log(entry.PrepTime);
+      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, entry.PrepTime, entry.CookTime,
+         +p[0], +p[1], +c[0], +c[1], false));
     });
   }
 

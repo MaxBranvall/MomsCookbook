@@ -8,6 +8,7 @@ export class ListEntry {
         public PrepTimeH: number,
         public PrepTimeM: number,
         public CookTimeH: number,
-        public CookTimeM: number
+        public CookTimeM: number,
+        public Loaded?: boolean
     ) { }
 }

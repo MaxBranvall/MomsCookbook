@@ -28,7 +28,10 @@
             <tbody>
                 <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort" (click)="onSelect(entry)">
                     <td>
-                        <img class="thumbnail" (click)="onSelect(entry)" [src]="entry.ImagePath" onError="this.src='../../assets/placeholders/no_photo_1x.jpg'">
+                        <img class="thumbnail" (click)="onSelect(entry)" src="../../assets/placeholders/loading.gif"
+                        [hidden]="entry.loaded" onError="this.src='../../assets/placeholders/no_photo_1x.jpg'">
+                        <img class="thumbnail" (click)="onSelect(entry)" [src]="entry.ImagePath" (load)="entry.loaded = true"
+                        [hidden]="!entry.loaded" onError="this.src='../../assets/placeholders/no_photo_1x.jpg'">
                     </td>
                     <td>
                         <p>{{entry.Name}}</p>

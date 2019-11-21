@@ -23,17 +23,16 @@ export class RecipePageComponent implements OnInit {
 
     this.title = this.route.snapshot.paramMap.get("recipeName").toString();
     await this.recipeService.getEntry(this.title).toPromise().then(res => this.initRecipe(res));
-    console.log(JSON.stringify(this.recipe));
-    console.log(this.title);
   }
 
   initRecipe(entry: Entry)
   {
 
     this.recipe = entry;
+    this.recipe.ImageLoaded = false;
 
-    let p = this.formatTimes(this.recipe.PrepTime);
-    let c = this.formatTimes(this.recipe.CookTime);
+    const p = this.formatTimes(this.recipe.PrepTime);
+    const c = this.formatTimes(this.recipe.CookTime);
 
     this.recipe.PrepTimeH = +p[0];
     this.recipe.PrepTimeM = +p[1];
@@ -44,8 +43,7 @@ export class RecipePageComponent implements OnInit {
 
   formatTimes(rawTime: string) : string[]
   {
-    let split = rawTime.split(":");
-    console.log(split);
+    const split = rawTime.split(":");
     return split;
   }
 
