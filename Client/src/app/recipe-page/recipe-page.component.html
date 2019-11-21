@@ -16,16 +16,20 @@
                     <h2>Prep Time:</h2>
                     <span class="preptime">
                         <p>
-                            <span *ngIf="recipe.PrepTimeH != 0">{{recipe.PrepTimeH}}</span>
-                            <span *ngIf="recipe.PrepTimeH == 0"></span>
-                            <span *ngIf="recipe.PrepTimeH == 1"> hour </span>
-                            <span *ngIf="recipe.PrepTimeH > 1"> hours </span>
-                            <br>
+                            <span [hidden]="recipe.PrepTimeH == 0">
+                                <span *ngIf="recipe.PrepTimeH != 0">{{recipe.PrepTimeH}}</span>
+                                <span *ngIf="recipe.PrepTimeH == 0"></span>
+                                <span *ngIf="recipe.PrepTimeH == 1"> hour </span>
+                                <span *ngIf="recipe.PrepTimeH > 1"> hours </span>
+                                <br>
+                            </span>
 
-                            <span *ngIf="recipe.PrepTimeM != 0">{{recipe.PrepTimeM}}</span>
-                            <span *ngIf="recipe.PrepTimeM == 0"></span>
-                            <span *ngIf="recipe.PrepTimeM == 1"> minute </span>
-                            <span *ngIf="recipe.PrepTimeM > 1"> minutes </span>
+                            <span [hidden]="recipe.PrepTimeM == 0">
+                                <span *ngIf="recipe.PrepTimeM != 0">{{recipe.PrepTimeM}}</span>
+                                <span *ngIf="recipe.PrepTimeM == 0"></span>
+                                <span *ngIf="recipe.PrepTimeM == 1"> minute </span>
+                                <span *ngIf="recipe.PrepTimeM > 1"> minutes </span>
+                            </span>
                         </p>
                     </span>
                 </div>
@@ -33,16 +37,18 @@
                     <h2>Cook Time:</h2>
                     <span class="cooktime">
                         <p>
-                            <span *ngIf="recipe.CookTimeH != 0">{{recipe.CookTimeH}}</span>
-                            <span *ngIf="recipe.CookTimeH == 0"></span>
-                            <span *ngIf="recipe.CookTimeH == 1"> hour </span>
-                            <span *ngIf="recipe.CookTimeH > 1"> hours </span>
-                            <br>
+                            <span [hidden]="recipe.CookTimeH == 0">
+                                <span *ngIf="recipe.CookTimeH != 0">{{recipe.CookTimeH}}</span>
+                                <span *ngIf="recipe.CookTimeH == 1"> hour </span>
+                                <span *ngIf="recipe.CookTimeH > 1"> hours </span>
+                                <br>
+                            </span>
 
-                            <span *ngIf="recipe.CookTimeM != 0">{{recipe.CookTimeM}}</span>
-                            <span *ngIf="recipe.CookTimeM == 0"></span>
-                            <span *ngIf="recipe.CookTimeM == 1"> minute </span>
-                            <span *ngIf="recipe.CookTimeM > 1"> minutes </span>
+                            <span [hidden]="recipe.CookTimeM == 0">
+                                <span *ngIf="recipe.CookTimeM != 0">{{recipe.CookTimeM}}</span>
+                                <span *ngIf="recipe.CookTimeM == 1"> minute </span>
+                                <span *ngIf="recipe.CookTimeM > 1"> minutes </span>
+                            </span>
                         </p>
                     </span>
                 </div>

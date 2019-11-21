@@ -38,30 +38,36 @@
                     </td>
                     <td>
                         <p>
-                            <span *ngIf="entry.PrepTimeH != 0">{{entry.PrepTimeH}}</span>
-                            <span *ngIf="entry.PrepTimeH == 0"></span>
-                            <span *ngIf="entry.PrepTimeH == 1"> hour </span>
-                            <span *ngIf="entry.PrepTimeH > 1"> hours </span>
-                            <br>
+                            <span [hidden]="entry.PrepTimeH == 0">
+                                <span *ngIf="entry.PrepTimeH != 0">{{entry.PrepTimeH}}</span>
+                                <span *ngIf="entry.PrepTimeH == 0"></span>
+                                <span *ngIf="entry.PrepTimeH == 1"> hour </span>
+                                <span *ngIf="entry.PrepTimeH > 1"> hours </span>
+                                <br>
+                            </span>
 
-                            <span *ngIf="entry.PrepTimeM != 0">{{entry.PrepTimeM}}</span>
-                            <span *ngIf="entry.PrepTimeM == 0"></span>
-                            <span *ngIf="entry.PrepTimeM == 1"> minute </span>
-                            <span *ngIf="entry.PrepTimeM > 1"> minutes </span>
+                            <span [hidden]="entry.PrepTimeM == 0">
+                                <span *ngIf="entry.PrepTimeM != 0">{{entry.PrepTimeM}}</span>
+                                <span *ngIf="entry.PrepTimeM == 0"></span>
+                                <span *ngIf="entry.PrepTimeM == 1"> minute </span>
+                                <span *ngIf="entry.PrepTimeM > 1"> minutes </span>
+                            </span>
                         </p>
                     </td>
                     <td>
                         <p>
-                            <span *ngIf="entry.CookTimeH != 0">{{entry.CookTimeH}}</span>
-                            <span *ngIf="entry.CookTimeH == 0"></span>
-                            <span *ngIf="entry.CookTimeH == 1"> hour </span>
-                            <span *ngIf="entry.CookTimeH > 1"> hours </span>
-                            <br>
+                            <span [hidden]="entry.CookTimeH == 0">
+                                <span *ngIf="entry.CookTimeH != 0">{{entry.CookTimeH}}</span>
+                                <span *ngIf="entry.CookTimeH == 1"> hour </span>
+                                <span *ngIf="entry.CookTimeH > 1"> hours </span>
+                                <br>
+                            </span>
 
-                            <span *ngIf="entry.CookTimeM != 0">{{entry.CookTimeM}}</span>
-                            <span *ngIf="entry.CookTimeM == 0"></span>
-                            <span *ngIf="entry.CookTimeM == 1"> minute </span>
-                            <span *ngIf="entry.CookTimeM > 1"> minutes </span>
+                            <span [hidden]="entry.CookTimeM == 0">
+                                <span *ngIf="entry.CookTimeM != 0">{{entry.CookTimeM}}</span>
+                                <span *ngIf="entry.CookTimeM == 1"> minute </span>
+                                <span *ngIf="entry.CookTimeM > 1"> minutes </span>
+                            </span>
                         </p>
                     </td>
                 </tr>
