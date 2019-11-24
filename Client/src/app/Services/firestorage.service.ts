@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Router } from '@angular/router';
 
 import { finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
+import { Entry } from '../Models/Entry';
 
 import { RecipeService } from './recipe.service';
 
@@ -12,13 +15,13 @@ import { RecipeService } from './recipe.service';
 })
 export class FireStorageService {
 
-  constructor(private storage: AngularFireStorage, private recipeService: RecipeService) { }
+  constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private router: Router) { }
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
   public loading = false;
 
-  async uploadSingleFile(file: File, recipeID: number) {
+  async uploadSingleFile(file: File, recipeID: number, entry: Entry) {
 
     this.loading = true;
 
@@ -39,7 +42,9 @@ export class FireStorageService {
         this.downloadURL = res;
         this.recipeService.addDownloadURL(res, recipeID)
          .subscribe(() => {
-           this.loading = false;
+           // TODO: Instead of entry.Name, call method in recipe service to get entry by ID from database
+           setTimeout(() => { this.loading = false;
+                              this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name); }, 1000);
           });
       }))
     ).subscribe();

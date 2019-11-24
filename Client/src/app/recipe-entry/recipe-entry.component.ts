@@ -7,7 +7,6 @@ import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
 
 import { Observable } from 'rxjs';
-import { AngularFireStorage } from '@angular/fire/storage';
 
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
@@ -19,8 +18,7 @@ import { FireStorageService } from '../Services/firestorage.service';
 })
 export class RecipeEntryComponent implements OnInit {
 
-  constructor(private storage: AngularFireStorage, private recipeService: RecipeService,
-              private storageService: FireStorageService) {}
+  constructor(private recipeService: RecipeService, public storageService: FireStorageService) {}
 
   get diagnostic() {
     return JSON.stringify(this.model);
@@ -125,8 +123,7 @@ export class RecipeEntryComponent implements OnInit {
     // this.cleanUpModel();
 
     await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
-    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID);
-
+    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
   }
 
   async addRecipe() {

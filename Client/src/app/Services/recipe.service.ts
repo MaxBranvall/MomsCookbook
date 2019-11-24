@@ -5,13 +5,14 @@ import { HttpClient } from '@angular/common/http';
 import { Entry } from '../Models/Entry';
 import { Recipe } from '../Models/Recipe';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
 
-  private apiUrl = "https://localhost:5001/api/";
-  // private apiUrl = "http://192.168.1.45:5000/api/";
+  private apiURL = environment.apiURL;
 
   constructor(
     private http: HttpClient,
@@ -21,22 +22,22 @@ export class RecipeService {
     /*
       Gets all recipes meta info from database.
      */
-    return this.http.get<Recipe[]>(this.apiUrl + 'Recipes');
+    return this.http.get<Recipe[]>(this.apiURL + 'Recipes');
   }
 
-  getEntry(Name : string): Observable<Entry> {
+  getEntry(Name: string): Observable<Entry> {
     /*
       Retrieves a FULL recipe by it's name.
       TODO: Get recipe by UID instead for scalability.
      */
-    return this.http.get<Entry>(this.apiUrl + 'Recipes/' + Name, {reportProgress: true});
+    return this.http.get<Entry>(this.apiURL + 'Recipes/' + Name, {reportProgress: true});
   }
 
   addRecipe(entry: Entry): Observable<number> {
     /*
       Adds a new recipe to the database.
      */
-    return this.http.post<number>(this.apiUrl + "Recipes", entry);
+    return this.http.post<number>(this.apiURL + 'Recipes', entry);
   }
 
   addDownloadURL(downloadURL: string, id: number)
@@ -45,7 +46,7 @@ export class RecipeService {
       Replaces Recipe image path with the download URL
       from Firebase.
      */
-    return this.http.put(this.apiUrl + "Recipes", {id, downloadURL}, {reportProgress: true, observe: "events"});
+    return this.http.put(this.apiURL + 'Recipes', {id, downloadURL}, {reportProgress: true, observe: 'events'});
   }
 
   addPhoto(file: any, ID: string) {
@@ -57,10 +58,10 @@ export class RecipeService {
      */
 
     let formModel= new FormData();
-    formModel.append("File", file);
-    formModel.append("ID", ID);
+    formModel.append('File', file);
+    formModel.append('ID', ID);
 
-    return this.http.post(this.apiUrl + "Media", formModel);
+    return this.http.post(this.apiURL + 'Media', formModel);
   }
 
 }
