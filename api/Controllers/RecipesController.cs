@@ -31,13 +31,14 @@ namespace api.Controllers
         }
 
         // GET: api/Recipe/5
-        [HttpGet("{name}", Name = "Get")]
-        public FullRecipe Get(string name)
+        [HttpGet("{ID}", Name = "Get")]
+        //[HttpGet]
+        public FullRecipe Get(int ID)
         {
-
+            Console.WriteLine(ID.ToString());
             FullRecipe recipe = new FullRecipe();
 
-            IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.Name == name);
+            IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.ID == ID);
 
             foreach(Recipe x in recipeFromDB)
             {

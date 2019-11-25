@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Input } from '@angular/core';
 import { Entry } from '../Models/Entry';
-import { Recipe } from '../Models/Recipe';
 import { ActivatedRoute } from '@angular/router';
 
 import { RecipeService } from '../Services/recipe.service';
+import { PersistentdataService } from '../Services/persistentdata.service';
+
+import { ListEntry } from '../Models/ListEntry';
 
 @Component({
   selector: 'app-recipe-page',
@@ -13,20 +14,22 @@ import { RecipeService } from '../Services/recipe.service';
 })
 export class RecipePageComponent implements OnInit {
 
-  // @Input() recipe: Recipe;
   title: string;
   recipe: Entry = new Entry(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService) { }
-
-  async ngOnInit() {
-
-    this.title = this.route.snapshot.paramMap.get("recipeName").toString();
-    await this.recipeService.getEntry(this.title).toPromise().then(res => this.initRecipe(res));
+  get currentRecipe(): ListEntry {
+    return this.persDataService.currentRecipe;
   }
 
-  initRecipe(entry: Entry)
-  {
+  constructor(private route: ActivatedRoute, private recipeService: RecipeService,
+              private persDataService: PersistentdataService) { }
+
+  async ngOnInit() {
+    this.title = this.currentRecipe.Name;
+    await this.recipeService.getEntry(this.currentRecipe.RecipeID).toPromise().then(res => this.initRecipe(res));
+  }
+
+  initRecipe(entry: Entry) {
 
     this.recipe = entry;
     this.recipe.ImageLoaded = false;
@@ -41,9 +44,8 @@ export class RecipePageComponent implements OnInit {
 
   }
 
-  formatTimes(rawTime: string) : string[]
-  {
-    const split = rawTime.split(":");
+  formatTimes(rawTime: string): string[] {
+    const split = rawTime.split(':');
     return split;
   }
 
@@ -55,7 +57,7 @@ export class RecipePageComponent implements OnInit {
       referenced by the mainTipLocalID.
     */
 
-    if (subTipLocalID == mainTipLocalID) {
+    if (subTipLocalID === mainTipLocalID) {
       return true;
     }
     return false;

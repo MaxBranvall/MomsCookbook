@@ -25,12 +25,11 @@ export class RecipeService {
     return this.http.get<Recipe[]>(this.apiURL + 'Recipes');
   }
 
-  getEntry(Name: string): Observable<Entry> {
+  getEntry(ID: number): Observable<Entry> {
     /*
       Retrieves a FULL recipe by it's name.
-      TODO: Get recipe by UID instead for scalability.
      */
-    return this.http.get<Entry>(this.apiURL + 'Recipes/' + Name, {reportProgress: true});
+    return this.http.get<Entry>(this.apiURL + 'Recipes/' + ID, {reportProgress: true});
   }
 
   addRecipe(entry: Entry): Observable<number> {

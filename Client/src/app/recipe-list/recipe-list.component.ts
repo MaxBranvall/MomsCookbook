@@ -5,6 +5,7 @@ import { Recipe } from '../Models/Recipe';
 import { ListEntry } from '../Models/ListEntry';
 
 import { RecipeService } from '../Services/recipe.service';
+import { PersistentdataService } from '../Services/persistentdata.service';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class RecipeListComponent implements OnInit {
 
   entries: ListEntry[] = [];
 
-  selectedRecipe: Recipe;
+  selectedRecipe: ListEntry;
 
   timeInitialized = false;
 
@@ -28,9 +29,17 @@ export class RecipeListComponent implements OnInit {
   reverseSort = false;
   orderByField = 'Name';
 
+  get currentRecipe(): ListEntry {
+    return this.persDataService.currentRecipe;
+  }
+
+  set currentRecipe(value: ListEntry) {
+    this.persDataService.currentRecipe = value;
+  }
+
   constructor(
     private route: ActivatedRoute, private recipeService: RecipeService,
-    private router: Router
+    private router: Router, private persDataService: PersistentdataService
     ) { }
 
   ngOnInit() {
@@ -38,8 +47,9 @@ export class RecipeListComponent implements OnInit {
     this.getEntries();
   }
 
-  public onSelect(recipe: Recipe) {
+  public onSelect(recipe: ListEntry) {
     this.selectedRecipe = recipe;
+    this.currentRecipe = recipe;
     this.router.navigateByUrl('/' + this.title + '/' + this.selectedRecipe.Name);
   }
 
