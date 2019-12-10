@@ -10,3 +10,8 @@
 .materialButton:active {
     background-color: #15405c;
 }
+
+.materialButton:disabled {
+    opacity: .5;
+    pointer-events: none;
+}

@@ -11,21 +11,25 @@
                 <label for="name">Recipe Name: </label>
                 <input
                 class="textinput" type="text" id="name" name="Name"
-                [(ngModel)]='model.Name' placeholder="Name of Recipe" required>
+                [(ngModel)]='model.Name' placeholder="Name of Recipe" required
+                #name="ngModel">
+                <div [hidden]="name.valid || name.pristine && name.untouched" class="alertbox">
+                    Name is required!
+                </div>
 
                 <label for="category">Category: </label>
                 <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" required>
-                    <option *ngFor="let cat of categories">{{cat}}</option>
+                    <option *ngFor="let cat of categories">{{cat.title}}</option>
                 </select>
 
                 <label for="description">Description: </label>
                 <textarea id="description" name="Description"
-                [(ngModel)]='model.Description' placeholder="Description of Recipe" required></textarea>
+                [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
 
                 <label for="ImagePath">Main Photo: </label>
                 <input #file style="display: none" type="file" id="ImagePath"
                 name="Photo"
-                (change)="photoPreview(file.files)" required>
+                (change)="photoPreview(file.files)">
                 <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
 
                 <label>Image Preview: </label>
@@ -40,30 +44,30 @@
                     <label for="cook">Cook Time: </label>
 
                     <span class="num-entry">
-                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH'>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH' required #time="ngModel">
                         <p *ngIf="model.PrepTimeH == 1"> Hour</p>
                         <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null"> Hours</p>
                         <br>
-                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimem" name="PrepTimeM" [(ngModel)]='model.PrepTimeM'>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="preptimem" name="PrepTimeM" [(ngModel)]='model.PrepTimeM' required #time="ngModel">
                         <p *ngIf="model.PrepTimeM == 1"> Minute</p>
                         <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null"> Minutes</p>
                     </span>
 
                     <span class="num-entry">
-                        <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH'>
+                        <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH' required #time="ngModel">
                         <p *ngIf="model.CookTimeH == 1"> Hour</p>
                         <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null"> Hours</p>
                         <br>
-                        <input class="num-input" type="number" min="0" placeholder="0" id="cooktimem" name="CookTimeM" [(ngModel)]='model.CookTimeM'>
+                        <input class="num-input" type="number" min="0" placeholder="0" id="cooktimem" name="CookTimeM" [(ngModel)]='model.CookTimeM' required #time="ngModel">
                         <p *ngIf="model.CookTimeM == 1"> Minute</p>
                         <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null"> Minutes</p>
                     </span>
 
+                    <div [hidden]="time.valid || time.pristine && time.untouched" class="alertbox timealert">An hour and minute value is required for Prep Time and Cook Time!</div>
+
                 </div>
             </div>
 
-            <!-- TODO: Remove -->
-            <!-- {{diagnostic}} -->
             <div class="list-entry-wrapper">
                 <div class="ingredient-entry-wrapper">
                     <label>Ingredients: </label>
@@ -84,7 +88,7 @@
                                 </select>
                             </td>
                             <td >
-                                <input #name [(ngModel)]="ingredient.Content" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="garlic powder">
+                                <input #name [(ngModel)]="ingredient.Content" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="Ingredient">
                             </td>
 
                         </tr>
@@ -105,12 +109,12 @@
                 <label>Steps: </label>
                 <ul>
                     <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
-                        <input #stepInput type="text" [(ngModel)]="step.Content" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
+                        <input #stepInput placeholder="Step" type="text" [(ngModel)]="step.Content" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
                         <div>
                             <ul>
                                 <div *ngFor="let subStep of subStepList">
                                     <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
-                                        <input type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
+                                        <input placeholder="Sub-Step" type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
                                     </li>
                                 </div>
                             </ul>
@@ -129,12 +133,12 @@
                 <label>Tips: </label>
                 <ul>
                     <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
-                        <input #tipInput type="text" [(ngModel)]="tip.Content" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
+                        <input #tipInput placeholder="Tip" type="text" [(ngModel)]="tip.Content" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
 
                         <div>
                             <ul *ngFor="let subTip of subTipList">
                                 <li *ngIf="checkForSubItem(subTip.LocalTipID, tip.LocalTipID)">
-                                    <input type="text" [(ngModel)]="subTip.Content" name="SubTip-{{subTip.SubTipID}}">
+                                    <input placeholder="Sub-Tip" type="text" [(ngModel)]="subTip.Content" name="SubTip-{{subTip.SubTipID}}">
                                 </li>
                             </ul>
                         </div>
@@ -167,7 +171,7 @@
 
             </div>
 
-            <button type="submit"  class="materialButton">Submit</button>
+            <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
 
             <div *ngIf="this.storageService.loading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$">

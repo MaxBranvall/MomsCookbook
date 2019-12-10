@@ -1,5 +1,8 @@
 export const categories = [
     {
+        title: '--Select Category--'
+    },
+    {
         title: 'Breakfast',
         titleL: 'breakfast'
     },

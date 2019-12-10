@@ -5,18 +5,20 @@
 
 <div class="main-grid">
   <div class="category-outer">
-    <div class="categories" *ngFor="let category of categories">
-      <a [routerLink]=category.titleL title={{category.title}} >
-        <div class="category-container">
-          <div class="bg-image"></div>
-          <div class="bg-image" [style.background-image]="'url(../../../../assets/placeholders/' + category.title + '.jpg)'"></div>
-          <div class="text">
-            <h2>{{category.title}}</h2>
+    <div *ngFor="let category of categories">
+      <div class="categories" *ngIf="category.title != '--Select Category--'">
+        <a [routerLink]=category.titleL title={{category.title}} >
+          <div class="category-container">
+            <div class="bg-image"></div>
+            <div class="bg-image" [style.background-image]="'url(../../../../assets/placeholders/' + category.title + '.jpg)'"></div>
+            <div class="text">
+              <h2>{{category.title}}</h2>
+            </div>
+            <div class="dark-overlay">
+            </div>
           </div>
-          <div class="dark-overlay">
-          </div>
-        </div>
-      </a>
+        </a>
+      </div>
     </div>
   </div>
 

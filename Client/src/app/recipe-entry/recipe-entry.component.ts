@@ -5,6 +5,7 @@ import { Ingredient } from '../Models/Ingredient';
 import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
 import { Photo } from '../Models/Photo';
+import { categories } from '../Models/categories';
 
 import { Observable } from 'rxjs';
 
@@ -23,6 +24,8 @@ export class RecipeEntryComponent implements OnInit {
   get diagnostic() {
     return JSON.stringify(this.model);
   }
+
+  categories = categories;
 
   public imagePath;
   public imgURL: any;
@@ -57,25 +60,20 @@ export class RecipeEntryComponent implements OnInit {
     'glob(s)'
   ];
 
-  categories: string[] = [
-    '--Select Unit--', 'Breakfast', 'Lunch', 'Dinner',
-     'Appetizer', 'Side'
-  ];
-
   ingredientModel = new Ingredient(
-    this.RecipeID, 0, 't',
-    1, this.units[0]
+    this.RecipeID, 0, null,
+    null, this.units[0]
   );
-  ingredientList: Ingredient[] = [this.ingredientModel, new Ingredient(this.RecipeID, ++this.LocalIngredientID, 'y', 3, this.units[2])];
+  ingredientList: Ingredient[] = [this.ingredientModel];
 
-  subStepModel = new Step(this.RecipeID, 0, 't', null);
+  subStepModel = new Step(this.RecipeID, 0, null, null);
   subStepList: Step[] = [];
-  stepModel = new Step(this.RecipeID, 0, 't');
+  stepModel = new Step(this.RecipeID, 0, null);
   stepList: Step[] = [this.stepModel];
 
-  subTipModel = new Tip(this.RecipeID, 0, 't', null);
+  subTipModel = new Tip(this.RecipeID, 0, null, null);
   subTipList: Tip[] = [];
-  tipModel = new Tip(this.RecipeID, 0, 't');
+  tipModel = new Tip(this.RecipeID, 0, null);
   tipList: Tip[] = [this.tipModel];
 
   photoModel = new Photo(null, null);
@@ -85,14 +83,14 @@ export class RecipeEntryComponent implements OnInit {
 
   model = new Entry(
     this.RecipeID,
-    'test',
     null,
-    '1',
-    this.categories[0],
-    1,
-    1,
-    1,
-    1,
+    null,
+    null,
+    this.categories[0].title,
+    null,
+    null,
+    null,
+    null,
     this.ingredientList,
     this.stepList,
     this.subStepList,
