@@ -32,7 +32,14 @@ export class RecipePageComponent implements OnInit {
   initRecipe(entry: Entry) {
 
     this.recipe = entry;
-    this.recipe.ImageLoaded = false;
+
+    /* If there is no image, set image loaded to true so that the default no image placeholder
+    can be shown. */
+    if (entry.ImagePath === null || entry.ImagePath === undefined) {
+      this.recipe.ImageLoaded = true;
+    } else {
+      this.recipe.ImageLoaded = false;
+    }
 
     const p = this.formatTimes(this.recipe.PrepTime);
     const c = this.formatTimes(this.recipe.CookTime);
