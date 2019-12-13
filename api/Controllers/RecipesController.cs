@@ -32,14 +32,14 @@ namespace api.Controllers
         }
 
         // GET: api/Recipes/Dinner
-        [HttpGet("{category}")]
+        [HttpGet("{category:alpha}")]
         public IEnumerable<Recipe> GetCategory(string category)
         {
             return _context.recipe.Where(x => x.Category == category).ToList();
         }
 
         // GET: api/Recipes/5
-        [HttpGet]
+        [HttpGet("{ID:int}")]
         public FullRecipe Get(int ID)
         {
             Console.WriteLine(ID.ToString());
