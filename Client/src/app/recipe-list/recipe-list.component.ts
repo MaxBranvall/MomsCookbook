@@ -58,11 +58,17 @@ export class RecipeListComponent implements OnInit {
     // Need to reformat preptimeh preptimem cooktimeh cooktimem since db
     // only holds the formatted prep and cook times.
 
-    await this.recipeService.getAllEntries().toPromise().then(res => this.initEntries(res));
+    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => this.initEntries(res));
 
   }
 
   initEntries(recipeList: Recipe[]) {
+
+    if (recipeList.length === 0)
+    {
+      console.log("no");
+    }
+
     recipeList.forEach(entry => {
       const p = this.formatTimes(entry.PrepTime);
       const c = this.formatTimes(entry.CookTime);

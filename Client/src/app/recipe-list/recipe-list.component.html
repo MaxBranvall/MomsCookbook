@@ -5,7 +5,6 @@
     <h2>{{title | uppercase}}</h2>
     <div class="table-wrapper">
         <table>
-
             <thead>
                 <th>Image</th>
                 <th (click)="orderByField='Name';reverseSort = !reverseSort">
@@ -25,7 +24,7 @@
                 </th>
             </thead>
 
-            <tbody>
+            <tbody *ngIf="entries.length > 0">
                 <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort" (click)="onSelect(entry)">
                     <td>
                         <img class="thumbnail" (click)="onSelect(entry)" src="../../assets/placeholders/loading.gif"
@@ -72,7 +71,9 @@
                     </td>
                 </tr>
             </tbody>
-
         </table>
+
+        <h2 *ngIf="entries.length === 0" style="margin-top: 5px;">No entries!</h2>
+
     </div>
 </main>
