@@ -11,6 +11,7 @@ using api.Controllers;
 
 namespace api.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class RecipesController : ControllerBase
@@ -23,16 +24,22 @@ namespace api.Controllers
             _context = recipeContext;
         }
 
-        // GET: api/Recipe
+        // GET: api/Recipes
         [HttpGet]
         public IEnumerable<Recipe> Get()
         {
             return _context.recipe.ToList();
         }
 
-        // GET: api/Recipe/5
-        [HttpGet("{ID}", Name = "Get")]
-        //[HttpGet]
+        // GET: api/Recipes/Dinner
+        [HttpGet("{category}")]
+        public IEnumerable<Recipe> GetCategory(string category)
+        {
+            return _context.recipe.Where(x => x.Category == category).ToList();
+        }
+
+        // GET: api/Recipes/5
+        [HttpGet]
         public FullRecipe Get(int ID)
         {
             Console.WriteLine(ID.ToString());
@@ -93,7 +100,7 @@ namespace api.Controllers
             return recipe;
         }
 
-        //POST: api/Recipe
+        //POST: api/Recipes
         [HttpPost]
         public async Task<int> Post([FromBody] FullRecipe value)
         {
@@ -126,7 +133,7 @@ namespace api.Controllers
             return id;
         }
 
-        // PUT: api/Recipe/5
+        // PUT: api/Recipes/5
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
@@ -145,7 +152,7 @@ namespace api.Controllers
             return StatusCode(200);
         }
 
-        //// DELETE: api/ApiWithActions/5
+        //// DELETE: api/Recipes/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
         //{
