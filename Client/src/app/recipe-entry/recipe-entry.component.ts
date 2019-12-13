@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Entry } from '../Models/Entry';
 import { Ingredient } from '../Models/Ingredient';
@@ -11,6 +12,7 @@ import { Observable } from 'rxjs';
 
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
+import { PersistentdataService } from '../Services/persistentdata.service';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -19,7 +21,8 @@ import { FireStorageService } from '../Services/firestorage.service';
 })
 export class RecipeEntryComponent implements OnInit {
 
-  constructor(private recipeService: RecipeService, public storageService: FireStorageService) {}
+  constructor(private recipeService: RecipeService, public storageService: FireStorageService, private router: Router,
+              private persDataService: PersistentdataService) {}
 
   get diagnostic() {
     return JSON.stringify(this.model);
@@ -34,6 +37,7 @@ export class RecipeEntryComponent implements OnInit {
   public uploadPercent: Observable<number>;
   public downloadURL: Observable<string>;
   public loading: boolean = this.storageService.loading;
+  public localLoading = false;
 
   public submitted = false;
 
@@ -120,8 +124,28 @@ export class RecipeEntryComponent implements OnInit {
 
     // this.cleanUpModel();
 
-    await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
-    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+
+    /*
+      If there is an image, call firestorage service to handle upload.
+      If not, handle tasks such as routing here.
+      TODO: neaten this up, don't do so much all in one spot.
+    */
+
+    if (this.mainImage !== undefined) {
+
+      await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
+      this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
+      this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+
+    } else {
+      await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
+      this.localLoading = true;
+      this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
+      setTimeout(() => {
+        this.localLoading = false;
+        this.router.navigateByUrl('/' + this.model.Category + '/' + this.model.Name);
+      }, 1000);
+    }
   }
 
   async addRecipe() {

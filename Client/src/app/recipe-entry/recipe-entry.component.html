@@ -173,7 +173,7 @@
 
             <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
 
-            <div *ngIf="this.storageService.loading">
+            <div *ngIf="this.storageService.loading || this.localLoading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$">
                 </app-loading-screen>
              </div>
