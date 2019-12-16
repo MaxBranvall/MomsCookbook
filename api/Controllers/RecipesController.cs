@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
+using api.
 using api.Controllers;
 
 namespace api.Controllers
@@ -31,71 +32,132 @@ namespace api.Controllers
             return _context.recipe.ToList();
         }
 
-        // GET: api/Recipes/Dinner
-        [HttpGet("{category:alpha}")]
-        public IEnumerable<Recipe> GetCategory(string category)
+        // GET: api/Recipes/categories/Dinner
+        [HttpGet("categories/{category}")]
+        public IEnumerable<FullRecipe> GetCategory(string category)
         {
-            return _context.recipe.Where(x => x.Category == category).ToList();
+            List<FullRecipe> fullRecipeList = new List<FullRecipe>();
+            List<Recipe> recipeList = _context.recipe.Where(x => x.Category == category).ToList();
+            
+            foreach (Recipe r in recipeList)
+            {
+
+                FullRecipe newRecipe = new FullRecipe()
+                {
+                    RecipeID = r.ID,
+                    Name = r.Name,
+                    ImagePath = r.ImagePath,
+                    Description = r.Description,
+                    Category = r.Category,
+                    Created = r.Created,
+                    LastModified = r.LastModified,
+                    PrepTimeH = int.Parse(r.PrepTime.Split(":")[0]),
+                    PrepTimeM = int.Parse(r.PrepTime.Split(":")[1]),
+                    CookTimeH = int.Parse(r.CookTime.Split(":")[0]),
+                    CookTimeM = int.Parse(r.CookTime.Split(":")[1]),
+                    Ingredients = new List<Ingredient>(),
+                    Steps = new List<Steps>(),
+                    SubSteps = new List<SubSteps>(),
+                    Tips = new List<Tips>(),
+                    SubTips = new List<SubTips>(),
+                };
+
+                IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == newRecipe.RecipeID);
+                IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == newRecipe.RecipeID);
+                IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == newRecipe.RecipeID);
+                IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == newRecipe.RecipeID);
+                IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == newRecipe.RecipeID);
+
+                foreach (Ingredient i in ingredientsFromDB)
+                {
+                    newRecipe.Ingredients.Add(i);
+                }
+
+                foreach (Steps s in stepsFromDB)
+                {
+                    newRecipe.Steps.Add(s);
+                }
+
+                foreach (SubSteps s in subStepsFromDB)
+                {
+                    newRecipe.SubSteps.Add(s);
+                }
+
+                foreach (Tips t in tipsFromDB)
+                {
+                    newRecipe.Tips.Add(t);
+                }
+
+                foreach (SubTips t in subTipsFromDB)
+                {
+                    newRecipe.SubTips.Add(t);
+                }
+
+                fullRecipeList.Add(newRecipe);
+            }
+
+            return fullRecipeList;
+
         }
 
         // GET: api/Recipes/5
-        [HttpGet("{ID:int}")]
+        [HttpGet("{id}")]
         public FullRecipe Get(int ID)
         {
-            Console.WriteLine(ID.ToString());
-            FullRecipe recipe = new FullRecipe();
+            //Console.WriteLine(ID.ToString());
+            //FullRecipe recipe = new FullRecipe();
 
-            IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.ID == ID);
+            //IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.ID == ID);
 
-            foreach(Recipe x in recipeFromDB)
-            {
-                recipe.RecipeID = x.ID;
-                recipe.Name = x.Name;
-                recipe.ImagePath = x.ImagePath;
-                recipe.Description = x.Description;
-                recipe.Category = x.Category;
-                recipe.PrepTime = x.PrepTime;
-                recipe.CookTime = x.CookTime;
+            //foreach(Recipe x in recipeFromDB)
+            //{
+            //    recipe.RecipeID = x.ID;
+            //    recipe.Name = x.Name;
+            //    recipe.ImagePath = x.ImagePath;
+            //    recipe.Description = x.Description;
+            //    recipe.Category = x.Category;
+            //    recipe.PrepTime = x.PrepTime;
+            //    recipe.CookTime = x.CookTime;
 
-                recipe.Created = x.Created;
-                recipe.LastModified = x.LastModified;
-                recipe.Ingredients = new List<Ingredient>();
-                recipe.Steps = new List<Steps>();
-                recipe.SubSteps = new List<SubSteps>();
-                recipe.Tips = new List<Tips>();
-                recipe.SubTips = new List<SubTips>();
-            }
+            //    recipe.Created = x.Created;
+            //    recipe.LastModified = x.LastModified;
+            //    recipe.Ingredients = new List<Ingredient>();
+            //    recipe.Steps = new List<Steps>();
+            //    recipe.SubSteps = new List<SubSteps>();
+            //    recipe.Tips = new List<Tips>();
+            //    recipe.SubTips = new List<SubTips>();
+            //}
 
-            IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == recipe.RecipeID);
-            IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == recipe.RecipeID);
-            IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == recipe.RecipeID);
-            IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == recipe.RecipeID);
-            IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == recipe.RecipeID);
+            //IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == recipe.RecipeID);
+            //IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == recipe.RecipeID);
+            //IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == recipe.RecipeID);
+            //IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == recipe.RecipeID);
+            //IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == recipe.RecipeID);
 
-            foreach(Ingredient i in ingredientsFromDB)
-            {
-                recipe.Ingredients.Add(i);
-            }
+            //foreach(Ingredient i in ingredientsFromDB)
+            //{
+            //    recipe.Ingredients.Add(i);
+            //}
 
-            foreach(Steps s in stepsFromDB)
-            {
-                recipe.Steps.Add(s);
-            }
+            //foreach(Steps s in stepsFromDB)
+            //{
+            //    recipe.Steps.Add(s);
+            //}
 
-            foreach(SubSteps s in subStepsFromDB)
-            {
-                recipe.SubSteps.Add(s);
-            }
+            //foreach(SubSteps s in subStepsFromDB)
+            //{
+            //    recipe.SubSteps.Add(s);
+            //}
 
-            foreach(Tips t in tipsFromDB)
-            {
-                recipe.Tips.Add(t);
-            }
+            //foreach(Tips t in tipsFromDB)
+            //{
+            //    recipe.Tips.Add(t);
+            //}
 
-            foreach(SubTips t in subTipsFromDB)
-            {
-                recipe.SubTips.Add(t);
-            }
+            //foreach(SubTips t in subTipsFromDB)
+            //{
+            //    recipe.SubTips.Add(t);
+            //}
 
             return recipe;
         }
@@ -133,7 +195,7 @@ namespace api.Controllers
             return id;
         }
 
-        // PUT: api/Recipes/5
+        // PUT: api/Recipes/FirebaseURL
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
