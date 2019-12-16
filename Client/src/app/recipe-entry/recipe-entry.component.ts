@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Entry } from '../Models/Entry';
+import { FullRecipe } from '../Models/FullRecipe';
 import { Ingredient } from '../Models/Ingredient';
 import { Step } from '../Models/Step';
 import { Tip } from '../Models/Tip';
@@ -85,7 +85,7 @@ export class RecipeEntryComponent implements OnInit {
 
   fileList: File[] = [];
 
-  model = new Entry(
+  model = new FullRecipe(
     this.RecipeID,
     null,
     null,

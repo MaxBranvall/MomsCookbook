@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Entry } from '../Models/Entry';
+import { FullRecipe } from '../Models/FullRecipe';
 import { Recipe } from '../Models/Recipe';
+import { FirebaseURL } from '../Models/FirebaseURL';
 
 import { environment } from '../../environments/environment';
 
@@ -33,14 +34,14 @@ export class RecipeService {
     return this.http.get<Recipe[]>(this.apiURL + 'Recipes/' + category);
   }
 
-  getEntry(ID: number): Observable<Entry> {
+  getEntry(ID: number): Observable<FullRecipe> {
     /*
       Retrieves a FULL recipe by it's name.
      */
-    return this.http.get<Entry>(this.apiURL + 'Recipes/' + ID, {reportProgress: true});
+    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID, {reportProgress: true});
   }
 
-  addRecipe(entry: Entry): Observable<number> {
+  addRecipe(entry: FullRecipe): Observable<number> {
     /*
       Adds a new recipe to the database.
      */
@@ -53,7 +54,9 @@ export class RecipeService {
       Replaces Recipe image path with the download URL
       from Firebase.
      */
-    return this.http.put(this.apiURL + 'Recipes', {id, downloadURL}, {reportProgress: true, observe: 'events'});
+
+    const body = new FirebaseURL(id, downloadURL);
+    return this.http.put(this.apiURL + 'Recipes', body, {reportProgress: true, observe: 'events'});
   }
 
   addPhoto(file: any, ID: string) {
@@ -64,7 +67,7 @@ export class RecipeService {
       in case I want to use it for any reason.
      */
 
-    let formModel= new FormData();
+    const formModel= new FormData();
     formModel.append('File', file);
     formModel.append('ID', ID);
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Entry } from '../Models/Entry';
+import { FullRecipe } from '../Models/FullRecipe';
 import { ActivatedRoute } from '@angular/router';
 
 import { RecipeService } from '../Services/recipe.service';
@@ -15,7 +15,7 @@ import { ListEntry } from '../Models/ListEntry';
 export class RecipePageComponent implements OnInit {
 
   title: string;
-  recipe: Entry = new Entry(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+  recipe: FullRecipe = new FullRecipe(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
   get currentRecipe(): ListEntry {
     return this.persDataService.currentRecipe;
@@ -29,7 +29,7 @@ export class RecipePageComponent implements OnInit {
     await this.recipeService.getEntry(this.currentRecipe.RecipeID).toPromise().then(res => this.initRecipe(res));
   }
 
-  initRecipe(entry: Entry) {
+  initRecipe(entry: FullRecipe) {
 
     this.recipe = entry;
 

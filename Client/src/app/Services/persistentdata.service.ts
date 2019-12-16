@@ -9,6 +9,10 @@ export class PersistentdataService {
 
   public currentRecipe: ListEntry;
 
+  private storageName = 'CurrentRecipe';
+
   constructor() { }
+
+  setCurrentRecipe()
 
 }

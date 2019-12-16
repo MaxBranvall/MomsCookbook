@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { Entry } from '../Models/Entry';
+import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from './recipe.service';
 
@@ -21,7 +21,7 @@ export class FireStorageService {
   public uploadPercent$: Observable<number>;
   public loading = false;
 
-  async uploadSingleFile(file: File, recipeID: number, entry: Entry) {
+  async uploadSingleFile(file: File, recipeID: number, entry: FullRecipe) {
 
     this.loading = true;
 

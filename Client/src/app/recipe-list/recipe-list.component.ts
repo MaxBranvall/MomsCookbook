@@ -55,8 +55,11 @@ export class RecipeListComponent implements OnInit {
 
   async getEntries() {
 
-    // Need to reformat preptimeh preptimem cooktimeh cooktimem since db
-    // only holds the formatted prep and cook times.
+
+    /*
+      Need to reformat preptimeh preptimem cooktimeh cooktimem since db
+      only holds the formatted prep and cook times.
+    */
 
     await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => this.initEntries(res));
 
@@ -64,10 +67,10 @@ export class RecipeListComponent implements OnInit {
 
   initEntries(recipeList: Recipe[]) {
 
-    if (recipeList.length === 0)
-    {
-      console.log("no");
-    }
+    /*
+      Take in an array of type Recipe (contains recipe meta-data).
+      Convert this to a ListEntry and put in an entries array.
+    */
 
     recipeList.forEach(entry => {
       const p = this.formatTimes(entry.PrepTime);
