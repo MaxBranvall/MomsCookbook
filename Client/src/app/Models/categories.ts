@@ -11,8 +11,8 @@ export const categories = [
         titleL: 'lunch'
     },
     {
-        title: 'Appetizers',
-        titleL: 'appetizers'
+        title: 'Appetizer',
+        titleL: 'appetizer'
     },
     {
         title: 'Dinner',
