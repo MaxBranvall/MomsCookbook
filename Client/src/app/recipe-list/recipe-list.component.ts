@@ -6,6 +6,7 @@ import { ListEntry } from '../Models/ListEntry';
 
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { FullRecipe } from '../Models/FullRecipe';
 
 
 @Component({
@@ -15,13 +16,8 @@ import { PersistentdataService } from '../Services/persistentdata.service';
 })
 export class RecipeListComponent implements OnInit {
 
-  title;
-
-  entries: ListEntry[] = [];
-
-  selectedRecipe: ListEntry;
-
-  timeInitialized = false;
+  title: string;
+  entries: FullRecipe[] = [];
 
   recipeSorted = false;
   prepTimeSorted = false;
@@ -43,46 +39,17 @@ export class RecipeListComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    localStorage.removeItem('currentRecipe');
     this.title = this.route.snapshot.paramMap.get('categoryTitle').toString();
     this.getEntries();
   }
 
-  public onSelect(recipe: ListEntry) {
-    this.selectedRecipe = recipe;
-    this.currentRecipe = recipe;
-    this.router.navigateByUrl('/' + this.title + '/' + this.selectedRecipe.Name);
+  public onSelect(recipe: FullRecipe) {
+    this.persDataService.setCurrentRecipe(recipe);
+    this.router.navigateByUrl('/' + this.title + '/' + recipe.Name);
   }
 
   async getEntries() {
-
-
-    /*
-      Need to reformat preptimeh preptimem cooktimeh cooktimem since db
-      only holds the formatted prep and cook times.
-    */
-
-    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => this.initEntries(res));
-
+    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => this.entries = res);
   }
-
-  initEntries(recipeList: Recipe[]) {
-
-    /*
-      Take in an array of type Recipe (contains recipe meta-data).
-      Convert this to a ListEntry and put in an entries array.
-    */
-
-    recipeList.forEach(entry => {
-      const p = this.formatTimes(entry.PrepTime);
-      const c = this.formatTimes(entry.CookTime);
-      this.entries.push(new ListEntry(entry.ID, entry.ImagePath, entry.Name, entry.PrepTime, entry.CookTime,
-         +p[0], +p[1], +c[0], +c[1], false));
-    });
-  }
-
-  formatTimes(rawTime: string): string[] {
-    const split = rawTime.split(':');
-    return split;
-  }
-
 }

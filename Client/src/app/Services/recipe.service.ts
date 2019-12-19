@@ -26,12 +26,12 @@ export class RecipeService {
     return this.http.get<Recipe[]>(this.apiURL + 'Recipes');
   }
 
-  getAllEntriesByCategory(category: string): Observable<Recipe[]> {
+  getAllEntriesByCategory(category: string): Observable<FullRecipe[]> {
     /*
       Gets all recipes meta info from database filtered by
       category.
     */
-    return this.http.get<Recipe[]>(this.apiURL + 'Recipes/' + category);
+    return this.http.get<FullRecipe[]>(this.apiURL + 'Recipes/categories/' + category);
   }
 
   getEntry(ID: number): Observable<FullRecipe> {

@@ -1,7 +1,7 @@
 <app-main-header></app-main-header>
 <main>
     <div class="recipe-outer-wrapper">
-        <h2>{{title}}</h2>
+        <h2>{{recipe.Name}}</h2>
         <img class="recipe-image" src="../../assets/placeholders/loading.gif" [hidden]="recipe.ImageLoaded">
         <img class="recipe-image" [src]=recipe.ImagePath (load)="recipe.ImageLoaded=true" onError="this.src='assets/placeholders/no_photo_1x.jpg'" [hidden]="!recipe.ImageLoaded">
         <div class="recipe-mid-wrapper">
