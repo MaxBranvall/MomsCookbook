@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using api.Interfaces;
 using api.Models;
 
-namespace api
+namespace api.Services
 {
-    public class Services
+    public class RecipeService : IRecipeService
     {
 
         private RecipeContext _context;
 
-        public Services(RecipeContext recipeContext)
+        public RecipeService(RecipeContext recipeContext)
         {
             _context = recipeContext;
         }
 
-        public FullRecipe getSingleRecipe(int id)
+        public FullRecipe GetSingleRecipe(int id)
         {
 
             Recipe r = _context.recipe.Where(x => x.ID == id).ToList()[0];
@@ -42,41 +42,41 @@ namespace api
             recipe.CookTimeH = int.Parse(cookTimeSplit[0]);
             recipe.CookTimeM = int.Parse(cookTimeSplit[1]);
 
-            recipe.Ingredients = getIngredients(recipe.RecipeID);
-            recipe.Steps = getSteps(recipe.RecipeID);
-            recipe.SubSteps = getSubSteps(recipe.RecipeID);
-            recipe.Tips = getTips(recipe.RecipeID);
-            recipe.SubTips = getSubTips(recipe.RecipeID);
+            recipe.Ingredients = GetIngredients(recipe.RecipeID);
+            recipe.Steps = GetSteps(recipe.RecipeID);
+            recipe.SubSteps = GetSubSteps(recipe.RecipeID);
+            recipe.Tips = GetTips(recipe.RecipeID);
+            recipe.SubTips = GetSubTips(recipe.RecipeID);
 
             return recipe;
 
         }
 
-        private List<Ingredient> getIngredients(int RecipeID)
+        public List<Ingredient> GetIngredients(int RecipeID)
         {
             List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).ToList();
             return ingredients;
         }
 
-        private List<Steps> getSteps(int RecipeID)
+        public List<Steps> GetSteps(int RecipeID)
         {
             List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).ToList();
             return steps;
         }
 
-        private List<SubSteps> getSubSteps(int RecipeID)
+        public List<SubSteps> GetSubSteps(int RecipeID)
         {
             List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).ToList();
             return subSteps;
         }
 
-        private List<Tips> getTips(int RecipeID)
+        public List<Tips> GetTips(int RecipeID)
         {
             List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).ToList();
             return tips;
         }
 
-        private List<SubTips> getSubTips(int RecipeID)
+        public List<SubTips> GetSubTips(int RecipeID)
         {
             List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).ToList();
             return subTips;

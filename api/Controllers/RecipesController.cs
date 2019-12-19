@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
-using api.
-using api.Controllers;
+using api.Services;
+using api.Interfaces;
 
 namespace api.Controllers
 {
@@ -19,290 +19,184 @@ namespace api.Controllers
     {
 
         private RecipeContext _context;
+        private readonly IRecipeService _recipeService;
 
-        public RecipesController(RecipeContext recipeContext)
+        public RecipesController(IRecipeService recipeService, RecipeContext context)
         {
-            _context = recipeContext;
+            _recipeService = recipeService;
+            _context = context;
         }
 
-        // GET: api/Recipes
+        //GET: api/Recipes
         [HttpGet]
         public IEnumerable<Recipe> Get()
         {
             return _context.recipe.ToList();
         }
 
-        // GET: api/Recipes/categories/Dinner
+        //GET: api/Recipes/categories/Dinner
         [HttpGet("categories/{category}")]
         public IEnumerable<FullRecipe> GetCategory(string category)
         {
             List<FullRecipe> fullRecipeList = new List<FullRecipe>();
             List<Recipe> recipeList = _context.recipe.Where(x => x.Category == category).ToList();
-            
+
             foreach (Recipe r in recipeList)
             {
-
-                FullRecipe newRecipe = new FullRecipe()
-                {
-                    RecipeID = r.ID,
-                    Name = r.Name,
-                    ImagePath = r.ImagePath,
-                    Description = r.Description,
-                    Category = r.Category,
-                    Created = r.Created,
-                    LastModified = r.LastModified,
-                    PrepTimeH = int.Parse(r.PrepTime.Split(":")[0]),
-                    PrepTimeM = int.Parse(r.PrepTime.Split(":")[1]),
-                    CookTimeH = int.Parse(r.CookTime.Split(":")[0]),
-                    CookTimeM = int.Parse(r.CookTime.Split(":")[1]),
-                    Ingredients = new List<Ingredient>(),
-                    Steps = new List<Steps>(),
-                    SubSteps = new List<SubSteps>(),
-                    Tips = new List<Tips>(),
-                    SubTips = new List<SubTips>(),
-                };
-
-                IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == newRecipe.RecipeID);
-                IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == newRecipe.RecipeID);
-                IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == newRecipe.RecipeID);
-                IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == newRecipe.RecipeID);
-                IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == newRecipe.RecipeID);
-
-                foreach (Ingredient i in ingredientsFromDB)
-                {
-                    newRecipe.Ingredients.Add(i);
-                }
-
-                foreach (Steps s in stepsFromDB)
-                {
-                    newRecipe.Steps.Add(s);
-                }
-
-                foreach (SubSteps s in subStepsFromDB)
-                {
-                    newRecipe.SubSteps.Add(s);
-                }
-
-                foreach (Tips t in tipsFromDB)
-                {
-                    newRecipe.Tips.Add(t);
-                }
-
-                foreach (SubTips t in subTipsFromDB)
-                {
-                    newRecipe.SubTips.Add(t);
-                }
-
-                fullRecipeList.Add(newRecipe);
+                fullRecipeList.Add(_recipeService.GetSingleRecipe(r.ID));
             }
-
             return fullRecipeList;
-
         }
 
         // GET: api/Recipes/5
         [HttpGet("{id}")]
         public FullRecipe Get(int ID)
         {
-            //Console.WriteLine(ID.ToString());
-            //FullRecipe recipe = new FullRecipe();
-
-            //IQueryable<Recipe> recipeFromDB = _context.recipe.Where(x => x.ID == ID);
-
-            //foreach(Recipe x in recipeFromDB)
-            //{
-            //    recipe.RecipeID = x.ID;
-            //    recipe.Name = x.Name;
-            //    recipe.ImagePath = x.ImagePath;
-            //    recipe.Description = x.Description;
-            //    recipe.Category = x.Category;
-            //    recipe.PrepTime = x.PrepTime;
-            //    recipe.CookTime = x.CookTime;
-
-            //    recipe.Created = x.Created;
-            //    recipe.LastModified = x.LastModified;
-            //    recipe.Ingredients = new List<Ingredient>();
-            //    recipe.Steps = new List<Steps>();
-            //    recipe.SubSteps = new List<SubSteps>();
-            //    recipe.Tips = new List<Tips>();
-            //    recipe.SubTips = new List<SubTips>();
-            //}
-
-            //IQueryable<Ingredient> ingredientsFromDB = _context.ingredients.Where(x => x.RecipeID == recipe.RecipeID);
-            //IQueryable<Steps> stepsFromDB = _context.steps.Where(x => x.RecipeID == recipe.RecipeID);
-            //IQueryable<SubSteps> subStepsFromDB = _context.substeps.Where(x => x.RecipeID == recipe.RecipeID);
-            //IQueryable<Tips> tipsFromDB = _context.tips.Where(x => x.RecipeID == recipe.RecipeID);
-            //IQueryable<SubTips> subTipsFromDB = _context.subtips.Where(x => x.RecipeID == recipe.RecipeID);
-
-            //foreach(Ingredient i in ingredientsFromDB)
-            //{
-            //    recipe.Ingredients.Add(i);
-            //}
-
-            //foreach(Steps s in stepsFromDB)
-            //{
-            //    recipe.Steps.Add(s);
-            //}
-
-            //foreach(SubSteps s in subStepsFromDB)
-            //{
-            //    recipe.SubSteps.Add(s);
-            //}
-
-            //foreach(Tips t in tipsFromDB)
-            //{
-            //    recipe.Tips.Add(t);
-            //}
-
-            //foreach(SubTips t in subTipsFromDB)
-            //{
-            //    recipe.SubTips.Add(t);
-            //}
-
-            return recipe;
+            return this._recipeService.GetSingleRecipe(ID);
         }
 
         //POST: api/Recipes
-        [HttpPost]
-        public async Task<int> Post([FromBody] FullRecipe value)
-        {
+        //    [HttpPost]
+        //    public async Task<int> Post([FromBody] FullRecipe value)
+        //    {
 
-            Recipe r = new Recipe()
-            {
-                Name = value.Name,
-                ImagePath = null,
-                Description = value.Description,
-                Category = value.Category,
-                PrepTime = value.PrepTime,
-                CookTime = value.CookTime,
-                Created = value.Created,
-                LastModified = value.LastModified
-            };
+        //        Recipe r = new Recipe()
+        //        {
+        //            Name = value.Name,
+        //            ImagePath = null,
+        //            Description = value.Description,
+        //            Category = value.Category,
+        //            PrepTime = value.PrepTime,
+        //            CookTime = value.CookTime,
+        //            Created = value.Created,
+        //            LastModified = value.LastModified
+        //        };
 
-            await _context.recipe.AddAsync(r);
-            await _context.SaveChangesAsync();
+        //        await _context.recipe.AddAsync(r);
+        //        await _context.SaveChangesAsync();
 
-            int id = r.ID;
+        //        int id = r.ID;
 
-            AddIngredients(value.Ingredients, id);
-            AddSteps(value.Steps, id);
-            AddSubSteps(value.SubSteps, id);
-            AddTips(value.Tips, id);
-            AddSubTips(value.SubTips, id);
+        //        AddIngredients(value.Ingredients, id);
+        //        AddSteps(value.Steps, id);
+        //        AddSubSteps(value.SubSteps, id);
+        //        AddTips(value.Tips, id);
+        //        AddSubTips(value.SubTips, id);
 
-            await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-            return id;
-        }
+        //        return id;
+        //    }
 
-        // PUT: api/Recipes/FirebaseURL
-        [HttpPut]
-        public async Task<StatusCodeResult> Put(FirebaseURL url)
-        {
+        //    // PUT: api/Recipes/FirebaseURL
+        //    [HttpPut]
+        //    public async Task<StatusCodeResult> Put(FirebaseURL url)
+        //    {
 
-            Recipe r = new Recipe()
-            {
-                ID = url.id,
-                ImagePath = url.downloadURL
-            };
+        //        Recipe r = new Recipe()
+        //        {
+        //            ID = url.id,
+        //            ImagePath = url.downloadURL
+        //        };
 
-            Console.WriteLine(r.ID + " " + r.ImagePath);
+        //        Console.WriteLine(r.ID + " " + r.ImagePath);
 
-            _context.recipe.Attach(r);
-            _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
-            var response = await _context.SaveChangesAsync();
-            return StatusCode(200);
-        }
+        //        _context.recipe.Attach(r);
+        //        _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
+        //        var response = await _context.SaveChangesAsync();
+        //        return StatusCode(200);
+        //    }
 
-        //// DELETE: api/Recipes/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
+        //    //// DELETE: api/Recipes/5
+        //    //[HttpDelete("{id}")]
+        //    //public void Delete(int id)
+        //    //{
+        //    //}
+
+        //    public async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
+        //    {
+        //        foreach (Ingredient i in ingredientList)
+        //        {
+        //            Ingredient y = new Ingredient()
+        //            {
+        //                RecipeID = recipeID,
+        //                LocalIngredientID = i.LocalIngredientID,
+        //                Content = i.Content,
+        //                Quantity = i.Quantity,
+        //                Unit = i.Unit
+        //            };
+
+        //            await _context.ingredients.AddAsync(y);
+
+        //        }
+        //    }
+
+        //    private async void AddSteps(List<Steps> stepList, int recipeID)
+        //    {
+        //        foreach (Steps s in stepList)
+        //        {
+        //            Steps step = new Steps()
+        //            {
+        //                RecipeID = recipeID,
+        //                LocalStepID = s.LocalStepID,
+        //                Content = s.Content
+        //            };
+
+        //            await _context.steps.AddAsync(step);
+
+        //        }
+        //    }
+
+        //    private async void AddSubSteps(List<SubSteps> subStepList, int recipeID)
+        //    {
+
+        //        foreach (SubSteps step in subStepList)
+        //        {
+
+        //            SubSteps s = new SubSteps()
+        //            {
+        //                RecipeID = recipeID,
+        //                LocalStepID = step.LocalStepID,
+        //                Content = step.Content,
+        //                SubStepID = step.SubStepID
+        //            };
+
+        //            await _context.substeps.AddAsync(s);
+        //        }
+
+        //    }
+
+        //    private async void AddTips(List<Tips> tipList, int recipeID)
+        //    {
+        //        foreach (Tips tip in tipList)
+        //        {
+        //            Tips t = new Tips()
+        //            {
+        //                RecipeID = recipeID,
+        //                LocalTipID = tip.LocalTipID,
+        //                Content = tip.Content,
+        //            };
+
+        //            await _context.tips.AddAsync(t);
+        //        }
+        //    }
+
+        //    private async void AddSubTips(List<SubTips> subTipList, int recipeID)
+        //    {
+        //        foreach (SubTips tip in subTipList)
+        //        {
+        //            SubTips t = new SubTips()
+        //            {
+        //                RecipeID = recipeID,
+        //                LocalTipID = tip.LocalTipID,
+        //                Content = tip.Content,
+        //                SubTipID = (int)tip.SubTipID
+        //            };
+
+        //            await _context.subtips.AddAsync(t);
+        //        }
+        //    }
+
         //}
-
-        public async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
-        {
-            foreach (Ingredient i in ingredientList)
-            {
-                Ingredient y = new Ingredient()
-                {
-                    RecipeID = recipeID,
-                    LocalIngredientID = i.LocalIngredientID,
-                    Content = i.Content,
-                    Quantity = i.Quantity,
-                    Unit = i.Unit
-                };
-
-                await _context.ingredients.AddAsync(y);
-
-            }
-        }
-
-        private async void AddSteps(List<Steps> stepList, int recipeID)
-        {
-            foreach (Steps s in stepList)
-            {
-                Steps step = new Steps()
-                {
-                    RecipeID = recipeID,
-                    LocalStepID = s.LocalStepID,
-                    Content = s.Content
-                };
-
-                await _context.steps.AddAsync(step);
-
-            }
-        }
-
-        private async void AddSubSteps(List<SubSteps> subStepList, int recipeID)
-        {
-
-            foreach (SubSteps step in subStepList)
-            {
-
-                SubSteps s = new SubSteps()
-                {
-                    RecipeID = recipeID,
-                    LocalStepID = step.LocalStepID,
-                    Content = step.Content,
-                    SubStepID = step.SubStepID
-                };
-
-                await _context.substeps.AddAsync(s);
-            }
-
-        }
-
-        private async void AddTips(List<Tips> tipList, int recipeID)
-        {
-            foreach (Tips tip in tipList)
-            {
-                Tips t = new Tips()
-                {
-                    RecipeID = recipeID,
-                    LocalTipID = tip.LocalTipID,
-                    Content = tip.Content,
-                };
-
-                await _context.tips.AddAsync(t);
-            }
-        }
-
-        private async void AddSubTips(List<SubTips> subTipList, int recipeID)
-        {
-            foreach (SubTips tip in subTipList)
-            {
-                SubTips t = new SubTips()
-                {
-                    RecipeID = recipeID,
-                    LocalTipID = tip.LocalTipID,
-                    Content = tip.Content,
-                    SubTipID = (int)tip.SubTipID
-                };
-
-                await _context.subtips.AddAsync(t);
-            }
-        }
-
     }
 }

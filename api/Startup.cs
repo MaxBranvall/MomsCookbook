@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using api.Interfaces;
+using api.Services;
 using api.Models;
 
 namespace api
@@ -32,20 +34,23 @@ namespace api
         {
 
             services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
+            services.AddTransient<IRecipeService, RecipeService>();
+
+            //services.AddCors();
 
             services.AddControllers()
                 .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
-            services.AddCors(options =>
-            {
+            //services.AddCors(options =>
+            //{
 
-                options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:4200", "https://localhost:5001", "https://192.168.1.45")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-                });
-            });
+            //    options.AddPolicy(MyAllowSpecificOrigins,
+            //    builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:4200", "https://localhost:5001", "https://192.168.1.45")
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader();
+            //    });
+            //});
 
         }
 
