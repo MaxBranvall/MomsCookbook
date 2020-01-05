@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
 using api.Models;
-using Microsoft.Extensions.Configuration;
-using System.Collections;
-using System;
-using System.Configuration;
 
-namespace api.Models
+namespace api.Contexts
 {
     public class RecipeContext : DbContext
     {

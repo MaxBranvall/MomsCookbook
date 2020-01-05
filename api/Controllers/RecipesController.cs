@@ -1,13 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Web;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
-using api.Services;
 using api.Interfaces;
 
 namespace api.Controllers
@@ -18,41 +13,60 @@ namespace api.Controllers
     public class RecipesController : ControllerBase
     {
 
-        private RecipeContext _context;
         private readonly IRecipeService _recipeService;
 
-        public RecipesController(IRecipeService recipeService, RecipeContext context)
+        public RecipesController(IRecipeService recipeService)
         {
             _recipeService = recipeService;
-            _context = context;
         }
+
+        //[HttpGet]
+        //public string Get()
+        //{
+        //    return "success";
+        //}
 
         //GET: api/Recipes
         [HttpGet]
-        public IEnumerable<Recipe> Get()
+        public IEnumerable<FullRecipe> Get()
         {
-            return _context.recipe.ToList();
+            return this._recipeService.GetAllRecipes();
         }
 
         //GET: api/Recipes/categories/Dinner
         [HttpGet("categories/{category}")]
         public IEnumerable<FullRecipe> GetCategory(string category)
         {
-            List<FullRecipe> fullRecipeList = new List<FullRecipe>();
-            List<Recipe> recipeList = _context.recipe.Where(x => x.Category == category).ToList();
-
-            foreach (Recipe r in recipeList)
-            {
-                fullRecipeList.Add(_recipeService.GetSingleRecipe(r.ID));
-            }
-            return fullRecipeList;
+            return this._recipeService.GetAllRecipesByCategory(category);
         }
 
         // GET: api/Recipes/5
         [HttpGet("{id}")]
-        public FullRecipe Get(int ID)
+        public FullRecipe GetRecipe(int ID)
         {
             return this._recipeService.GetSingleRecipe(ID);
+        }
+
+        //Post: api/Recipes
+        [HttpPost]
+        public ActionResult<FullRecipe> PostFullRecipe(FullRecipe fullRecipe)
+        {
+            FullRecipe r = this._recipeService.PostRecipe(fullRecipe);
+            return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
+        }
+
+        // PUT: api/Recipes/FirebaseURL
+        [HttpPut]
+        public async Task<StatusCodeResult> Put(FirebaseURL url)
+        {
+            Recipe r = new Recipe()
+            {
+                ID = url.id,
+                ImagePath = url.downloadURL
+            };
+
+            return await this._recipeService.AddDownloadURL(r);
+
         }
 
         //POST: api/Recipes
@@ -86,25 +100,6 @@ namespace api.Controllers
         //        await _context.SaveChangesAsync();
 
         //        return id;
-        //    }
-
-        //    // PUT: api/Recipes/FirebaseURL
-        //    [HttpPut]
-        //    public async Task<StatusCodeResult> Put(FirebaseURL url)
-        //    {
-
-        //        Recipe r = new Recipe()
-        //        {
-        //            ID = url.id,
-        //            ImagePath = url.downloadURL
-        //        };
-
-        //        Console.WriteLine(r.ID + " " + r.ImagePath);
-
-        //        _context.recipe.Attach(r);
-        //        _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
-        //        var response = await _context.SaveChangesAsync();
-        //        return StatusCode(200);
         //    }
 
         //    //// DELETE: api/Recipes/5

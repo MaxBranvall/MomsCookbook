@@ -32,6 +32,14 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://192.168.1.45:5000"
+    },
+    "prod": {
+      "commandName": "Project",
+      "launchUrl": "api/Recipes",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "applicationUrl": "https://momscookbookapi.azurewebsites.net"
     }
   }
 }
