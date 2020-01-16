@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
 using api.Services;
 using api.Contexts;
+using api;
 
 namespace api
 {
@@ -18,18 +19,14 @@ namespace api
 
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
-
-            _connectionString = configuration.GetConnectionString("SQLServerConnection");
-
-            //if (env.IsDevelopment())
-            //{
-            //    _connectionString = configuration.GetConnectionString("MYSQLConnection");
-            //}
-
-            //if (env.IsProduction() || env.IsStaging())
-            //{
-            //    _connectionString = configuration.GetConnectionString("SQLServerConnection");
-            //}
+            if (env.IsProduction())
+            {
+                _connectionString = configuration.GetConnectionString("SmarterASPConnection");
+            }
+            else if (env.IsDevelopment())
+            {
+                _connectionString = configuration.GetConnectionString("MySQLConnection");
+            }
 
         }
 
@@ -37,20 +34,22 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<RecipeContext>(options => options.UseSqlServer(_connectionString));
-            //services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
+            services.AddCors(options =>
+           options.AddPolicy("AllowCors",
+           builder =>
+           {
+               builder
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+           }
+           ));
 
-            //if (env.IsDevelopment())
-            //{
-            //    services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
-            //}
-
-            //if (env.IsProduction() || env.IsStaging())
-            //{
-            //    services.AddDbContext<RecipeContext>(options => options.UseSqlServer(_connectionString));
-            //}
+            services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
 
             services.AddTransient<IRecipeService, RecipeService>();
+
+            services.AddControllers();
 
             services.AddControllers()
                 .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
@@ -60,21 +59,17 @@ namespace api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
+
+            app.UseCors("AllowCors");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-
-            app.UseCors(builder =>
-            builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()
-            );
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

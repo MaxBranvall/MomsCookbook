@@ -21,22 +21,6 @@ namespace api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((ContextBoundObject, config) =>
-            {
-                if (ContextBoundObject.HostingEnvironment.IsProduction())
-                {
-                    var builtConfig = config.Build();
-
-                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                    var keyVaultClient = new KeyVaultClient(
-                        new KeyVaultClient.AuthenticationCallback(
-                            azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                    config.AddAzureKeyVault(
-                        $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                        keyVaultClient, new DefaultKeyVaultSecretManager());
-                }
-            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
