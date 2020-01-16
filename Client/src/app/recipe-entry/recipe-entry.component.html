@@ -88,7 +88,7 @@
                                 </select>
                             </td>
                             <td >
-                                <input #name [(ngModel)]="ingredient.Content" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="Ingredient">
+                                <input #name [(ngModel)]="ingredient.Contents" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="Ingredient">
                             </td>
 
                         </tr>
@@ -109,12 +109,12 @@
                 <label>Steps: </label>
                 <ul>
                     <li *ngFor="let step of stepList; let i=LocalStepID; first as first, last as last">
-                        <input #stepInput placeholder="Step" type="text" [(ngModel)]="step.Content" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
+                        <input #stepInput placeholder="Step" type="text" [(ngModel)]="step.Contents" id={{step.LocalStepID}} name="Name-{{step.LocalStepID}}" on-focus="currentStepElement = step.LocalStepID">
                         <div>
                             <ul>
                                 <div *ngFor="let subStep of subStepList">
                                     <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
-                                        <input placeholder="Sub-Step" type="text" [(ngModel)]="subStep.Content" name="SubStep-{{subStep.SubStepID}}">
+                                        <input placeholder="Sub-Step" type="text" [(ngModel)]="subStep.Contents" name="SubStep-{{subStep.SubStepID}}">
                                     </li>
                                 </div>
                             </ul>
@@ -133,12 +133,12 @@
                 <label>Tips: </label>
                 <ul>
                     <li *ngFor="let tip of tipList; let i=LocalTipID; first as first, last as last">
-                        <input #tipInput placeholder="Tip" type="text" [(ngModel)]="tip.Content" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
+                        <input #tipInput placeholder="Tip" type="text" [(ngModel)]="tip.Contents" id={{tip.LocalTipID}} name="Tip-{{tip.LocalTipID}}" on-focus="currentTipElement=tip.LocalTipID">
 
                         <div>
                             <ul *ngFor="let subTip of subTipList">
                                 <li *ngIf="checkForSubItem(subTip.LocalTipID, tip.LocalTipID)">
-                                    <input placeholder="Sub-Tip" type="text" [(ngModel)]="subTip.Content" name="SubTip-{{subTip.SubTipID}}">
+                                    <input placeholder="Sub-Tip" type="text" [(ngModel)]="subTip.Contents" name="SubTip-{{subTip.SubTipID}}">
                                 </li>
                             </ul>
                         </div>
@@ -174,7 +174,7 @@
             <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
 
             <div *ngIf="this.storageService.loading || this.localLoading">
-                <app-loading-screen [progress$]="this.storageService.uploadPercent$">
+                <app-loading-screen [progress$]="this.storageService.uploadPercent$" [Image]="this.Image">
                 </app-loading-screen>
              </div>
         </div>

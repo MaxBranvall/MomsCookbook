@@ -38,25 +38,24 @@ export class RecipeService {
     /*
       Retrieves a FULL recipe by it's name.
      */
-    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID, {reportProgress: true});
+    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID);
   }
 
-  addRecipe(entry: FullRecipe): Observable<number> {
+  addRecipe(entry: FullRecipe): Observable<FullRecipe> {
     /*
       Adds a new recipe to the database.
      */
-    return this.http.post<number>(this.apiURL + 'Recipes', entry);
+    return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry);
   }
 
-  addDownloadURL(downloadURL: string, id: number)
-  {
+  addDownloadURL(downloadURL: string, id: number) {
     /*
       Replaces Recipe image path with the download URL
       from Firebase.
      */
 
     const body = new FirebaseURL(id, downloadURL);
-    return this.http.put(this.apiURL + 'Recipes', body, {reportProgress: true, observe: 'events'});
+    return this.http.put(this.apiURL + 'Recipes/', body, {reportProgress: true, observe: 'events'});
   }
 
   addPhoto(file: any, ID: string) {
@@ -67,7 +66,7 @@ export class RecipeService {
       in case I want to use it for any reason.
      */
 
-    const formModel= new FormData();
+    const formModel = new FormData();
     formModel.append('File', file);
     formModel.append('ID', ID);
 

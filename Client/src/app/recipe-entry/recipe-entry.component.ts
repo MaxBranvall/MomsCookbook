@@ -55,6 +55,7 @@ export class RecipeEntryComponent implements OnInit {
   public currentTipElement: number = null;
 
   public RecipeID = 1;
+  public Image = false;
 
   additionalPhotoPreview: any[] = [];
 
@@ -124,7 +125,14 @@ export class RecipeEntryComponent implements OnInit {
 
     // this.cleanUpModel();
 
-
+    // await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+    // this.localLoading = true;
+    // this.persDataService.setCurrentRecipe(await this.recipeService.getEntry(this.RecipeID).toPromise());
+    // this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise();
+    // setTimeout(() => {
+    //   this.localLoading = false;
+    //   this.router.navigateByUrl('/' + this.model.Category + '/' + this.model.Name);
+    // }, 1000);
     /*
       If there is an image, call firestorage service to handle upload.
       If not, handle tasks such as routing here.
@@ -132,15 +140,17 @@ export class RecipeEntryComponent implements OnInit {
     */
 
     if (this.mainImage !== undefined) {
-
-      await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
-      this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
+      this.Image = true;
+      await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
       this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
 
     } else {
-      await this.recipeService.addRecipe(this.model).toPromise().then(id => this.RecipeID = id);
+      this.Image = false;
+      await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+      console.log(this.RecipeID);
       this.localLoading = true;
-      this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
+      this.persDataService.setCurrentRecipe( await this.recipeService.getEntry(this.RecipeID).toPromise().then());
+      // this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
       setTimeout(() => {
         this.localLoading = false;
         this.router.navigateByUrl('/' + this.model.Category + '/' + this.model.Name);

@@ -8,7 +8,7 @@ import { FullRecipe } from '../Models/FullRecipe';
 })
 export class PersistentdataService {
 
-  public currentRecipe: ListEntry;
+  public currentRecipe: FullRecipe;
 
   private storageName = 'CurrentRecipe';
 

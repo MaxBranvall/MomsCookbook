@@ -2,7 +2,7 @@ export class Step {
     constructor(
         public RecipeID: number,
         public LocalStepID: number,
-        public Content: string,
+        public Contents: string,
         // optional parameters
         public SubStepID?: number,
     ) { }

@@ -4,8 +4,6 @@ import { FullRecipe } from '../Models/FullRecipe';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 
-import { ListEntry } from '../Models/ListEntry';
-
 @Component({
   selector: 'app-recipe-page',
   templateUrl: './recipe-page.component.html',
@@ -16,15 +14,45 @@ export class RecipePageComponent implements OnInit {
   title: string;
   recipe: FullRecipe;
 
-  get currentRecipe(): ListEntry {
-    return this.persDataService.currentRecipe;
-  }
-
   constructor(private recipeService: RecipeService, private persDataService: PersistentdataService) { }
 
   async ngOnInit() {
     this.recipe = this.persDataService.getCurrentRecipe();
+    this.sortSubItems();
     this.title = this.recipe.Name;
+  }
+
+  sortSubItems() {
+    this.recipe.SubSteps.sort((n1, n2) => {
+      if (n1.SubStepID > n2.SubStepID)
+      {
+        return 1;
+      }
+
+      if (n1.SubStepID < n2.SubStepID)
+      {
+        return -1;
+      }
+
+      return 0;
+
+    });
+
+    this.recipe.SubTips.sort((n1, n2) => {
+      if (n1.SubTipID > n2.SubTipID)
+      {
+        return 1;
+      }
+
+      if (n1.SubTipID < n2.SubTipID)
+      {
+        return -1;
+      }
+
+      return 0;
+
+    });
+
   }
 
   checkForSubItem(subTipLocalID: number, mainTipLocalID: number) {

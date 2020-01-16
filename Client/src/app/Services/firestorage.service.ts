@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from './recipe.service';
+import { PersistentdataService } from '../Services/persistentdata.service';
 
 
 @Injectable({
@@ -15,7 +16,8 @@ import { RecipeService } from './recipe.service';
 })
 export class FireStorageService {
 
-  constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private router: Router) { }
+  constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private router: Router,
+    private persDataService: PersistentdataService) { }
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
@@ -42,12 +44,17 @@ export class FireStorageService {
         this.downloadURL = res;
         this.recipeService.addDownloadURL(res, recipeID)
          .subscribe(() => {
-           // TODO: Instead of entry.Name, call method in recipe service to get entry by ID from database
+           // TODO: Instead of entry.Name, call metod in recipe service to get entry by ID from database
+           this.SetRecipe(recipeID);
            setTimeout(() => { this.loading = false;
                               this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name); }, 1000);
           });
       }))
     ).subscribe();
+  }
+
+  async SetRecipe(recipeID: number) {
+    this.persDataService.setCurrentRecipe(await this.recipeService.getEntry(recipeID).toPromise().then());
   }
 
   private getDateTimeString(): string {

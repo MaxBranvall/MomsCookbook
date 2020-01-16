@@ -25,14 +25,6 @@ export class RecipeListComponent implements OnInit {
   reverseSort = false;
   orderByField = 'Name';
 
-  get currentRecipe(): ListEntry {
-    return this.persDataService.currentRecipe;
-  }
-
-  set currentRecipe(value: ListEntry) {
-    this.persDataService.currentRecipe = value;
-  }
-
   constructor(
     private route: ActivatedRoute, private recipeService: RecipeService,
     private router: Router, private persDataService: PersistentdataService
@@ -45,6 +37,7 @@ export class RecipeListComponent implements OnInit {
   }
 
   public onSelect(recipe: FullRecipe) {
+    console.log(recipe);
     this.persDataService.setCurrentRecipe(recipe);
     this.router.navigateByUrl('/' + this.title + '/' + recipe.Name);
   }

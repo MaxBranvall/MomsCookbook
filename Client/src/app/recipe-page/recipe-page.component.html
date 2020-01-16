@@ -72,7 +72,7 @@
                                     <p>{{ingredient.Unit}}</p>
                                 </td>
                                 <td>
-                                    <p>{{ingredient.Content}}</p>
+                                    <p>{{ingredient.Contents}}</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -84,12 +84,12 @@
                     <h2>Steps</h2>
                     <ul>
                         <li *ngFor="let step of recipe.Steps">
-                            <p>{{step.Content}}</p>
+                            <p>{{step.Contents}}</p>
 
                             <ul class="sub-wrapper">
                                 <div *ngFor="let subStep of recipe.SubSteps">
                                     <li *ngIf="checkForSubItem(subStep.LocalStepID, step.LocalStepID)">
-                                        <p>{{subStep.Content}}</p>
+                                        <p>{{subStep.Contents}}</p>
                                     </li>
                                 </div>
                             </ul>
@@ -100,12 +100,12 @@
                     <h2>Tips</h2>
                     <ul>
                         <li *ngFor="let tip of recipe.Tips">
-                            <p>{{tip.Content}}</p>
+                            <p>{{tip.Contents}}</p>
 
                             <ul class="sub-wrapper">
                                 <div *ngFor="let subtip of recipe.SubTips">
                                     <li *ngIf="checkForSubItem(subtip.LocalTipID, tip.LocalTipID)">
-                                        <p>{{subtip.Content}}</p>
+                                        <p>{{subtip.Contents}}</p>
                                     </li>
                                 </div>
                             </ul>

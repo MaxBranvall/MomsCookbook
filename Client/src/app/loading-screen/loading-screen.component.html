@@ -1,7 +1,7 @@
 <div class="loading-overlay">
     <div class="loading-wrapper">
         <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-        <div class="progress-container">
+        <div *ngIf="Image" class="progress-container">
             <h2>Progress: </h2>
             <div class="progress-bar-outer" *ngIf="progress$ | async as progress">
                 <div class="progress-bar-inner" [ngStyle]="{ 'width': progress + '%'}"></div>

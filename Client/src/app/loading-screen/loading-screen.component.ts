@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 export class LoadingScreenComponent implements OnInit {
 
   @Input() progress$: Observable<number>;
+  @Input() Image: boolean;
 
   constructor() { }
 

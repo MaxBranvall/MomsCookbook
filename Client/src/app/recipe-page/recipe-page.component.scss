@@ -70,6 +70,7 @@
     table {
         font-size: 1.6em;
         border-collapse: collapse;
+        margin: 0 auto;
         // width: 50%;
     }
 
@@ -128,7 +129,6 @@
 .bot-inner {
     display: grid;
     grid-template-rows: auto 2fr;
-    // align-items: center;
 
     h2 {
         margin-bottom: .5em;
