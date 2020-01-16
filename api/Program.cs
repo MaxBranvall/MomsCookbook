@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
+using Serilog;
 
 namespace api
 {
