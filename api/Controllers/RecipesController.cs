@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using api.Models;
 using api.Interfaces;
+using Serilog;
 
 namespace api.Controllers
 {
@@ -16,9 +18,11 @@ namespace api.Controllers
     {
 
         private readonly IRecipeService _recipeService;
+        private readonly ILogger<RecipesController> _logger;
 
-        public RecipesController(IRecipeService recipeService)
+        public RecipesController(IRecipeService recipeService, ILogger<RecipesController> logger)
         {
+            _logger = logger;
             _recipeService = recipeService;
         }
 
@@ -26,6 +30,7 @@ namespace api.Controllers
         [HttpGet("test")]
         public string TestGet()
         {
+            _logger.LogInformation("TestGet method called");
             return "success";
         }
 

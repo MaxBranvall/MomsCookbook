@@ -17,8 +17,12 @@ namespace api
 
         private readonly string _connectionString;
 
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
+            Configuration = configuration;
+
             if (env.IsProduction())
             {
                 _connectionString = configuration.GetConnectionString("SmarterASPConnection");
@@ -70,6 +74,8 @@ namespace api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
