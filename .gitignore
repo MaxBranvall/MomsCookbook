@@ -3,3 +3,4 @@ Client/src/assets/images/mainimages
 /images
 Client/src/environments/
 api/appsettings.Development.json
+api/logs/

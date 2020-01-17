@@ -52,6 +52,7 @@ namespace api.Controllers
         [HttpGet("categories/{category}")]
         public IEnumerable<FullRecipe> GetCategory(string category)
         {
+            _logger.LogInformation("Get category called");
             return this._recipeService.GetAllRecipesByCategory(category);
         }
 
@@ -59,6 +60,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public FullRecipe GetRecipe(int ID)
         {
+            _logger.LogInformation("Get single recipe called");
             return this._recipeService.GetSingleRecipe(ID);
         }
 
@@ -66,6 +68,7 @@ namespace api.Controllers
         [HttpPost]
         public ActionResult<FullRecipe> PostFullRecipe(FullRecipe fullRecipe)
         {
+            _logger.LogInformation("Post recipe called");
             FullRecipe r = this._recipeService.PostRecipe(fullRecipe);
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
         }
@@ -74,6 +77,7 @@ namespace api.Controllers
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
+            _logger.LogInformation("Post firebase URL called");
             Recipe r = new Recipe()
             {
                 ID = url.id,

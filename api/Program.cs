@@ -15,6 +15,7 @@ namespace api
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
+                .WriteTo.File("logs\\logs.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             try
