@@ -149,13 +149,18 @@ export class RecipeEntryComponent implements OnInit {
       await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
       console.log(this.RecipeID);
       this.localLoading = true;
-      this.persDataService.setCurrentRecipe( await this.recipeService.getEntry(this.RecipeID).toPromise().then());
-      // this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise().then();
-      setTimeout(() => {
-        this.localLoading = false;
-        this.router.navigateByUrl('/' + this.model.Category + '/' + this.model.Name);
-      }, 1000);
+      await this.recipeService.getEntry(this.RecipeID).toPromise().then(
+        res => {
+          this.persDataService.setCurrentRecipe(res.body);
+          this.navigateToNewEntry(this.model.Category, this.model.Name);
+        }
+      );
     }
+  }
+
+  navigateToNewEntry(category: string, name: string) {
+    this.localLoading = false;
+    this.router.navigateByUrl('/' + category + '/' + name);
   }
 
   async addRecipe() {

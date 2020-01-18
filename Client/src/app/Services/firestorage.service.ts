@@ -9,6 +9,7 @@ import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from './recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { TouchSequence } from 'selenium-webdriver';
 
 
 @Injectable({
@@ -37,20 +38,48 @@ export class FireStorageService {
 
     this.uploadPercent$ = task.percentageChanges();
 
+    // Gets download URL, updates the entry in database with URL, sets entry as current, navigates to entry.
+
     await task.snapshotChanges().pipe(
       finalize(
-      () => fileRef.getDownloadURL()
-      .subscribe(res => {
-        this.downloadURL = res;
-        this.recipeService.addDownloadURL(res, recipeID)
-         .subscribe(() => {
-           // TODO: Instead of entry.Name, call metod in recipe service to get entry by ID from database
-           this.SetRecipe(recipeID);
-           setTimeout(() => { this.loading = false;
-                              this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name); }, 1000);
-          });
-      }))
+        () => fileRef.getDownloadURL()
+        .subscribe(
+          res => {
+            this.downloadURL = res;
+            this.recipeService.addDownloadURL(res, recipeID).toPromise().then(
+              () =>
+              this.recipeService.getEntry(recipeID).toPromise().then(
+                r => {
+                  this.persDataService.setCurrentRecipe(r.body);
+                  this.loading = false;
+                  this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name);
+                }
+              )
+            );
+          }
+        )
+      )
     ).subscribe();
+
+    // await task.snapshotChanges().pipe(
+    //   finalize(
+    //   () => fileRef.getDownloadURL()
+    //   .subscribe(res => {
+    //     this.downloadURL = res;
+    //     this.recipeService.addDownloadURL(res, recipeID).toPromise().then(
+    //       () =>
+    //       this.recipeService.getEntry(recipeID).toPromise().then(
+    //         r => {
+    //           this.persDataService.setCurrentRecipe(r.body);
+    //           this.loading = false;
+    //           this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name);
+    //             }
+    //           )
+    //         );
+    //       }
+    //     )
+    //   }))
+    // ).subscribe();
   }
 
   async SetRecipe(recipeID: number) {

@@ -9,7 +9,7 @@ namespace api.Interfaces
     {
         List<FullRecipe> GetAllRecipes();
         List<FullRecipe> GetAllRecipesByCategory(string category);
-        FullRecipe GetSingleRecipe(int id);
+        ActionResult<FullRecipe> GetSingleRecipe(int id);
         List<Ingredient> GetIngredients(int RecipeID);
         List<Steps> GetSteps(int RecipeID);
         List<SubSteps> GetSubSteps(int RecipeID);
