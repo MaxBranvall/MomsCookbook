@@ -43,6 +43,15 @@ export class RecipeListComponent implements OnInit {
   }
 
   async getEntries() {
-    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => this.entries = res);
+    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => {
+
+      if (res.status === 404)
+      {
+        console.error('Could not get recipes by category.');
+      } else {
+        this.entries = res.body;
+      }
+
+    });
   }
 }

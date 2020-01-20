@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using api.Models;
 using api.Interfaces;
 using Serilog;
+using Microsoft.AspNetCore.Http;
 
 namespace api.Controllers
 {
@@ -28,10 +29,11 @@ namespace api.Controllers
 
         //GET: api/Recipes/test
         [HttpGet("test")]
-        public string TestGet()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult TestGet()
         {
             _logger.LogInformation("TestGet method called");
-            return "success";
+            return Ok();
         }
 
         //POST: api/recipes/testpost
@@ -50,18 +52,26 @@ namespace api.Controllers
 
         //GET: api/Recipes/categories/Dinner
         [HttpGet("categories/{category}")]
-        public IEnumerable<FullRecipe> GetCategory(string category)
+        public ActionResult<IEnumerable<FullRecipe>> GetCategory(string category)
         {
             _logger.LogInformation("Get category called");
-            return this._recipeService.GetAllRecipesByCategory(category);
+            return Ok(this._recipeService.GetAllRecipesByCategory(category));
         }
 
         // GET: api/Recipes/5
         [HttpGet("{id}")]
-        public FullRecipe GetRecipe(int ID)
+        public ActionResult<FullRecipe> GetRecipe(int ID)
         {
             _logger.LogInformation("Get single recipe called");
-            return this._recipeService.GetSingleRecipe(ID);
+
+            var fullRecipe = this._recipeService.GetSingleRecipe(ID);
+
+            if (fullRecipe.Result == NotFound())
+            {
+                _logger.LogError("error!!");
+            }
+
+            return Ok(this._recipeService.GetSingleRecipe(ID).Value);
         }
 
         //Post: api/Recipes

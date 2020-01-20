@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { FullRecipe } from '../Models/FullRecipe';
 import { Recipe } from '../Models/Recipe';
@@ -19,26 +19,26 @@ export class RecipeService {
     private http: HttpClient,
   ) { }
 
-  getAllEntries(): Observable<Recipe[]> {
+  getAllEntries(): Observable<HttpResponse<Recipe[]>> {
     /*
       Gets all recipes meta info from database.
      */
-    return this.http.get<Recipe[]>(this.apiURL + 'Recipes');
+    return this.http.get<Recipe[]>(this.apiURL + 'Recipes', { observe : 'response'});
   }
 
-  getAllEntriesByCategory(category: string): Observable<FullRecipe[]> {
+  getAllEntriesByCategory(category: string): Observable<HttpResponse<FullRecipe[]>> {
     /*
       Gets all recipes meta info from database filtered by
       category.
     */
-    return this.http.get<FullRecipe[]>(this.apiURL + 'Recipes/categories/' + category);
+    return this.http.get<FullRecipe[]>(this.apiURL + 'Recipes/categories/' + category, { observe : 'response'});
   }
 
-  getEntry(ID: number): Observable<FullRecipe> {
+  getEntry(ID: number): Observable<HttpResponse<FullRecipe>> {
     /*
       Retrieves a FULL recipe by it's name.
      */
-    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID);
+    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID, { observe : 'response'});
   }
 
   addRecipe(entry: FullRecipe): Observable<FullRecipe> {
@@ -48,14 +48,14 @@ export class RecipeService {
     return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry);
   }
 
-  addDownloadURL(downloadURL: string, id: number) {
+  addDownloadURL(downloadURL: string, id: number): Observable<HttpResponse<FullRecipe>> {
     /*
       Replaces Recipe image path with the download URL
       from Firebase.
      */
 
     const body = new FirebaseURL(id, downloadURL);
-    return this.http.put(this.apiURL + 'Recipes/', body, {reportProgress: true, observe: 'events'});
+    return this.http.put<FullRecipe>(this.apiURL + 'Recipes/', body, { observe: 'response' });
   }
 
   addPhoto(file: any, ID: string) {

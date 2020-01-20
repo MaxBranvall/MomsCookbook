@@ -18,9 +18,12 @@
                 </div>
 
                 <label for="category">Category: </label>
-                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" required>
+                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" (change)="validateCategory()">
                     <option *ngFor="let cat of categories">{{cat.title}}</option>
                 </select>
+                <div [hidden]="!categoryAlert" class="alertbox categoryAlert">
+                    <p>Please select a valid category.</p>
+                </div>
 
                 <label for="description">Description: </label>
                 <textarea id="description" name="Description"
@@ -63,7 +66,7 @@
                         <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null"> Minutes</p>
                     </span>
 
-                    <div [hidden]="time.valid || time.pristine && time.untouched" class="alertbox timealert">An hour and minute value is required for Prep Time and Cook Time!</div>
+                    <div [hidden]="!timeAlert" class="alertbox timealert">An hour and minute value is required for Prep Time and Cook Time!</div>
 
                 </div>
             </div>
@@ -83,7 +86,7 @@
                                 <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">
                             </td>
                             <td>
-                                <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}">
+                                <select #unit [(ngModel)]='ingredient.Unit' name="Unit-{{ingredient.LocalIngredientID}}" #unit="ngModel">
                                     <option *ngFor="let unit of units">{{unit}}</option>
                                 </select>
                             </td>
@@ -91,6 +94,12 @@
                                 <input #name [(ngModel)]="ingredient.Contents" name="Ingredient-{{ingredient.LocalIngredientID}}" type="text" placeholder="Ingredient">
                             </td>
 
+                        </tr>
+                        <tr *ngIf="quantityAlert || unitAlert || quantityAlert && unitAlert">
+                            <td colspan="3">
+                                <div [hidden]="!quantityAlert" class="alertbox quantityAlert">Quantity must be a number.</div>
+                                <div [hidden]="!unitAlert" class="alertbox unitAlert">Please select a valid unit.</div>
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -159,7 +168,7 @@
                 type="file" name="additional-photos"
                 (change)="additionalPhotoRender(additionalPhotos.files)"
                 multiple #additionalPhotos>
-                <button type="button" class="materialButton" (click)="additionalPhotos.click()">
+                <button type="button" class="materialButton" (click)="additionalPhotos.click()" disabled>
                     Choose Photos..
                 </button>
 
@@ -171,6 +180,7 @@
 
             </div>
 
+            <div [hidden]="!globalAlert" class="alertbox globalAlert">Please fix errors then submit again.</div>
             <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
 
             <div *ngIf="this.storageService.loading || this.localLoading">

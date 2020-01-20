@@ -9,6 +9,7 @@ import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from './recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { TouchSequence } from 'selenium-webdriver';
 
 
 @Injectable({
@@ -17,7 +18,7 @@ import { PersistentdataService } from '../Services/persistentdata.service';
 export class FireStorageService {
 
   constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private router: Router,
-    private persDataService: PersistentdataService) { }
+              private persDataService: PersistentdataService) { }
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
@@ -37,24 +38,33 @@ export class FireStorageService {
 
     this.uploadPercent$ = task.percentageChanges();
 
+    // Gets download URL, updates the entry in database with URL, sets entry as current, navigates to entry.
+
     await task.snapshotChanges().pipe(
       finalize(
-      () => fileRef.getDownloadURL()
-      .subscribe(res => {
-        this.downloadURL = res;
-        this.recipeService.addDownloadURL(res, recipeID)
-         .subscribe(() => {
-           // TODO: Instead of entry.Name, call metod in recipe service to get entry by ID from database
-           this.SetRecipe(recipeID);
-           setTimeout(() => { this.loading = false;
-                              this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name); }, 1000);
-          });
-      }))
+        () => fileRef.getDownloadURL()
+        .subscribe(
+          res => {
+            this.downloadURL = res;
+            this.recipeService.addDownloadURL(res, recipeID).subscribe(
+              d => {
+                this.recipeService.getEntry(recipeID).subscribe(
+                  resp => {
+                    this.goToNewEntry(resp.body);
+                  }
+                );
+              }
+            );
+          }
+        )
+      )
     ).subscribe();
   }
 
-  async SetRecipe(recipeID: number) {
-    this.persDataService.setCurrentRecipe(await this.recipeService.getEntry(recipeID).toPromise().then());
+  private goToNewEntry(recipe: FullRecipe) {
+    this.persDataService.setCurrentRecipe(recipe);
+    this.loading = false;
+    this.router.navigateByUrl('/' + recipe.Category + '/' + recipe.Name);
   }
 
   private getDateTimeString(): string {

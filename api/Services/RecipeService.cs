@@ -7,6 +7,7 @@ using api.Models;
 using api.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 
 namespace api.Services
@@ -51,7 +52,7 @@ namespace api.Services
             return fullRecipeList;
         }
 
-        public FullRecipe GetSingleRecipe(int id)
+        public ActionResult<FullRecipe> GetSingleRecipe(int id)
         {
 
             Recipe r = new Recipe();
@@ -65,10 +66,8 @@ namespace api.Services
             {
                 _logger.LogError($"No recipe with provided index ({id}) found.");
             }
-            finally
-            {
-                x = InitializeRecipe(r);
-            }
+            
+            x = InitializeRecipe(r);
 
             return x;
         }
@@ -178,7 +177,7 @@ namespace api.Services
                 _logger.LogInformation("Error: " + ex);
             }
 
-            return GetSingleRecipe(r.ID);
+            return GetSingleRecipe(r.ID).Value;
 
             async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
             {
