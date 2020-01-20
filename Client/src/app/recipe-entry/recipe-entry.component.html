@@ -168,7 +168,7 @@
                 type="file" name="additional-photos"
                 (change)="additionalPhotoRender(additionalPhotos.files)"
                 multiple #additionalPhotos>
-                <button type="button" class="materialButton" (click)="additionalPhotos.click()">
+                <button type="button" class="materialButton" (click)="additionalPhotos.click()" disabled>
                     Choose Photos..
                 </button>
 
@@ -182,9 +182,6 @@
 
             <div [hidden]="!globalAlert" class="alertbox globalAlert">Please fix errors then submit again.</div>
             <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
-            <button type="button" (click)="showModel()" class="materialButton">Show Model</button>
-            <button type="button" (click)="clearEmptyElements()" class="materialButton">Clear</button>
-            <button type="button" (click)="validateModel()" class="materialButton">Validate</button>
 
             <div *ngIf="this.storageService.loading || this.localLoading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$" [Image]="this.Image">

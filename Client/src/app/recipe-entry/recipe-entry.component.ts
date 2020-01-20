@@ -243,21 +243,23 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   validateIngredients() {
-    this.model.Ingredients.forEach(ingredient => {
-      if (ingredient.Quantity === null) {
-        this.quantityAlert = true;
-      } else {
-        this.quantityAlert = false;
-      }
 
-      if (ingredient.Unit === this.units[0]) {
-        this.unitAlert = true;
-      } else {
-        this.unitAlert = false;
-      }
-    });
+    const isNotNull = (quantity) => quantity !== null;
+    const isValid = (unit) => unit !== this.units[0];
 
-    if (!this.unitAlert && !this.quantityAlert) {
+    if (this.model.Ingredients.every(ingredient => isNotNull(ingredient.Quantity))) {
+      this.quantityAlert = false;
+    } else {
+      this.quantityAlert = true;
+    }
+
+    if (this.model.Ingredients.every(ingredient => isValid(ingredient.Unit))) {
+      this.unitAlert = false;
+    } else {
+      this.unitAlert = true;
+    }
+
+    if (this.unitAlert === false && this.quantityAlert === false) {
       return true;
     } else {
       return false;
