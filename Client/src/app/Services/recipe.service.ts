@@ -48,14 +48,14 @@ export class RecipeService {
     return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry);
   }
 
-  addDownloadURL(downloadURL: string, id: number) {
+  addDownloadURL(downloadURL: string, id: number): Observable<HttpResponse<FullRecipe>> {
     /*
       Replaces Recipe image path with the download URL
       from Firebase.
      */
 
     const body = new FirebaseURL(id, downloadURL);
-    return this.http.put(this.apiURL + 'Recipes/', body, {reportProgress: true, observe: 'events'});
+    return this.http.put<FullRecipe>(this.apiURL + 'Recipes/', body, { observe: 'response' });
   }
 
   addPhoto(file: any, ID: string) {

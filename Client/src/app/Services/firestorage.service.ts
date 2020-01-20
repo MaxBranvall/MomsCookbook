@@ -18,7 +18,7 @@ import { TouchSequence } from 'selenium-webdriver';
 export class FireStorageService {
 
   constructor(private storage: AngularFireStorage, private recipeService: RecipeService, private router: Router,
-    private persDataService: PersistentdataService) { }
+              private persDataService: PersistentdataService) { }
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
@@ -46,44 +46,25 @@ export class FireStorageService {
         .subscribe(
           res => {
             this.downloadURL = res;
-            this.recipeService.addDownloadURL(res, recipeID).toPromise().then(
-              () =>
-              this.recipeService.getEntry(recipeID).toPromise().then(
-                r => {
-                  this.persDataService.setCurrentRecipe(r.body);
-                  this.loading = false;
-                  this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name);
-                }
-              )
+            this.recipeService.addDownloadURL(res, recipeID).subscribe(
+              d => {
+                this.recipeService.getEntry(recipeID).subscribe(
+                  resp => {
+                    this.goToNewEntry(resp.body);
+                  }
+                );
+              }
             );
           }
         )
       )
     ).subscribe();
-
-    // await task.snapshotChanges().pipe(
-    //   finalize(
-    //   () => fileRef.getDownloadURL()
-    //   .subscribe(res => {
-    //     this.downloadURL = res;
-    //     this.recipeService.addDownloadURL(res, recipeID).toPromise().then(
-    //       () =>
-    //       this.recipeService.getEntry(recipeID).toPromise().then(
-    //         r => {
-    //           this.persDataService.setCurrentRecipe(r.body);
-    //           this.loading = false;
-    //           this.router.navigateByUrl('/' + entry.Category + '/' + entry.Name);
-    //             }
-    //           )
-    //         );
-    //       }
-    //     )
-    //   }))
-    // ).subscribe();
   }
 
-  async SetRecipe(recipeID: number) {
-    this.persDataService.setCurrentRecipe(await this.recipeService.getEntry(recipeID).toPromise().then());
+  private goToNewEntry(recipe: FullRecipe) {
+    this.persDataService.setCurrentRecipe(recipe);
+    this.loading = false;
+    this.router.navigateByUrl('/' + recipe.Category + '/' + recipe.Name);
   }
 
   private getDateTimeString(): string {
