@@ -13,6 +13,9 @@ import { Observable } from 'rxjs';
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { NgModel } from '@angular/forms';
+import { __core_private_testing_placeholder__ } from '@angular/core/testing';
+import { FindValueSubscriber } from 'rxjs/internal/operators/find';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -29,6 +32,12 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   categories = categories;
+
+  private quantityAlert = false;
+  private unitAlert = false;
+  private categoryAlert = false;
+  private timeAlert = false;
+  private globalAlert = false;
 
   public imagePath;
   public imgURL: any;
@@ -114,53 +123,146 @@ export class RecipeEntryComponent implements OnInit {
 
   // cleanUpModel()
   // {
-  //   this.cleanUpSteps();
+    // this.cleanUpSteps();
   //   this.cleanUpTips();
   // }
+
+  showModel() {
+    console.log(JSON.stringify(this.model));
+  }
 
   async onSubmit() {
 
     this.setCreationTime();
     this.formatTimes();
+    this.clearEmptyElements();
 
-    // this.cleanUpModel();
-
-    // await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-    // this.localLoading = true;
-    // this.persDataService.setCurrentRecipe(await this.recipeService.getEntry(this.RecipeID).toPromise());
-    // this.persDataService.currentRecipe = await this.recipeService.getEntry(this.RecipeID).toPromise();
-    // setTimeout(() => {
-    //   this.localLoading = false;
-    //   this.router.navigateByUrl('/' + this.model.Category + '/' + this.model.Name);
-    // }, 1000);
     /*
       If there is an image, call firestorage service to handle upload.
       If not, handle tasks such as routing here.
       TODO: neaten this up, don't do so much all in one spot.
     */
 
-    if (this.mainImage !== undefined) {
-      this.Image = true;
-      await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-      this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+    if (this.validateModel()) {
+
+      this.globalAlert = false;
+
+      if (this.mainImage !== undefined) {
+        this.Image = true;
+        await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+        this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+
+      } else {
+        this.Image = false;
+        await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+        console.log(this.RecipeID);
+        this.localLoading = true;
+        await this.recipeService.getEntry(this.RecipeID).toPromise().then(
+          res => {
+            this.persDataService.setCurrentRecipe(res.body);
+            this.navigateToNewEntry(this.model.Category, this.model.Name);
+          }
+        );
+      }
 
     } else {
-      this.Image = false;
-      await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-      console.log(this.RecipeID);
-      this.localLoading = true;
-      await this.recipeService.getEntry(this.RecipeID).toPromise().then(
-        res => {
-          this.persDataService.setCurrentRecipe(res.body);
-          this.navigateToNewEntry(this.model.Category, this.model.Name);
-        }
-      );
+      this.globalAlert = true;
     }
   }
 
   navigateToNewEntry(category: string, name: string) {
     this.localLoading = false;
     this.router.navigateByUrl('/' + category + '/' + name);
+  }
+
+  clearEmptyElements() {
+    this.model.Steps.forEach(step => {
+        if (this.isEmptyOrNull(step.Contents)) {
+          this.model.Steps.splice(this.model.Steps.indexOf(step));
+        }
+      });
+
+    this.model.SubSteps.forEach(subStep => {
+      if (this.isEmptyOrNull(subStep.Contents)) {
+        this.model.SubSteps.splice(this.model.SubSteps.indexOf(subStep));
+      }
+    });
+
+    this.model.Tips.forEach(tip => {
+      if (this.isEmptyOrNull(tip.Contents)) {
+        this.model.Tips.splice(this.model.Tips.indexOf(tip));
+      }
+    });
+
+    this.model.SubTips.forEach(subTip => {
+      if (this.isEmptyOrNull(subTip.Contents)) {
+        this.model.SubTips.splice(this.model.SubTips.indexOf(subTip));
+      }
+    });
+
+    this.model.Ingredients.forEach(ingredient => {
+      if (this.isEmptyOrNull(ingredient.Contents)) {
+        this.model.Ingredients.splice(this.model.Ingredients.indexOf(ingredient));
+      }
+    });
+  }
+
+  validateModel() {
+
+    const ingredients = this.validateIngredients();
+    const category = this.validateCategory();
+    const times = this.validateTimes();
+
+    if (ingredients && category && times) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
+  validateTimes() {
+    if (this.model.PrepTimeH === null || this.model.PrepTimeM === null ||
+       this.model.CookTimeH === null || this.model.CookTimeM === null) {
+      this.timeAlert = true;
+      return false;
+    } else {
+      this.timeAlert = false;
+      return true;
+    }
+  }
+
+  validateCategory() {
+    if (this.model.Category === this.categories[0].title) {
+      this.categoryAlert = true;
+      return false;
+    } else {
+      this.categoryAlert = false;
+      return true;
+    }
+  }
+
+  validateIngredients() {
+    this.model.Ingredients.forEach(ingredient => {
+      if (ingredient.Quantity === null) {
+        this.quantityAlert = true;
+      } else {
+        this.quantityAlert = false;
+      }
+
+      if (ingredient.Unit === this.units[0]) {
+        this.unitAlert = true;
+      } else {
+        this.unitAlert = false;
+      }
+    });
+
+    if (!this.unitAlert && !this.quantityAlert) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   async addRecipe() {
@@ -199,7 +301,6 @@ export class RecipeEntryComponent implements OnInit {
   addSubStep(index?: number) {
 
     const i = +index;
-    console.log(typeof(i));
 
     this.subStepList.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
     // if (index != undefined)
