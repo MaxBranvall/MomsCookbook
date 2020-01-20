@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using api.Models;
 using api.Interfaces;
+using Serilog;
 
 namespace api.Controllers
 {
@@ -16,9 +18,11 @@ namespace api.Controllers
     {
 
         private readonly IRecipeService _recipeService;
+        private readonly ILogger<RecipesController> _logger;
 
-        public RecipesController(IRecipeService recipeService)
+        public RecipesController(IRecipeService recipeService, ILogger<RecipesController> logger)
         {
+            _logger = logger;
             _recipeService = recipeService;
         }
 
@@ -26,6 +30,7 @@ namespace api.Controllers
         [HttpGet("test")]
         public string TestGet()
         {
+            _logger.LogInformation("TestGet method called");
             return "success";
         }
 
@@ -47,6 +52,7 @@ namespace api.Controllers
         [HttpGet("categories/{category}")]
         public IEnumerable<FullRecipe> GetCategory(string category)
         {
+            _logger.LogInformation("Get category called");
             return this._recipeService.GetAllRecipesByCategory(category);
         }
 
@@ -54,6 +60,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public FullRecipe GetRecipe(int ID)
         {
+            _logger.LogInformation("Get single recipe called");
             return this._recipeService.GetSingleRecipe(ID);
         }
 
@@ -61,6 +68,7 @@ namespace api.Controllers
         [HttpPost]
         public ActionResult<FullRecipe> PostFullRecipe(FullRecipe fullRecipe)
         {
+            _logger.LogInformation("Post recipe called");
             FullRecipe r = this._recipeService.PostRecipe(fullRecipe);
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
         }
@@ -69,6 +77,7 @@ namespace api.Controllers
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
+            _logger.LogInformation("Post firebase URL called");
             Recipe r = new Recipe()
             {
                 ID = url.id,

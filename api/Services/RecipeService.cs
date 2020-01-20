@@ -6,6 +6,8 @@ using api.Interfaces;
 using api.Models;
 using api.Contexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace api.Services
 {
@@ -13,9 +15,11 @@ namespace api.Services
     {
 
         private RecipeContext _context;
+        private readonly ILogger<RecipeService> _logger;
 
-        public RecipeService(RecipeContext recipeContext)
+        public RecipeService(RecipeContext recipeContext, ILogger<RecipeService> logger)
         {
+            _logger = logger;
             _context = recipeContext;
         }
 
@@ -49,8 +53,23 @@ namespace api.Services
 
         public FullRecipe GetSingleRecipe(int id)
         {
-            Recipe r = _context.recipe.Where(y => y.ID == id).ToList()[0];
-            var x = InitializeRecipe(r);
+
+            Recipe r = new Recipe();
+            var x = new FullRecipe();
+
+            try
+            {
+                r = _context.recipe.Where(y => y.ID == id).ToList()[0];
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"No recipe with provided index ({id}) found.");
+            }
+            finally
+            {
+                x = InitializeRecipe(r);
+            }
+
             return x;
         }
 
@@ -127,28 +146,38 @@ namespace api.Services
 
         public FullRecipe PostRecipe(FullRecipe recipe)
         {
-            Recipe r = new Recipe()
+
+            Recipe r = new Recipe();
+
+            try
             {
-                Name = recipe.Name,
-                ImagePath = null,
-                Description = recipe.Description,
-                Category = recipe.Category,
-                PrepTime = recipe.PrepTime,
-                CookTime = recipe.CookTime,
-                Created = recipe.Created,
-                LastModified = recipe.LastModified
-            };
+                r = new Recipe()
+                {
+                    Name = recipe.Name,
+                    ImagePath = null,
+                    Description = recipe.Description,
+                    Category = recipe.Category,
+                    PrepTime = recipe.PrepTime,
+                    CookTime = recipe.CookTime,
+                    Created = recipe.Created,
+                    LastModified = recipe.LastModified
+                };
 
-            this._context.recipe.Add(r);
-            this._context.SaveChanges();
+                this._context.recipe.Add(r);
+                this._context.SaveChanges();
 
-            AddIngredients(recipe.Ingredients, r.ID);
-            AddSteps(recipe.Steps, r.ID);
-            AddSubSteps(recipe.SubSteps, r.ID);
-            AddTips(recipe.Tips, r.ID);
-            AddSubTips(recipe.SubTips, r.ID);
+                AddIngredients(recipe.Ingredients, r.ID);
+                AddSteps(recipe.Steps, r.ID);
+                AddSubSteps(recipe.SubSteps, r.ID);
+                AddTips(recipe.Tips, r.ID);
+                AddSubTips(recipe.SubTips, r.ID);
 
-            this._context.SaveChanges();
+                this._context.SaveChanges();
+            } catch (Exception ex)
+            {
+                _logger.LogInformation("Error: " + ex);
+            }
+
             return GetSingleRecipe(r.ID);
 
             async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
