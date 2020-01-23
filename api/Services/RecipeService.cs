@@ -106,31 +106,31 @@ namespace api.Services
 
         public List<Ingredient> GetIngredients(int RecipeID)
         {
-            List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).ToList();
+            List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).OrderBy(ingredient => ingredient.ID).ToList();
             return ingredients;
         }
 
         public List<Steps> GetSteps(int RecipeID)
         {
-            List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).ToList();
+            List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).OrderBy(step => step.ID).ToList();
             return steps;
         }
 
         public List<SubSteps> GetSubSteps(int RecipeID)
         {
-            List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).ToList();
+            List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).OrderBy(substep => substep.ID).ToList();
             return subSteps;
         }
 
         public List<Tips> GetTips(int RecipeID)
         {
-            List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).ToList();
+            List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).OrderBy(tip => tip.ID).ToList();
             return tips;
         }
 
         public List<SubTips> GetSubTips(int RecipeID)
         {
-            List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).ToList();
+            List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).OrderBy(subtip => subtip.ID).ToList();
             return subTips;
         }
 
