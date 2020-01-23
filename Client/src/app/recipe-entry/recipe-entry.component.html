@@ -49,24 +49,24 @@
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH' required #time="ngModel">
                         <p *ngIf="model.PrepTimeH == 1"> Hour</p>
-                        <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null"> Hours</p>
+                        <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null || model.PrepTimeH < 1"> Hours</p>
                         <br>
                         <input class="num-input" type="number" min="0" placeholder="0" id="preptimem" name="PrepTimeM" [(ngModel)]='model.PrepTimeM' required #time="ngModel">
                         <p *ngIf="model.PrepTimeM == 1"> Minute</p>
-                        <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null"> Minutes</p>
+                        <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null || model.PrepTimeM < 1"> Minutes</p>
                     </span>
 
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH' required #time="ngModel">
                         <p *ngIf="model.CookTimeH == 1"> Hour</p>
-                        <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null"> Hours</p>
+                        <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null || model.CookTimeH < 1"> Hours</p>
                         <br>
                         <input class="num-input" type="number" min="0" placeholder="0" id="cooktimem" name="CookTimeM" [(ngModel)]='model.CookTimeM' required #time="ngModel">
                         <p *ngIf="model.CookTimeM == 1"> Minute</p>
-                        <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null"> Minutes</p>
+                        <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null || model.CookTimeM < 1"> Minutes</p>
                     </span>
 
-                    <div [hidden]="!timeAlert" class="alertbox timealert">An hour and minute value is required for Prep Time and Cook Time!</div>
+                    <div [hidden]="!timeAlert" class="alertbox timealert">Times must not include decimals.</div>
 
                 </div>
             </div>
@@ -183,7 +183,7 @@
             <div [hidden]="!globalAlert" class="alertbox globalAlert">Please fix errors then submit again.</div>
             <button type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
 
-            <div *ngIf="this.storageService.loading || this.localLoading">
+            <div *ngIf="this.localLoading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$" [Image]="this.Image">
                 </app-loading-screen>
              </div>

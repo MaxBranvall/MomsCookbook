@@ -33,11 +33,11 @@ export class RecipeEntryComponent implements OnInit {
 
   categories = categories;
 
-  private quantityAlert = false;
-  private unitAlert = false;
-  private categoryAlert = false;
-  private timeAlert = false;
-  private globalAlert = false;
+  public quantityAlert = false;
+  public unitAlert = false;
+  public categoryAlert = false;
+  public timeAlert = false;
+  public globalAlert = false;
 
   public imagePath;
   public imgURL: any;
@@ -45,7 +45,6 @@ export class RecipeEntryComponent implements OnInit {
 
   public uploadPercent: Observable<number>;
   public downloadURL: Observable<string>;
-  public loading: boolean = this.storageService.loading;
   public localLoading = false;
 
   public submitted = false;
@@ -148,26 +147,34 @@ export class RecipeEntryComponent implements OnInit {
       this.globalAlert = false;
 
       if (this.mainImage !== undefined) {
-        this.Image = true;
-        await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-        this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
-
+        this.submitWithImage();
       } else {
-        this.Image = false;
-        await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-        console.log(this.RecipeID);
-        this.localLoading = true;
-        await this.recipeService.getEntry(this.RecipeID).toPromise().then(
-          res => {
-            this.persDataService.setCurrentRecipe(res.body);
-            this.navigateToNewEntry(this.model.Category, this.model.Name);
-          }
-        );
+        this.submitWithoutImage();
       }
 
     } else {
       this.globalAlert = true;
     }
+  }
+
+  async submitWithImage() {
+    this.Image = true;
+    this.localLoading = true;
+    await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+  }
+
+  async submitWithoutImage() {
+    this.Image = false;
+    this.localLoading = true;
+    await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
+    console.log(this.RecipeID);
+    await this.recipeService.getEntry(this.RecipeID).toPromise().then(
+      res => {
+        this.persDataService.setCurrentRecipe(res.body);
+        this.navigateToNewEntry(this.model.Category, this.model.Name);
+      }
+    );
   }
 
   navigateToNewEntry(category: string, name: string) {

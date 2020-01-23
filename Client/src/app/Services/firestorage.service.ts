@@ -22,11 +22,8 @@ export class FireStorageService {
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
-  public loading = false;
 
   async uploadSingleFile(file: File, recipeID: number, entry: FullRecipe) {
-
-    this.loading = true;
 
     const basePath = '/Images/';
 
@@ -63,7 +60,6 @@ export class FireStorageService {
 
   private goToNewEntry(recipe: FullRecipe) {
     this.persDataService.setCurrentRecipe(recipe);
-    this.loading = false;
     this.router.navigateByUrl('/' + recipe.Category + '/' + recipe.Name);
   }
 
