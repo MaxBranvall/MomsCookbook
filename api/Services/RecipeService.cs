@@ -90,10 +90,10 @@ namespace api.Services
             String[] prepTimeSplit = recipe.PrepTime.Split(":");
             String[] cookTimeSplit = recipe.CookTime.Split(":");
 
-            recipe.PrepTimeH = int.Parse(prepTimeSplit[0]);
-            recipe.PrepTimeM = int.Parse(prepTimeSplit[1]);
-            recipe.CookTimeH = int.Parse(cookTimeSplit[0]);
-            recipe.CookTimeM = int.Parse(cookTimeSplit[1]);
+            recipe.PrepTimeH = float.Parse(prepTimeSplit[0]);
+            recipe.PrepTimeM = float.Parse(prepTimeSplit[1]);
+            recipe.CookTimeH = float.Parse(cookTimeSplit[0]);
+            recipe.CookTimeM = float.Parse(cookTimeSplit[1]);
 
             recipe.Ingredients = GetIngredients(recipe.RecipeID);
             recipe.Steps = GetSteps(recipe.RecipeID);

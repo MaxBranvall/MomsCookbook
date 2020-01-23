@@ -7,7 +7,7 @@ namespace api.Models
         public int RecipeID { get; set; }
         public int LocalIngredientID { get; set; }
         public string Contents { get; set; }
-        public int Quantity { get; set; }
+        public float Quantity { get; set; }
         public string Unit { get; set; }
     }
 }

@@ -13,10 +13,10 @@ namespace api.Models
         public string ImagePath { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
-        public int PrepTimeH { get; set; }
-        public int PrepTimeM { get; set; }
-        public int CookTimeH { get; set; }
-        public int CookTimeM { get; set; }
+        public float PrepTimeH { get; set; }
+        public float PrepTimeM { get; set; }
+        public float CookTimeH { get; set; }
+        public float CookTimeM { get; set; }
         public List<Ingredient> Ingredients { get; set; }
         public List<Steps> Steps { get; set; }
         public List<SubSteps> SubSteps { get; set; }
