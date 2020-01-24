@@ -68,9 +68,8 @@ export class RecipeEntryComponent implements OnInit {
   additionalPhotoPreview: any[] = [];
 
   units: string[] = [
-    '--Select Unit--', 'pinch(s)', 'teaspoon(s)', 'tablespoon(s)',
-    'cup(s)',
-    'glob(s)'
+    '--Select Unit--', '----', 'pinch(s)', 'teaspoon(s)', 'tablespoon(s)',
+    'cup(s)', 'glob(s)', 'stick(s)', 'pint(s)'
   ];
 
   ingredientModel = new Ingredient(
