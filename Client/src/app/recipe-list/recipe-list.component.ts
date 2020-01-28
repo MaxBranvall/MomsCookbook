@@ -7,6 +7,7 @@ import { ListEntry } from '../Models/ListEntry';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 import { FullRecipe } from '../Models/FullRecipe';
+import { LoadingScreenComponent } from '../loading-screen/loading-screen.component';
 
 
 @Component({
@@ -18,6 +19,9 @@ export class RecipeListComponent implements OnInit {
 
   title: string;
   entries: FullRecipe[] = [];
+
+  noEntries = false;
+  loading = false;
 
   recipeSorted = false;
   prepTimeSorted = false;
@@ -43,13 +47,21 @@ export class RecipeListComponent implements OnInit {
   }
 
   async getEntries() {
+
+    this.loading = true;
+
     await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => {
 
-      if (res.status === 404)
-      {
+      this.loading = false;
+      if (res.status === 404) {
         console.error('Could not get recipes by category.');
       } else {
         this.entries = res.body;
+
+        if (this.entries.length === 0) {
+          this.noEntries = true;
+        }
+
       }
 
     });

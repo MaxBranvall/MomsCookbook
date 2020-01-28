@@ -24,6 +24,23 @@
                 </th>
             </thead>
 
+            <tbody *ngIf="this.loading">
+                <tr>
+                    <td>
+                        <div class="imgSkeleton"></div>
+                    </td>
+                    <td>
+                        <div class="nameSkeleton"></div>
+                    </td>
+                    <td>
+                        <div class="prepSkeleton"></div>
+                    </td>
+                    <td>
+                        <div class="cookSkeleton"></div>
+                    </td>
+                </tr>
+            </tbody>
+
             <tbody *ngIf="entries.length > 0">
                 <tr *ngFor="let entry of entries|orderBy:orderByField:reverseSort" (click)="onSelect(entry)">
                     <td>
@@ -73,7 +90,7 @@
             </tbody>
         </table>
 
-        <h2 *ngIf="entries.length === 0" style="margin-top: 5px;">No entries!</h2>
+        <h2 *ngIf="this.noEntries" style="margin-top: 5px;">No entries!</h2>
 
     </div>
 </main>
