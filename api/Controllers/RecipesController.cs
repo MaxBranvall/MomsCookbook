@@ -83,7 +83,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
         }
 
-        // PUT: api/Recipes/FirebaseURL
+        // PUT: api/Recipes
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
@@ -95,7 +95,21 @@ namespace api.Controllers
             };
 
             return await this._recipeService.AddDownloadURL(r);
+        }
 
+        // PUT: api/Recipes/updateRecipe
+        [HttpPut("updateRecipe")]
+        public async Task<StatusCodeResult> UpdateRecipe(FullRecipe recipe)
+        {
+            _logger.LogInformation("request made");
+            try
+            {
+                _recipeService.UpdateRecipe(recipe);
+            } catch (Exception ex)
+            {
+                _logger.LogInformation("Error: " + ex);
+            }
+            return Ok();
         }
 
         //    //// DELETE: api/Recipes/5

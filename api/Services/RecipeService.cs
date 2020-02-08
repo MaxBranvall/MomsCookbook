@@ -24,6 +24,26 @@ namespace api.Services
             _context = recipeContext;
         }
 
+        public ActionResult<FullRecipe> GetSingleRecipe(int id)
+        {
+
+            Recipe r = new Recipe();
+            var x = new FullRecipe();
+
+            try
+            {
+                r = _context.recipe.Where(y => y.ID == id).ToList()[0];
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"No recipe with provided index ({id}) found.");
+            }
+
+            x = InitializeRecipe(r);
+
+            return x;
+        }
+
         public List<FullRecipe> GetAllRecipes()
         {
 
@@ -52,27 +72,91 @@ namespace api.Services
             return fullRecipeList;
         }
 
-        public ActionResult<FullRecipe> GetSingleRecipe(int id)
+        public async Task<StatusCodeResult> AddDownloadURL(Recipe r)
+        {
+            _context.recipe.Attach(r);
+            _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
+            await _context.SaveChangesAsync();
+
+            return new StatusCodeResult(200);
+        }
+
+        public FullRecipe PostRecipe(FullRecipe recipe)
         {
 
             Recipe r = new Recipe();
-            var x = new FullRecipe();
 
             try
             {
-                r = _context.recipe.Where(y => y.ID == id).ToList()[0];
+                r = this.SetRecipe(recipe);
+
+                this._context.recipe.Add(r);
+                this._context.SaveChanges();
+
+                AddIngredients(recipe.Ingredients, r.ID);
+                AddSteps(recipe.Steps, r.ID);
+                AddSubSteps(recipe.SubSteps, r.ID);
+                AddTips(recipe.Tips, r.ID);
+                AddSubTips(recipe.SubTips, r.ID);
+
+                this._context.SaveChanges();
+            } catch (Exception ex)
+            {
+                _logger.LogInformation("Error: " + ex);
+            }
+
+            return GetSingleRecipe(r.ID).Value;
+        }
+
+        public Recipe UpdateRecipe(FullRecipe recipe)
+        {
+            Recipe smallRecipe = new Recipe();
+
+            smallRecipe = this.SetRecipe(recipe);
+            smallRecipe.ID = recipe.RecipeID;
+
+            //_context.recipe.Add(this.SetRecipe(recipe));
+
+            _context.recipe.Update(smallRecipe);
+
+            this.UpdateSteps(recipe.Steps, recipe.RecipeID);
+            this.UpdateSubSteps(recipe.SubSteps, recipe.RecipeID);
+            this.UpdateTips(recipe.Tips, recipe.RecipeID);
+            this.UpdateSubTips(recipe.SubTips, recipe.RecipeID);
+
+            _context.SaveChanges();
+
+            return smallRecipe;
+        }
+
+        private Recipe SetRecipe(FullRecipe recipe)
+        {
+            Recipe r = new Recipe();
+
+            try
+            {
+                r = new Recipe()
+                {
+                    Name = recipe.Name,
+                    ImagePath = null,
+                    Description = recipe.Description,
+                    Category = recipe.Category,
+                    PrepTime = recipe.PrepTime,
+                    CookTime = recipe.CookTime,
+                    Created = recipe.Created,
+                    LastModified = recipe.LastModified
+                };
             }
             catch (Exception ex)
             {
-                _logger.LogError($"No recipe with provided index ({id}) found.");
+                _logger.LogInformation("Error: " + ex);
             }
-            
-            x = InitializeRecipe(r);
 
-            return x;
+            return r;
+
         }
 
-        public FullRecipe InitializeRecipe(Recipe originalRecipe)
+        private FullRecipe InitializeRecipe(Recipe originalRecipe)
         {
             FullRecipe recipe = new FullRecipe()
             {
@@ -104,165 +188,176 @@ namespace api.Services
             return recipe;
         }
 
-        public List<Ingredient> GetIngredients(int RecipeID)
+        private void AddIngredients(List<Ingredient> ingredientList, int recipeID)
+        {
+            foreach (Ingredient i in ingredientList)
+            {
+                Ingredient y = new Ingredient()
+                {
+                    RecipeID = recipeID,
+                    LocalIngredientID = i.LocalIngredientID,
+                    Contents = i.Contents,
+                    Quantity = i.Quantity,
+                    Unit = i.Unit
+                };
+
+                _context.ingredients.Add(y);
+            }
+        }
+
+        private void AddSteps(List<Steps> stepList, int recipeID)
+        {
+            foreach (Steps s in stepList)
+            {
+                Steps step = new Steps()
+                {
+                    RecipeID = recipeID,
+                    LocalStepID = s.LocalStepID,
+                    Contents = s.Contents
+                };
+
+                _context.steps.Add(step);
+            }
+        }
+
+        private void AddSubSteps(List<SubSteps> subStepList, int recipeID)
+        {
+
+            foreach (SubSteps step in subStepList)
+            {
+
+                SubSteps s = new SubSteps()
+                {
+                    RecipeID = recipeID,
+                    LocalStepID = step.LocalStepID,
+                    Contents = step.Contents,
+                    SubStepID = step.SubStepID
+                };
+
+                 _context.substeps.Add(s);
+            }
+
+        }
+
+        private void AddTips(List<Tips> tipList, int recipeID)
+        {
+            foreach (Tips tip in tipList)
+            {
+                Tips t = new Tips()
+                {
+                    RecipeID = recipeID,
+                    LocalTipID = tip.LocalTipID,
+                    Contents = tip.Contents,
+                };
+
+                _context.tips.Add(t);
+            }
+        }
+
+        private void AddSubTips(List<SubTips> subTipList, int recipeID)
+        {
+            foreach (SubTips tip in subTipList)
+            {
+                SubTips t = new SubTips()
+                {
+                    RecipeID = recipeID,
+                    LocalTipID = tip.LocalTipID,
+                    Contents = tip.Contents,
+                    SubTipID = (int)tip.SubTipID
+                };
+
+                _context.subtips.Add(t);
+            }
+        }
+
+        private List<Ingredient> GetIngredients(int RecipeID)
         {
             List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).OrderBy(ingredient => ingredient.ID).ToList();
             return ingredients;
         }
 
-        public List<Steps> GetSteps(int RecipeID)
+        private List<Steps> GetSteps(int RecipeID)
         {
             List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).OrderBy(step => step.ID).ToList();
             return steps;
         }
 
-        public List<SubSteps> GetSubSteps(int RecipeID)
+        private List<SubSteps> GetSubSteps(int RecipeID)
         {
             List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).OrderBy(substep => substep.ID).ToList();
             return subSteps;
         }
 
-        public List<Tips> GetTips(int RecipeID)
+        private List<Tips> GetTips(int RecipeID)
         {
             List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).OrderBy(tip => tip.ID).ToList();
             return tips;
         }
 
-        public List<SubTips> GetSubTips(int RecipeID)
+        private List<SubTips> GetSubTips(int RecipeID)
         {
             List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).OrderBy(subtip => subtip.ID).ToList();
             return subTips;
         }
 
-        public async Task<StatusCodeResult> AddDownloadURL(Recipe r)
+        private void DeleteAllIngredients(int recipeID)
         {
-            _context.recipe.Attach(r);
-            _context.Entry(r).Property(x => x.ImagePath).IsModified = true;
-            await _context.SaveChangesAsync();
-
-            return new StatusCodeResult(200);
+            _context.RemoveRange(this.GetIngredients(recipeID));
         }
 
-        public FullRecipe PostRecipe(FullRecipe recipe)
+        private void DeleteAllSteps(int recipeID)
         {
+            _context.RemoveRange(this.GetSteps(recipeID));
+        }
 
-            Recipe r = new Recipe();
+        private void DeleteAllSubSteps(int recipeID)
+        {
+            _context.RemoveRange(this.GetSubSteps(recipeID));
+        }
 
-            try
-            {
-                r = new Recipe()
-                {
-                    Name = recipe.Name,
-                    ImagePath = null,
-                    Description = recipe.Description,
-                    Category = recipe.Category,
-                    PrepTime = recipe.PrepTime,
-                    CookTime = recipe.CookTime,
-                    Created = recipe.Created,
-                    LastModified = recipe.LastModified
-                };
+        private void DeleteAllTips(int recipeID)
+        {
+            _context.RemoveRange(this.GetTips(recipeID));
+        }
 
-                this._context.recipe.Add(r);
-                this._context.SaveChanges();
+        private void DeleteAllSubTips(int recipeID)
+        {
+            _context.RemoveRange(this.GetSubTips(recipeID));
+        }
 
-                AddIngredients(recipe.Ingredients, r.ID);
-                AddSteps(recipe.Steps, r.ID);
-                AddSubSteps(recipe.SubSteps, r.ID);
-                AddTips(recipe.Tips, r.ID);
-                AddSubTips(recipe.SubTips, r.ID);
+        private void UpdateIngredients(List<Ingredient> ingredientList, int recipeID)
+        {
+            this.DeleteAllIngredients(recipeID);
+            _context.SaveChanges();
+            this.AddIngredients(ingredientList, recipeID);
+        }
 
-                this._context.SaveChanges();
-            } catch (Exception ex)
-            {
-                _logger.LogInformation("Error: " + ex);
-            }
+        private void UpdateSteps(List<Steps> stepList, int recipeID)
+        {
+            this.DeleteAllSteps(recipeID);
+            _context.SaveChanges();
+            this.AddSteps(stepList, recipeID);
+        }
 
-            return GetSingleRecipe(r.ID).Value;
+        private void UpdateSubSteps(List<SubSteps> subStepList, int recipeID)
+        {
+            this.DeleteAllSubSteps(recipeID);
+            _context.SaveChanges();
+            this.AddSubSteps(subStepList, recipeID);
+        }
 
-            async void AddIngredients(List<Ingredient> ingredientList, int recipeID)
-            {
-                foreach (Ingredient i in ingredientList)
-                {
-                    Ingredient y = new Ingredient()
-                    {
-                        RecipeID = recipeID,
-                        LocalIngredientID = i.LocalIngredientID,
-                        Contents = i.Contents,
-                        Quantity = i.Quantity,
-                        Unit = i.Unit
-                    };
+        private void UpdateTips(List<Tips> tipList, int recipeID)
+        {
+            this.DeleteAllTips(recipeID);
+            _context.SaveChanges();
+            this.AddTips(tipList, recipeID);
+        }
 
-                    await _context.ingredients.AddAsync(y);
-
-                }
-            }
-
-            async void AddSteps(List<Steps> stepList, int recipeID)
-            {
-                foreach (Steps s in stepList)
-                {
-                    Steps step = new Steps()
-                    {
-                        RecipeID = recipeID,
-                        LocalStepID = s.LocalStepID,
-                        Contents = s.Contents
-                    };
-
-                    await _context.steps.AddAsync(step);
-
-                }
-            }
-
-            async void AddSubSteps(List<SubSteps> subStepList, int recipeID)
-            {
-
-                foreach (SubSteps step in subStepList)
-                {
-
-                    SubSteps s = new SubSteps()
-                    {
-                        RecipeID = recipeID,
-                        LocalStepID = step.LocalStepID,
-                        Contents = step.Contents,
-                        SubStepID = step.SubStepID
-                    };
-
-                    await _context.substeps.AddAsync(s);
-                }
-
-            }
-
-            async void AddTips(List<Tips> tipList, int recipeID)
-            {
-                foreach (Tips tip in tipList)
-                {
-                    Tips t = new Tips()
-                    {
-                        RecipeID = recipeID,
-                        LocalTipID = tip.LocalTipID,
-                        Contents = tip.Contents,
-                    };
-
-                    await _context.tips.AddAsync(t);
-                }
-            }
-
-            async void AddSubTips(List<SubTips> subTipList, int recipeID)
-            {
-                foreach (SubTips tip in subTipList)
-                {
-                    SubTips t = new SubTips()
-                    {
-                        RecipeID = recipeID,
-                        LocalTipID = tip.LocalTipID,
-                        Contents = tip.Contents,
-                        SubTipID = (int)tip.SubTipID
-                    };
-
-                    await _context.subtips.AddAsync(t);
-                }
-            }
-
+        private void UpdateSubTips(List<SubTips> subTipList, int recipeID)
+        {
+            this.DeleteAllSubTips(recipeID);
+            _context.SaveChanges();
+            this.AddSubTips(subTipList, recipeID);
         }
 
     }
