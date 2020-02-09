@@ -80,7 +80,10 @@
                         <th>Unit</th>
                         <th>Ingredient</th>
 
-                        <tr *ngFor="let ingredient of ingredientList; let i=LocalIngredientID; first as first, last as last;">
+                        <!-- <div *ngIf="this.mode !== 'editing'">
+                            <tr *ngFor="let ingredient of ingredientList; let i=LocalIngredientID; first as first, last as last;">
+                        </div> -->
+                        <tr *ngFor="let ingredient of this.model.Ingredients; let i=LocalIngredientID; first as first, last as last;">
 
                             <td>
                                 <input [(ngModel)]="ingredient.Quantity" name="Quantity-{{ingredient.LocalIngredientID}}" type="number" step=".01" min="0" placeholder="0">

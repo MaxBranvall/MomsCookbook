@@ -7,7 +7,8 @@ import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
-  { path:'newentry', component: RecipeEntryComponent},
+  { path: 'newentry', component: RecipeEntryComponent},
+  { path: 'editrecipe', component: RecipeEntryComponent, data : {mode : 'editing'} },
   { path: ':categoryTitle', component: RecipeListComponent },
   { path: ':categoryTitle/:recipeName', component: RecipePageComponent },
 ];

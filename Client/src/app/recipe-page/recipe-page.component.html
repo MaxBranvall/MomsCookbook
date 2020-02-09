@@ -1,6 +1,6 @@
 <app-main-header></app-main-header>
 <main>
-    <button type="button">Edit Recipe</button>
+    <button type="button" routerLink="../../editrecipe">Edit Recipe</button>
     <div class="recipe-outer-wrapper">
         <h2>{{recipe.Name}}</h2>
         <img class="recipe-image" src="../../assets/placeholders/loading.gif" [hidden]="recipe.ImageLoaded">

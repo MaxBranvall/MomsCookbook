@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { FullRecipe } from '../Models/FullRecipe';
 import { Ingredient } from '../Models/Ingredient';
@@ -25,13 +25,14 @@ import { FindValueSubscriber } from 'rxjs/internal/operators/find';
 export class RecipeEntryComponent implements OnInit {
 
   constructor(private recipeService: RecipeService, public storageService: FireStorageService, private router: Router,
-              private persDataService: PersistentdataService) {}
+              private persDataService: PersistentdataService, private route: ActivatedRoute) {}
 
   get diagnostic() {
     return JSON.stringify(this.model);
   }
 
   categories = categories;
+  public mode = 'newentry';
 
   public quantityAlert = false;
   public unitAlert = false;
@@ -88,6 +89,8 @@ export class RecipeEntryComponent implements OnInit {
   tipModel = new Tip(this.RecipeID, 0, null);
   tipList: Tip[] = [this.tipModel];
 
+  currentRecipe: FullRecipe;
+
   photoModel = new Photo(null, null);
   additionalPhotoList: Photo[] = [];
 
@@ -117,6 +120,17 @@ export class RecipeEntryComponent implements OnInit {
   );
 
   ngOnInit() {
+    this.route.data.subscribe(
+      x => {
+      this.mode = JSON.parse(JSON.stringify(x['mode']));
+      if (this.mode === 'editing') {
+        this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
+        this.model = this.currentRecipe;
+        console.log(JSON.stringify(this.model));
+      };
+      }
+    );
+
   }
 
   // cleanUpModel()
