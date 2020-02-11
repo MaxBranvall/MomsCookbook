@@ -59,7 +59,7 @@ export class RecipeService {
   }
 
   updateRecipe(recipe: FullRecipe): Observable<FullRecipe> {
-    return this.http.put<FullRecipe>(this.apiURL + 'Recipes', recipe);
+    return this.http.put<FullRecipe>(this.apiURL + 'Recipes/updateRecipe', recipe);
   }
 
   addPhoto(file: any, ID: string) {
