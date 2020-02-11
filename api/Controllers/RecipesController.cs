@@ -99,17 +99,14 @@ namespace api.Controllers
 
         // PUT: api/Recipes/updateRecipe
         [HttpPut("updateRecipe")]
-        public async Task<StatusCodeResult> UpdateRecipe(FullRecipe recipe)
+        public ActionResult<FullRecipe> UpdateRecipe(FullRecipe recipe)
         {
+
+            FullRecipe r;
             _logger.LogInformation("request made");
-            try
-            {
-                _recipeService.UpdateRecipe(recipe);
-            } catch (Exception ex)
-            {
-                _logger.LogInformation("Error: " + ex);
-            }
-            return Ok();
+            r = _recipeService.UpdateRecipe(recipe);
+
+            return CreatedAtAction(nameof(GetRecipe), new { id = recipe.RecipeID }, r);
         }
 
         //    //// DELETE: api/Recipes/5

@@ -12,6 +12,6 @@ namespace api.Interfaces
         ActionResult<FullRecipe> GetSingleRecipe(int id);
         FullRecipe PostRecipe(FullRecipe recipe);
         Task<StatusCodeResult> AddDownloadURL(Recipe r);
-        Recipe UpdateRecipe(FullRecipe recipe);
+        FullRecipe UpdateRecipe(FullRecipe recipe);
     }
 }

@@ -108,7 +108,7 @@ namespace api.Services
             return GetSingleRecipe(r.ID).Value;
         }
 
-        public Recipe UpdateRecipe(FullRecipe recipe)
+        public FullRecipe UpdateRecipe(FullRecipe recipe)
         {
             Recipe smallRecipe = new Recipe();
 
@@ -126,7 +126,7 @@ namespace api.Services
 
             _context.SaveChanges();
 
-            return smallRecipe;
+            return recipe;
         }
 
         private Recipe SetRecipe(FullRecipe recipe)
