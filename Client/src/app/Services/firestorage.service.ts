@@ -27,7 +27,7 @@ export class FireStorageService {
 
     const basePath = '/Images/';
 
-    const fileName = recipeID + '-' + this.getDateTimeString() + '-' + file.name;
+    const fileName = recipeID + '-' + 'mainImage';
     const filePath = basePath + fileName;
     const fileRef = this.storage.ref(filePath);
 
