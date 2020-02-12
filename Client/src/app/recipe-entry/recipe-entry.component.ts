@@ -13,9 +13,7 @@ import { Observable } from 'rxjs';
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
-import { NgModel } from '@angular/forms';
-import { __core_private_testing_placeholder__ } from '@angular/core/testing';
-import { FindValueSubscriber } from 'rxjs/internal/operators/find';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -26,10 +24,6 @@ export class RecipeEntryComponent implements OnInit {
 
   constructor(private recipeService: RecipeService, public storageService: FireStorageService, private router: Router,
               private persDataService: PersistentdataService, private route: ActivatedRoute) {}
-
-  get diagnostic() {
-    return JSON.stringify(this.model);
-  }
 
   categories = categories;
   public mode = 'newentry';
@@ -43,6 +37,7 @@ export class RecipeEntryComponent implements OnInit {
   public imagePath;
   public imgURL: any;
   public mainImage: File;
+  public imageChanged = false;
 
   public uploadPercent: Observable<number>;
   public downloadURL: Observable<string>;
@@ -50,18 +45,11 @@ export class RecipeEntryComponent implements OnInit {
 
   public submitted = false;
 
-  public fileSelected = false;
-  public additionalPhotosSelected = false;
-
   public LocalIngredientID = 0;
   public LocalStepID = 0;
   public LocalTipID = 0;
-
   public LocalSubStepID = 0;
   public localSubTipID = 0;
-
-  public currentStepElement: number = null;
-  public currentTipElement: number = null;
 
   public RecipeID = 1;
   public Image = false;
@@ -122,25 +110,30 @@ export class RecipeEntryComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(
       x => {
-      this.mode = JSON.parse(JSON.stringify(x['mode']));
-      if (this.mode === 'editing') {
-        this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
-        this.model = this.currentRecipe;
-        console.log(JSON.stringify(this.model));
-      };
+        this.mode = JSON.parse(JSON.stringify(x['mode']));
+        if (this.mode === 'editing') {
+          this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
+          this.RecipeID = this.currentRecipe.RecipeID;
+          this.model = this.currentRecipe;
+          this.imgURL = this.currentRecipe.ImagePath;
+          this.LocalStepID = this.model.Steps[this.model.Steps.length - 1].LocalStepID;
+          this.LocalSubStepID = this.model.SubSteps[this.model.SubSteps.length - 1].SubStepID;
+          console.log(this.LocalSubStepID);
+          this.LocalTipID = this.model.Tips[this.model.Tips.length - 1].LocalTipID;
+          this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
+          this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
+        }
       }
     );
 
   }
 
-  // cleanUpModel()
-  // {
-    // this.cleanUpSteps();
-  //   this.cleanUpTips();
-  // }
-
   showModel() {
     console.log(JSON.stringify(this.model));
+  }
+
+  get diagnostic() {
+    return JSON.stringify(this.model.SubSteps);
   }
 
   async onSubmit() {
@@ -149,12 +142,6 @@ export class RecipeEntryComponent implements OnInit {
     this.formatTimes();
     this.clearEmptyElements();
 
-    /*
-      If there is an image, call firestorage service to handle upload.
-      If not, handle tasks such as routing here.
-      TODO: neaten this up, don't do so much all in one spot.
-    */
-
     if (this.validateModel()) {
 
       this.globalAlert = false;
@@ -162,6 +149,7 @@ export class RecipeEntryComponent implements OnInit {
       if (this.mainImage !== undefined) {
         this.submitWithImage();
       } else {
+        this.model.ImagePath = this.imgURL;
         this.submitWithoutImage();
       }
 
@@ -173,21 +161,53 @@ export class RecipeEntryComponent implements OnInit {
   async submitWithImage() {
     this.Image = true;
     this.localLoading = true;
-    await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-    this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+
+    if (this.mode === 'editing') {
+      this.recipeService.updateRecipe(this.model).subscribe(
+        recipe => {
+          this.RecipeID = recipe.RecipeID;
+          this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+        }
+      );
+    } else {
+      this.recipeService.addRecipe(this.model).subscribe(
+        recipe => {
+          this.RecipeID = recipe.RecipeID;
+          this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+        }
+      );
+    }
   }
 
   async submitWithoutImage() {
     this.Image = false;
     this.localLoading = true;
-    await this.recipeService.addRecipe(this.model).toPromise().then(recipe => this.RecipeID = recipe.RecipeID);
-    console.log(this.RecipeID);
-    await this.recipeService.getEntry(this.RecipeID).toPromise().then(
-      res => {
-        this.persDataService.setCurrentRecipe(res.body);
-        this.navigateToNewEntry(this.model.Category, this.model.Name);
-      }
-    );
+
+    if (this.mode === 'editing') {
+      this.recipeService.updateRecipe(this.model).subscribe(
+        result => {
+          this.RecipeID = result.RecipeID;
+          this.recipeService.getEntry(this.RecipeID).subscribe(
+            recipe => {
+              this.persDataService.setCurrentRecipe(recipe.body);
+              this.navigateToNewEntry(this.model.Category, this.model.Name);
+            }
+          );
+        }
+      );
+    } else  {
+      this.recipeService.addRecipe(this.model).subscribe(
+        result => {
+          this.RecipeID = result.RecipeID;
+          this.recipeService.getEntry(this.RecipeID).subscribe(
+            recipe => {
+              this.persDataService.setCurrentRecipe(recipe.body);
+              this.navigateToNewEntry(this.model.Category, this.model.Name);
+            }
+          );
+        }
+      );
+    }
   }
 
   navigateToNewEntry(category: string, name: string) {
@@ -198,31 +218,34 @@ export class RecipeEntryComponent implements OnInit {
   clearEmptyElements() {
     this.model.Steps.forEach(step => {
         if (this.isEmptyOrNull(step.Contents)) {
-          this.model.Steps.splice(this.model.Steps.indexOf(step));
+          this.model.Steps.splice(this.model.Steps.indexOf(step), 1);
         }
       });
 
     this.model.SubSteps.forEach(subStep => {
+
+      console.log(JSON.stringify(subStep));
+
       if (this.isEmptyOrNull(subStep.Contents)) {
-        this.model.SubSteps.splice(this.model.SubSteps.indexOf(subStep));
+        this.model.SubSteps.splice(this.model.SubSteps.indexOf(subStep), 1);
       }
     });
 
     this.model.Tips.forEach(tip => {
       if (this.isEmptyOrNull(tip.Contents)) {
-        this.model.Tips.splice(this.model.Tips.indexOf(tip));
+        this.model.Tips.splice(this.model.Tips.indexOf(tip), 1);
       }
     });
 
     this.model.SubTips.forEach(subTip => {
       if (this.isEmptyOrNull(subTip.Contents)) {
-        this.model.SubTips.splice(this.model.SubTips.indexOf(subTip));
+        this.model.SubTips.splice(this.model.SubTips.indexOf(subTip), 1);
       }
     });
 
     this.model.Ingredients.forEach(ingredient => {
       if (this.isEmptyOrNull(ingredient.Contents)) {
-        this.model.Ingredients.splice(this.model.Ingredients.indexOf(ingredient));
+        this.model.Ingredients.splice(this.model.Ingredients.indexOf(ingredient), 1);
       }
     });
   }
@@ -313,41 +336,26 @@ export class RecipeEntryComponent implements OnInit {
   }
 
   addIngredient() {
-    this.ingredientList.push(new Ingredient(this.RecipeID, ++this.LocalIngredientID, '', null, this.units[0]));
+    this.model.Ingredients.push(new Ingredient(this.RecipeID, ++this.LocalIngredientID, '', null, this.units[0]));
   }
 
   addStep() {
-    this.stepList.push(new Step(this.RecipeID, ++this.LocalStepID, null));
+    this.model.Steps.push(new Step(this.RecipeID, ++this.LocalStepID, ''));
   }
 
   addSubStep(index?: number) {
-
     const i = +index;
-
-    this.subStepList.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
-    // if (index != undefined)
-    // {
-    //   this.subStepList.push(new Step(this.RecipeID, index, '', null, ++this.LocalSubStepID));
-    //   this.stepList[index].SubSteps = this.subStepList;
-    // }
-    // else
-    // {
-    //   this.subStepList.push(new Step(this.RecipeID, this.LocalStepID, '', null, ++this.LocalSubStepID));
-    //   this.stepList[this.LocalStepID].SubSteps = this.subStepList;
-    // }
+    console.log(this.LocalSubStepID.toString());
+    this.model.SubSteps.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
   }
 
   addTip() {
-    this.tipList.push(new Tip(this.RecipeID, ++this.LocalTipID, null));
+    this.model.Tips.push(new Tip(this.RecipeID, ++this.LocalTipID, null));
   }
 
   addSubTip(index?: number) {
-
     const i = +index;
-    console.log(typeof(i));
-    console.log(i);
-
-    this.subTipList.push(new Tip(this.RecipeID, i, '', ++this.localSubTipID));
+    this.model.SubTips.push(new Tip(this.RecipeID, i, null, ++this.localSubTipID));
   }
 
 
@@ -367,7 +375,6 @@ export class RecipeEntryComponent implements OnInit {
 
   photoPreview(files) {
     this.mainImage = files[0];
-    // this.model.Image.File = files[0];
     const reader = new FileReader();
     reader.readAsDataURL(files[0]);
     reader.onload = (event) => {
