@@ -112,19 +112,26 @@ namespace api.Services
         {
             Recipe smallRecipe = new Recipe();
 
-            smallRecipe = this.SetRecipe(recipe);
-            smallRecipe.ID = recipe.RecipeID;
+            try
+            {
+                smallRecipe = this.SetRecipe(recipe);
+                smallRecipe.ID = recipe.RecipeID;
 
-            //_context.recipe.Add(this.SetRecipe(recipe));
+                //_context.recipe.Add(this.SetRecipe(recipe));
 
-            _context.recipe.Update(smallRecipe);
+                _context.recipe.Update(smallRecipe);
 
-            this.UpdateSteps(recipe.Steps, recipe.RecipeID);
-            this.UpdateSubSteps(recipe.SubSteps, recipe.RecipeID);
-            this.UpdateTips(recipe.Tips, recipe.RecipeID);
-            this.UpdateSubTips(recipe.SubTips, recipe.RecipeID);
+                this.UpdateSteps(recipe.Steps, recipe.RecipeID);
+                this.UpdateSubSteps(recipe.SubSteps, recipe.RecipeID);
+                this.UpdateTips(recipe.Tips, recipe.RecipeID);
+                this.UpdateSubTips(recipe.SubTips, recipe.RecipeID);
+                this.UpdateIngredients(recipe.Ingredients, recipe.RecipeID);
 
-            _context.SaveChanges();
+                _context.SaveChanges();
+            } catch (Exception ex)
+            {
+                _logger.LogInformation("ERROR: " + ex);
+            }
 
             return recipe;
         }
@@ -138,7 +145,7 @@ namespace api.Services
                 r = new Recipe()
                 {
                     Name = recipe.Name,
-                    ImagePath = null,
+                    ImagePath = recipe.ImagePath,
                     Description = recipe.Description,
                     Category = recipe.Category,
                     PrepTime = recipe.PrepTime,
@@ -278,31 +285,31 @@ namespace api.Services
 
         private List<Ingredient> GetIngredients(int RecipeID)
         {
-            List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).OrderBy(ingredient => ingredient.ID).ToList();
+            List<Ingredient> ingredients = _context.ingredients.Where(x => x.RecipeID == RecipeID).OrderBy(ingredient => ingredient.LocalIngredientID).ToList();
             return ingredients;
         }
 
         private List<Steps> GetSteps(int RecipeID)
         {
-            List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).OrderBy(step => step.ID).ToList();
+            List<Steps> steps = _context.steps.Where(x => x.RecipeID == RecipeID).OrderBy(step => step.LocalStepID).ToList();
             return steps;
         }
 
         private List<SubSteps> GetSubSteps(int RecipeID)
         {
-            List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).OrderBy(substep => substep.ID).ToList();
+            List<SubSteps> subSteps = _context.substeps.Where(x => x.RecipeID == RecipeID).OrderBy(substep => substep.SubStepID).ToList();
             return subSteps;
         }
 
         private List<Tips> GetTips(int RecipeID)
         {
-            List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).OrderBy(tip => tip.ID).ToList();
+            List<Tips> tips = _context.tips.Where(x => x.RecipeID == RecipeID).OrderBy(tip => tip.LocalTipID).ToList();
             return tips;
         }
 
         private List<SubTips> GetSubTips(int RecipeID)
         {
-            List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).OrderBy(subtip => subtip.ID).ToList();
+            List<SubTips> subTips = _context.subtips.Where(x => x.RecipeID == RecipeID).OrderBy(subtip => subtip.SubTipID).ToList();
             return subTips;
         }
 
