@@ -51,6 +51,9 @@ export class RecipeEntryComponent implements OnInit {
   public LocalSubStepID = 0;
   public localSubTipID = 0;
 
+  public currentStepElement: number = null;
+  public currentTipElement: number = null;
+
   public RecipeID = 1;
   public Image = false;
 
