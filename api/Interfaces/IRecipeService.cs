@@ -13,5 +13,6 @@ namespace api.Interfaces
         FullRecipe PostRecipe(FullRecipe recipe);
         Task<StatusCodeResult> AddDownloadURL(Recipe r);
         FullRecipe UpdateRecipe(FullRecipe recipe);
+        StatusCodeResult DeleteRecipe(int recipeID);
     }
 }

@@ -136,6 +136,21 @@ namespace api.Services
             return recipe;
         }
 
+        public StatusCodeResult DeleteRecipe(int recipeID)
+        {
+            this.DeleteAllIngredients(recipeID);
+            this.DeleteAllSteps(recipeID);
+            this.DeleteAllSubSteps(recipeID);
+            this.DeleteAllTips(recipeID);
+            this.DeleteAllSubTips(recipeID);
+
+            _context.recipe.Remove(new Recipe() { ID = recipeID });
+            this._context.SaveChanges();
+
+            return new StatusCodeResult(200);
+
+        }
+
         private Recipe SetRecipe(FullRecipe recipe)
         {
             Recipe r = new Recipe();

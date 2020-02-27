@@ -109,10 +109,11 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetRecipe), new { id = recipe.RecipeID }, r);
         }
 
-        //    //// DELETE: api/Recipes/5
-        //    //[HttpDelete("{id}")]
-        //    //public void Delete(int id)
-        //    //{
-        //    //}
+        // DELETE: api/Recipes/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            _recipeService.DeleteRecipe(id);
+        }
     }
 }
