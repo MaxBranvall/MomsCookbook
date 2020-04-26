@@ -48,7 +48,7 @@ namespace api.Services
         {
 
             List<FullRecipe> fullRecipeList = new List<FullRecipe>();
-            List<Recipe> originalRecipeList = this._context.recipe.ToList();
+            List<Recipe> originalRecipeList = this._context.recipe.OrderBy(recipe => recipe.ID).ToList();
 
             foreach(Recipe r in originalRecipeList)
             {
