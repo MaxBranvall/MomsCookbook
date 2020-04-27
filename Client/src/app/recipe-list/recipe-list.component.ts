@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Recipe } from '../Models/Recipe';
-import { ListEntry } from '../Models/ListEntry';
-
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 import { FullRecipe } from '../Models/FullRecipe';
-import { LoadingScreenComponent } from '../loading-screen/loading-screen.component';
-
 
 @Component({
   selector: 'app-recipe-list',
@@ -54,6 +49,7 @@ export class RecipeListComponent implements OnInit {
 
       this.loading = false;
       if (res.status === 404) {
+        this.noEntries = true;
         console.error('Could not get recipes by category.');
       } else {
         this.entries = res.body;

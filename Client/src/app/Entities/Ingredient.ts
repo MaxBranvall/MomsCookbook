@@ -5,6 +5,5 @@ export class Ingredient {
         public Contents: string,
         public Quantity: number,
         public Unit: string
-    )
-    { }
+    ) { }
 }

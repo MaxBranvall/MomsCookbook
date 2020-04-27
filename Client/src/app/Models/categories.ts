@@ -22,4 +22,4 @@ export const categories = [
         title: 'Sides',
         titleL: 'sides'
     },
-]
+];

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using api.Models;
-using api.Interfaces;
-using Serilog;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using api.Models;
+using api.Entities;
+using api.Interfaces;
 
 namespace api.Controllers
 {
 
-    [EnableCors("AllowCors")]
+    //[EnableCors("AllowCors")]
     [Route("v1/[controller]")]
     [ApiController]
     public class RecipesController : ControllerBase
@@ -36,6 +37,12 @@ namespace api.Controllers
             return Ok();
         }
 
+        [HttpGet("test2")]
+        public string Te()
+        {
+            return "test complete";
+        }
+
         //POST: api/recipes/testpost
         [HttpPost("testpost")]
         public string TestPost(string s)
@@ -47,6 +54,7 @@ namespace api.Controllers
         [HttpGet]
         public IEnumerable<FullRecipe> Get()
         {
+            _logger.LogInformation("get called");
             return this._recipeService.GetAllRecipes();
         }
 

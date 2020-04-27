@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { categories } from '../Models/categories';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
@@ -9,6 +11,7 @@ import { categories } from '../Models/categories';
 })
 export class HomePageComponent implements OnInit {
   categories = categories;
+  env = environment.apiURL;
 
   constructor() { }
 

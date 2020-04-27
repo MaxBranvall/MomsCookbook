@@ -1,12 +1,12 @@
 ﻿
-namespace api.Models
+namespace api.Entities
 {
-    public class Steps
+    public class Tips
     {
         public int ID { get; set; }
         public int RecipeID { get; set; }
-        public int LocalStepID { get; set; }
+        public int LocalTipID { get; set; }
         public string Contents { get; set; }
-        public int SubStepID { get; set; }
+        public int SubTipID { get; set; }
     }
 }

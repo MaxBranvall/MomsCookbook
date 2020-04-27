@@ -31,7 +31,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://192.168.1.45:5000"
+      "applicationUrl": "http://192.168.1.6:24"
     },
     "prod": {
       "commandName": "Project",
@@ -39,7 +39,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       },
-      "applicationUrl": "https://momscookbookapi.azurewebsites.net"
+      "applicationUrl": "http://api.momscookbook.net"
     }
   }
 }

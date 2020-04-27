@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { FullRecipe } from '../Models/FullRecipe';
-import { Ingredient } from '../Models/Ingredient';
-import { Step } from '../Models/Step';
-import { Tip } from '../Models/Tip';
-import { Photo } from '../Models/Photo';
+import { Ingredient } from '../Entities/Ingredient';
+import { Step } from '../Entities/Step';
+import { Tip } from '../Entities/Tip';
+import { AdditionalPhotos } from '../Entities/AdditionalPhotos';
 import { categories } from '../Models/categories';
 
 import { Observable } from 'rxjs';
@@ -13,7 +13,6 @@ import { Observable } from 'rxjs';
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -82,8 +81,8 @@ export class RecipeEntryComponent implements OnInit {
 
   currentRecipe: FullRecipe;
 
-  photoModel = new Photo(null, null);
-  additionalPhotoList: Photo[] = [];
+  photoModel = new AdditionalPhotos(null, null, null);
+  additionalPhotoList: AdditionalPhotos[] = [];
 
   fileList: File[] = [];
 
@@ -114,6 +113,7 @@ export class RecipeEntryComponent implements OnInit {
     this.route.data.subscribe(
       x => {
         this.mode = JSON.parse(JSON.stringify(x['mode']));
+
         if (this.mode === 'editing') {
           this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
           this.RecipeID = this.currentRecipe.RecipeID;
@@ -126,6 +126,7 @@ export class RecipeEntryComponent implements OnInit {
           this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
           this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
         }
+
       }
     );
 

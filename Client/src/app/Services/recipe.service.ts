@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { FullRecipe } from '../Models/FullRecipe';
-import { Recipe } from '../Models/Recipe';
+import { Recipe } from '../Entities/Recipe';
 import { FirebaseURL } from '../Models/FirebaseURL';
 
 import { environment } from '../../environments/environment';
