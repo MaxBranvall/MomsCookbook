@@ -1,7 +1,7 @@
 ﻿
 namespace api.Entities
 {
-    public class User
+    public class Users
     {
         public int ID { get; set; }
         public string FirstName { get; set; }

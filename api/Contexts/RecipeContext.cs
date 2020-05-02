@@ -15,6 +15,7 @@ namespace api.Contexts
         public DbSet<SubSteps> substeps { get; set; }
         public DbSet<Tips> tips { get; set; }
         public DbSet<SubTips> subtips { get; set; }
+        public DbSet<Users> users { get; set; }
 
     }
 }

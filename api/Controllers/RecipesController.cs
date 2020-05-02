@@ -74,9 +74,9 @@ namespace api.Controllers
 
         //POST: v1/recipes/authenticateUser
         [HttpPost("authenticateUser")]
-        public string AuthenticateUser(User user)
+        public Users AuthenticateUser(Users user)
         {
-            string user1 = _userService.Authenticate(user.Username, user.Password);
+            Users user1 = _userService.Authenticate(user.Username, user.Password);
             return user1;
         }
 

@@ -4,47 +4,43 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using api.Entities;
 using api.Models;
 using api.Helpers;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
+using api.Contexts;
+using api.Interfaces;
 
 namespace api.Services
 {
 
-    public interface IUserService
-    {
-        string Authenticate(string username, string password);
-    }
-
     public class UserService : IUserService
     {
 
+        private RecipeContext _context;
         private readonly ILogger<UserService> _logger;
 
-        private List<User> _users = new List<User>
+        private List<Users> _users = new List<Users>
         {
-            new User { ID = 0, FirstName = "Admin", LastName = "User", Username = "Admin", Password = "admin", Role = Role.Admin },
-            new User { ID = 1, FirstName = "User", LastName = "User", Username = "User", Password = "user", Role = Role.User }
+            new Users { ID = 0, FirstName = "Admin", LastName = "User", Username = "Admin", Password = "admin", Role = Role.Admin },
+            new Users { ID = 1, FirstName = "User", LastName = "User", Username = "User", Password = "user", Role = Role.User }
         };
 
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings, ILogger<UserService> logger)
+        public UserService(IOptions<AppSettings> appSettings, ILogger<UserService> logger, RecipeContext context)
         {
             _appSettings = appSettings.Value;
             _logger = logger;
+            _context = context;
         }
 
-        public string Authenticate(string username, string password)
+        public Users Authenticate(string username, string password)
         {
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
-
-            _logger.LogInformation(user.LastName);
+            var user = _context.users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
             if (user == null)
             {
@@ -68,7 +64,7 @@ namespace api.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
 
-            return user.Token;
+            return user;
 
         }
 
