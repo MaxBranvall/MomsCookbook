@@ -31,29 +31,6 @@ namespace api.Controllers
             _userService = userService;
         }
 
-        //GET: v1/Recipes/test
-        [HttpGet("test")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult TestGet()
-        {
-            _logger.LogInformation("TestGet method called");
-            return Ok();
-        }
-
-        [HttpGet("test1")]
-        public string test1()
-        {
-            return "test complete";
-        }
-
-        //POST: v1/recipes/authenticateUser
-        [HttpPost("authenticateUser")]
-        public string AuthenticateUser(User user)
-        {
-            string user1 = _userService.Authenticate(user.Username, user.Password);
-            return user1;
-        }
-
         //GET: v1/Recipes
         [HttpGet]
         public IEnumerable<FullRecipe> Get()
@@ -93,6 +70,14 @@ namespace api.Controllers
             _logger.LogInformation("Post recipe called");
             FullRecipe r = this._recipeService.PostRecipe(fullRecipe);
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
+        }
+
+        //POST: v1/recipes/authenticateUser
+        [HttpPost("authenticateUser")]
+        public string AuthenticateUser(User user)
+        {
+            string user1 = _userService.Authenticate(user.Username, user.Password);
+            return user1;
         }
 
         // PUT: v1/Recipes
