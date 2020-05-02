@@ -9,6 +9,7 @@ using Serilog;
 using api.Models;
 using api.Entities;
 using api.Interfaces;
+using api.Services;
 
 namespace api.Controllers
 {
@@ -19,16 +20,18 @@ namespace api.Controllers
     public class RecipesController : ControllerBase
     {
 
+        private readonly IUserService _userService;
         private readonly IRecipeService _recipeService;
         private readonly ILogger<RecipesController> _logger;
 
-        public RecipesController(IRecipeService recipeService, ILogger<RecipesController> logger)
+        public RecipesController(IRecipeService recipeService, IUserService userService, ILogger<RecipesController> logger)
         {
             _logger = logger;
             _recipeService = recipeService;
+            _userService = userService;
         }
 
-        //GET: api/Recipes/test
+        //GET: v1/Recipes/test
         [HttpGet("test")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult TestGet()
@@ -37,20 +40,21 @@ namespace api.Controllers
             return Ok();
         }
 
-        [HttpGet("test2")]
-        public string Te()
+        [HttpGet("test1")]
+        public string test1()
         {
             return "test complete";
         }
 
-        //POST: api/recipes/testpost
-        [HttpPost("testpost")]
-        public string TestPost(string s)
+        //POST: v1/recipes/authenticateUser
+        [HttpPost("authenticateUser")]
+        public string AuthenticateUser(User user)
         {
-            return "success post: " + s;
+            string user1 = _userService.Authenticate(user.Username, user.Password);
+            return user1;
         }
 
-        //GET: api/Recipes
+        //GET: v1/Recipes
         [HttpGet]
         public IEnumerable<FullRecipe> Get()
         {
@@ -58,7 +62,7 @@ namespace api.Controllers
             return this._recipeService.GetAllRecipes();
         }
 
-        //GET: api/Recipes/categories/Dinner
+        //GET: v1/Recipes/categories/Dinner
         [HttpGet("categories/{category}")]
         public ActionResult<IEnumerable<FullRecipe>> GetCategory(string category)
         {
@@ -66,7 +70,7 @@ namespace api.Controllers
             return Ok(this._recipeService.GetAllRecipesByCategory(category));
         }
 
-        // GET: api/Recipes/5
+        // GET: v1/Recipes/5
         [HttpGet("{id}")]
         public ActionResult<FullRecipe> GetRecipe(int ID)
         {
@@ -82,7 +86,7 @@ namespace api.Controllers
             return Ok(this._recipeService.GetSingleRecipe(ID).Value);
         }
 
-        //Post: api/Recipes
+        //Post: v1/Recipes
         [HttpPost]
         public ActionResult<FullRecipe> PostFullRecipe(FullRecipe fullRecipe)
         {
@@ -91,7 +95,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
         }
 
-        // PUT: api/Recipes
+        // PUT: v1/Recipes
         [HttpPut]
         public async Task<StatusCodeResult> Put(FirebaseURL url)
         {
@@ -105,7 +109,7 @@ namespace api.Controllers
             return await this._recipeService.AddDownloadURL(r);
         }
 
-        // PUT: api/Recipes/updateRecipe
+        // PUT: v1/Recipes/updateRecipe
         [HttpPut("updateRecipe")]
         public ActionResult<FullRecipe> UpdateRecipe(FullRecipe recipe)
         {
@@ -117,7 +121,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetRecipe), new { id = recipe.RecipeID }, r);
         }
 
-        // DELETE: api/Recipes/5
+        // DELETE: v1/Recipes/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
