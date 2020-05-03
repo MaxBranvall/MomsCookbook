@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
 using api.Services;
 using api.Contexts;
+using api.Models;
+using api.Entities;
 using api;
 using api.Helpers;
 using System.Text;
@@ -16,6 +18,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 namespace api
 {
