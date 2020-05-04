@@ -60,6 +60,91 @@ namespace api.Services
             return WithoutPassword(user);
         }
 
+        public Users CreateAccount(Users user)
+        {
+
+            Users newUser;
+
+            if (_checkValidity(user.Username))
+            {
+                newUser = new Users
+                {
+                    Username = user.Username,
+                    Password = _passwordHasher.HashPassword(user, user.Password),
+                    Role = user.Role
+                };
+            } else
+            {
+                return null;
+            }
+
+            try
+            {
+                this._context.users.Add(newUser);
+                this._context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Uh oh! Caught exception: " + ex.ToString());
+                return null;
+            }
+
+            return newUser;
+        }
+
+        public List<Users> GetAllUsers()
+        {
+            List<Users> allUsers;
+
+            try
+            {
+                allUsers = this._context.users.ToList();
+            } catch (Exception ex)
+            {
+                this._logger.LogInformation("Caught exception: " + ex);
+                return null;
+            }
+
+            return allUsers;
+        }
+
+        public Users GetUser(int userID)
+        {
+            Users user;
+
+            try
+            {
+                user = this._context.users.Where(user => user.ID == userID).ToList()[0];
+
+            } catch (Exception ex)
+            {
+                this._logger.LogError("Caught exception: " + ex);
+                return null;
+            }
+
+            return user;
+        }
+
+        public Users ChangePassword(Users user)
+        {
+
+            //add error handling
+            
+            if (GetUser(user.ID) != null)
+            {
+                string newPassword = this._passwordHasher.HashPassword(user, user.Password);
+                user.Password = newPassword;
+            } else
+            {
+                return null;
+            }
+
+            this._context.users.Update(user);
+            this._context.SaveChanges();
+            return user;
+        }
+
         private Users WithoutPassword(Users user)
         {
             user.Password = null;
@@ -76,8 +161,7 @@ namespace api.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.ID.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role),
-                    new Claim(ClaimTypes.Name, user.LastName)
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -86,6 +170,22 @@ namespace api.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        private bool _checkValidity(string username)
+        {
+            List<Users> allUsers = GetAllUsers();
+
+            foreach (Users user in allUsers)
+            {
+                if (user.Username == username)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
         }
 
     }

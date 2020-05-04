@@ -20,6 +20,8 @@ namespace api.Controllers
     public class RecipesController : ControllerBase
     {
 
+        //Refactor controller to match AuthController. This code is terrible.
+
         private readonly IUserService _userService;
         private readonly IRecipeService _recipeService;
         private readonly ILogger<RecipesController> _logger;
@@ -70,14 +72,6 @@ namespace api.Controllers
             _logger.LogInformation("Post recipe called");
             FullRecipe r = this._recipeService.PostRecipe(fullRecipe);
             return CreatedAtAction(nameof(GetRecipe), new { id = r.RecipeID }, r);
-        }
-
-        //POST: v1/recipes/authenticateUser
-        [HttpPost("authenticateUser")]
-        public Users AuthenticateUser(Users user)
-        {
-            Users user1 = _userService.Authenticate(user.Username, user.Password);
-            return user1;
         }
 
         // PUT: v1/Recipes
