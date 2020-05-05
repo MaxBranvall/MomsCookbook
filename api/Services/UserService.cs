@@ -10,12 +10,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using api.Entities;
 using api.Models;
 using api.Helpers;
 using api.Contexts;
 using api.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using api.ExtensionMethods;
 
 namespace api.Services
 {
@@ -45,19 +46,24 @@ namespace api.Services
                 return null;
             }
 
-            if (_passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Success)
+            try
             {
-                _logger.LogDebug("Success!");
-            }
-            else
+                if (_passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Success)
+                {
+                    _logger.LogInformation("Correct password! Generating token.");
+                    user.Token = _getToken(user);
+                    return user;
+                }
+                else
+                {
+                    _logger.LogError("Failed. Wrong username and/or password.");
+                    return null;
+                }
+            } catch (Exception ex)
             {
-                _logger.LogError("Failed. Wrong username and/or password.");
+                this._logger.LogInformation("Caught exception ex: " + ex);
                 return null;
             }
-
-            user.Token = _getToken(user);
-
-            return WithoutPassword(user);
         }
 
         public Users CreateAccount(Users user)
@@ -70,9 +76,11 @@ namespace api.Services
                 newUser = new Users
                 {
                     Username = user.Username,
-                    Password = _passwordHasher.HashPassword(user, user.Password),
                     Role = user.Role
                 };
+
+                newUser.Password = this._passwordHasher.HashPassword(newUser, user.Password);
+
             } else
             {
                 return null;
@@ -82,6 +90,7 @@ namespace api.Services
             {
                 this._context.users.Add(newUser);
                 this._context.SaveChanges();
+                return newUser;
 
             }
             catch (Exception ex)
@@ -89,8 +98,6 @@ namespace api.Services
                 _logger.LogError("Uh oh! Caught exception: " + ex.ToString());
                 return null;
             }
-
-            return newUser;
         }
 
         public List<Users> GetAllUsers()
@@ -130,19 +137,23 @@ namespace api.Services
         {
 
             //add error handling
-            
-            if (GetUser(user.ID) != null)
+
+            Users existingUser = GetUser(user.ID);
+
+            if (existingUser != null)
             {
-                string newPassword = this._passwordHasher.HashPassword(user, user.Password);
-                user.Password = newPassword;
-            } else
+                string newPassword = this._passwordHasher.HashPassword(existingUser, user.Password);
+                existingUser.Password = newPassword;
+            }
+            else
             {
                 return null;
             }
 
-            this._context.users.Update(user);
+            this._context.users.Attach(existingUser);
+            this._context.Entry(existingUser).Property(x => x.Password).IsModified = true;
             this._context.SaveChanges();
-            return user;
+            return existingUser;
         }
 
         private Users WithoutPassword(Users user)
@@ -174,6 +185,9 @@ namespace api.Services
 
         private bool _checkValidity(string username)
         {
+
+            //maybe move to extension method
+
             List<Users> allUsers = GetAllUsers();
 
             foreach (Users user in allUsers)

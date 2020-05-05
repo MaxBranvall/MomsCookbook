@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using api.Entities;
 using api.Interfaces;
-using System.Runtime.InteropServices.WindowsRuntime;
+using api.ExtensionMethods;
+using api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
+    //[Authorize]
     [Route("v1/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -45,7 +48,7 @@ namespace api.Controllers
             if (user != null)
             {
                 this._logger.LogInformation($"Successfully retrieved user with ID: {user.ID} and username: {user.Username}");
-                return Ok(user);
+                return Ok(user.WithoutPassword());
             } else
             {
                 this._logger.LogError("There was an issue retrieving user with ID: " + ID);
@@ -54,6 +57,7 @@ namespace api.Controllers
         }
 
         //GET: v1/auth/getAllUsers
+        //[Authorize(Roles = Role.Admin)]
         [HttpGet("getAllUsers")]
         public ActionResult<List<Users>> GetAll()
         {
@@ -61,10 +65,11 @@ namespace api.Controllers
 
             List<Users> allUsers = this._userService.GetAllUsers();
 
+
             if (allUsers != null)
             {
                 this._logger.LogInformation("Successfully retrieved list of all users.");
-                return Ok(allUsers);
+                return Ok(allUsers.RemovePasswords());
             } else
             {
                 this._logger.LogError("Can not retrieve list of users");
@@ -74,8 +79,9 @@ namespace api.Controllers
         }
 
         //POST: v1/auth/authenticateUser
+        //[AllowAnonymous]
         [HttpPost("authenticateUser")]
-        public ActionResult<Users> AuthenticateUser(Users user)
+        public ActionResult<Users> AuthenticateUser([FromBody] AuthenticateModel user)
         {
 
            this._logger.LogInformation("Attempting to authenticate user: " + user.Username);
@@ -85,7 +91,7 @@ namespace api.Controllers
             if (user1 != null)
             {
                 this._logger.LogInformation("Succesfully authenticated user: " + user.Username);
-                return Ok(user1);
+                return Ok(user1.WithoutPassword());
             } else
             {
                 this._logger.LogError("Can not authenticate user: " + user.Username);
@@ -94,6 +100,7 @@ namespace api.Controllers
         }
 
         //POST: v1/auth/createUser
+        //[AllowAnonymous]
         [HttpPost("createUser")]
         public ActionResult<Users> CreateUser(Users user)
         {
@@ -105,16 +112,19 @@ namespace api.Controllers
             if (newUser != null)
             {
                 this._logger.LogInformation("Successfully created user: " + newUser.Username);
-                return Ok(newUser);
-            } else
+                //return Ok(newUser);
+                return CreatedAtAction(nameof(GetUser), new { ID = newUser.ID }, this._userService.GetUser(newUser.ID).WithoutPassword());
+            }
+            else
             {
                 this._logger.LogError("There was an issue creating user: " + user.Username);
-                return BadRequest();
+                return BadRequest("This username already exists.");
             }
 
         }
 
         //PUT: v1/auth/changePassword
+        //[AllowAnonymous]
         [HttpPut("changePassword")]
         public ActionResult<Users> ChangePassword(Users user)
         {
@@ -126,7 +136,7 @@ namespace api.Controllers
             {
                 //fix error here
                 this._logger.LogInformation("Successfully changed password for user: " + userNewPassword.Username);
-                return CreatedAtAction(nameof(GetUser), userNewPassword);
+                return CreatedAtAction(nameof(GetUser), new { ID = userNewPassword.ID }, userNewPassword.WithoutPassword());
             } else
             {
                 this._logger.LogError("There was an issue changing the password for user: " + user.Username);
