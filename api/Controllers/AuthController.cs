@@ -28,7 +28,7 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        //TODO: add delete user
+        //TODO: For delete and put maybe return 204 instead of 200 or 201
 
         // v1/auth/testget
         [HttpGet("testget")]
@@ -112,7 +112,6 @@ namespace api.Controllers
             if (newUser != null)
             {
                 this._logger.LogInformation("Successfully created user: " + newUser.Username);
-                //return Ok(newUser);
                 return CreatedAtAction(nameof(GetUser), new { ID = newUser.ID }, this._userService.GetUser(newUser.ID).WithoutPassword());
             }
             else
@@ -134,7 +133,6 @@ namespace api.Controllers
 
             if (userNewPassword != null)
             {
-                //fix error here
                 this._logger.LogInformation("Successfully changed password for user: " + userNewPassword.Username);
                 return CreatedAtAction(nameof(GetUser), new { ID = userNewPassword.ID }, userNewPassword.WithoutPassword());
             } else
@@ -142,6 +140,26 @@ namespace api.Controllers
                 this._logger.LogError("There was an issue changing the password for user: " + user.Username);
                 return BadRequest();
             }
+        }
+
+        //DELETE: v1/auth/deleteUser/5
+        [HttpDelete("deleteUser/{id}")]
+        public ActionResult<Users> DeleteUser(int id)
+        {
+            this._logger.LogInformation("Attempting to delete user with id: " + id);
+
+            bool deleteUser = this._userService.DeleteUser(id);
+
+            if (deleteUser)
+            {
+                this._logger.LogInformation("Successfully deleted user with id: " + id);
+                return NoContent();
+            } else
+            {
+                this._logger.LogError("There was an error deleting user with id: " + id);
+                return BadRequest(new { message = "Could not delete user with id: " + id });
+            }
+
         }
 
     }

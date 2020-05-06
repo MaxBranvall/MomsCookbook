@@ -76,6 +76,8 @@ namespace api.Services
                 newUser = new Users
                 {
                     Username = user.Username,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
                     Role = user.Role
                 };
 
@@ -156,10 +158,28 @@ namespace api.Services
             return existingUser;
         }
 
-        private Users WithoutPassword(Users user)
+        public bool DeleteUser(int id)
         {
-            user.Password = null;
-            return user;
+            Users user = GetUser(id);
+
+            try
+            {
+                if (user != null)
+                {
+                    this._context.users.Remove(user);
+                    this._context.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError("Caught exception: " + ex);
+                return false;
+            }
         }
 
         private string _getToken(Users user)
@@ -172,6 +192,7 @@ namespace api.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.ID.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
