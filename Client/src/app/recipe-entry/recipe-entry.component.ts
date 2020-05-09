@@ -112,7 +112,7 @@ export class RecipeEntryComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(
       x => {
-        this.mode = JSON.parse(JSON.stringify(x['mode']));
+        this.mode = JSON.parse(JSON.stringify(x.mode));
 
         if (this.mode === 'editing') {
           this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
@@ -166,6 +166,7 @@ export class RecipeEntryComponent implements OnInit {
     this.Image = true;
     this.localLoading = true;
 
+    // TODO: use an enum here
     if (this.mode === 'editing') {
       this.recipeService.updateRecipe(this.model).subscribe(
         recipe => {
@@ -328,6 +329,7 @@ export class RecipeEntryComponent implements OnInit {
   setCreationTime() {
     if (this.isEmptyOrNull(this.model.Created)) {
       this.model.Created = new Date().getTime();
+      this.model.LastModified = new Date().getTime();
     }
 
     this.model.LastModified = new Date().getTime();
