@@ -19,6 +19,7 @@ import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 import { RecipeService} from './Services/recipe.service';
 
 import { OrderModule } from 'ngx-order-pipe';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { OrderModule } from 'ngx-order-pipe';
     RecipePageComponent,
     RecipeEntryComponent,
     LoadingScreenComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

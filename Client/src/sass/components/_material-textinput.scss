@@ -1,6 +1,6 @@
 @import "../base/variables";
 
-input[type=text] {
+input[type=text], input[type=password] {
     background-color: $mainBG;
     border: none;
     border-bottom: 1px solid black;

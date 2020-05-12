@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AuthenticationService } from '../Services/authentication.service';
+import { RecipeService } from '../Services/recipe.service';
 import { categories } from '../Models/categories';
-
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -13,9 +14,13 @@ export class HomePageComponent implements OnInit {
   categories = categories;
   env = environment.apiURL;
 
-  constructor() { }
+  constructor(private auth: AuthenticationService, private recipeservice: RecipeService) {}
 
   ngOnInit() {
+  }
+
+  authlogin() {
+    this.auth.login('admin', 'admin').subscribe();
   }
 
 }
