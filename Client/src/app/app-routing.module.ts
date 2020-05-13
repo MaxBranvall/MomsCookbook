@@ -5,12 +5,13 @@ import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 import { LoginComponent } from './login/login.component';
+import { EntryMode } from './_helpers/entry-mode.enum';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
-  { path: 'newentry', component: RecipeEntryComponent},
+  { path: 'newentry', component: RecipeEntryComponent, data : {mode : EntryMode.NewEntry}},
   { path: 'login', component: LoginComponent },
-  { path: 'editrecipe', component: RecipeEntryComponent, data : {mode : 'editing'} },
+  { path: 'editrecipe', component: RecipeEntryComponent, data : {mode : EntryMode.EditEntry} },
   { path: ':categoryTitle', component: RecipeListComponent },
   { path: ':categoryTitle/:recipeName', component: RecipePageComponent },
 ];

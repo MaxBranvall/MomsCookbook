@@ -7,12 +7,15 @@ import { Step } from '../Entities/Step';
 import { Tip } from '../Entities/Tip';
 import { AdditionalPhotos } from '../Entities/AdditionalPhotos';
 import { categories } from '../Models/categories';
+import { EntryMode } from '../_helpers/entry-mode.enum';
+import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 import { Observable } from 'rxjs';
 
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { Recipe } from '../Entities/Recipe';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -25,7 +28,7 @@ export class RecipeEntryComponent implements OnInit {
               private persDataService: PersistentdataService, private route: ActivatedRoute) {}
 
   categories = categories;
-  public mode = 'newentry';
+  public mode = EntryMode.NewEntry;
 
   public quantityAlert = false;
   public unitAlert = false;
@@ -114,17 +117,9 @@ export class RecipeEntryComponent implements OnInit {
       x => {
         this.mode = JSON.parse(JSON.stringify(x.mode));
 
-        if (this.mode === 'editing') {
-          this.currentRecipe = JSON.parse(localStorage.getItem('currentRecipe'));
-          this.RecipeID = this.currentRecipe.RecipeID;
-          this.model = this.currentRecipe;
-          this.imgURL = this.currentRecipe.ImagePath;
-          this.LocalStepID = this.model.Steps[this.model.Steps.length - 1].LocalStepID;
-          this.LocalSubStepID = this.model.SubSteps[this.model.SubSteps.length - 1].SubStepID;
-          console.log(this.LocalSubStepID);
-          this.LocalTipID = this.model.Tips[this.model.Tips.length - 1].LocalTipID;
-          this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
-          this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
+        if (this.mode === EntryMode.EditEntry) {
+          this.currentRecipe = JSON.parse(localStorage.getItem(LocalStorageItem.CurrentRecipe));
+          this.initializeRecipe();
         }
 
       }
@@ -132,15 +127,26 @@ export class RecipeEntryComponent implements OnInit {
 
   }
 
+  log(x) {
+    console.log(x);
+  }
+
   showModel() {
     console.log(JSON.stringify(this.model));
   }
 
-  get diagnostic() {
-    return JSON.stringify(this.model.SubSteps);
+  private initializeRecipe() {
+    this.RecipeID = this.currentRecipe.RecipeID;
+    this.model = this.currentRecipe;
+    this.imgURL = this.currentRecipe.ImagePath;
+    this.LocalStepID = this.model.Steps[this.model.Steps.length - 1].LocalStepID;
+    this.LocalSubStepID = this.model.SubSteps[this.model.SubSteps.length - 1].SubStepID;
+    this.LocalTipID = this.model.Tips[this.model.Tips.length - 1].LocalTipID;
+    this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
+    this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
   }
 
-  async onSubmit() {
+  onSubmit() {
 
     this.setCreationTime();
     this.formatTimes();
@@ -153,6 +159,7 @@ export class RecipeEntryComponent implements OnInit {
       if (this.mainImage !== undefined) {
         this.submitWithImage();
       } else {
+        // TODO: find out whats going on here
         this.model.ImagePath = this.imgURL;
         this.submitWithoutImage();
       }
@@ -166,8 +173,7 @@ export class RecipeEntryComponent implements OnInit {
     this.Image = true;
     this.localLoading = true;
 
-    // TODO: use an enum here
-    if (this.mode === 'editing') {
+    if (this.mode === EntryMode.EditEntry) {
       this.recipeService.updateRecipe(this.model).subscribe(
         recipe => {
           this.RecipeID = recipe.RecipeID;
@@ -188,10 +194,12 @@ export class RecipeEntryComponent implements OnInit {
     this.Image = false;
     this.localLoading = true;
 
-    if (this.mode === 'editing') {
+    if (this.mode === EntryMode.EditEntry) {
       this.recipeService.updateRecipe(this.model).subscribe(
         result => {
           this.RecipeID = result.RecipeID;
+
+          // TODO: refactor as to not repeat myself here and in the lines in else.
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
@@ -228,9 +236,6 @@ export class RecipeEntryComponent implements OnInit {
       });
 
     this.model.SubSteps.forEach(subStep => {
-
-      console.log(JSON.stringify(subStep));
-
       if (this.isEmptyOrNull(subStep.Contents)) {
         this.model.SubSteps.splice(this.model.SubSteps.indexOf(subStep), 1);
       }
@@ -319,8 +324,8 @@ export class RecipeEntryComponent implements OnInit {
     return await this.recipeService.addRecipe(this.model);
   }
 
-  isEmptyOrNull(s: any) {
-    if (s === null || s === undefined || s === '') {
+  isEmptyOrNull(x: any) {
+    if (x === null || x === undefined || x === '') {
       return true;
     }
     return false;

@@ -8,34 +8,70 @@
         <div class="form-inner-wrapper">
             <div class="main-details">
 
-                <label for="name">Recipe Name: </label>
+                <label for="name">
+                    Recipe Name:
+                </label>
                 <input
-                class="textinput" type="text" id="name" name="Name"
-                [(ngModel)]='model.Name' placeholder="Name of Recipe" required
-                #name="ngModel">
-                <div [hidden]="name.valid || name.pristine && name.untouched" class="alertbox">
+                required
+                [(ngModel)]='model.Name'
+                #name = "ngModel"
+                name="Name"
+                id="name"
+                type="text"
+                class="textinput"
+                placeholder="Name of Recipe"
+                (change)="log(name)">
+                <div class="alertbox"
+                    *ngIf="name.errors.required && name.touched">
                     Name is required!
                 </div>
 
-                <label for="category">Category: </label>
-                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" (change)="validateCategory()">
-                    <option *ngFor="let cat of categories">{{cat.title}}</option>
+                <label for="category">
+                    Category:
+                </label>
+                <select
+                    [(ngModel)]="model.Category"
+                    name="Category-{{model.RecipeID}}"
+                    (change)="validateCategory()">
+                    <option *ngFor="let cat of categories">
+                        {{cat.title}}
+                    </option>
                 </select>
-                <div [hidden]="!categoryAlert" class="alertbox categoryAlert">
-                    <p>Please select a valid category.</p>
+                <div class="alertbox categoryAlert"
+                    [hidden]="!categoryAlert">
+                    <p>
+                        Please select a valid category.
+                    </p>
                 </div>
 
-                <label for="description">Description: </label>
-                <textarea id="description" name="Description"
-                [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
+                <label for="description">
+                    Description:
+                </label>
+                <textarea [(ngModel)]='model.Description'
+                    name="Description"
+                    id="description"
+                    placeholder="Description of Recipe">
+                </textarea>
 
-                <label for="ImagePath">Main Photo: </label>
-                <input #file style="display: none" type="file" id="ImagePath"
-                name="Photo"
-                (change)="photoPreview(file.files)">
-                <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
+                <label for="ImagePath">
+                    Main Photo:
+                </label>
+                <input #file
+                    style="display: none"
+                    type="file"
+                    id="ImagePath"
+                    name="Photo"
+                    (change)="photoPreview(file.files)"
+                >
+                <button type="button"
+                    class="materialButton"
+                    (click)="file.click()">
+                    Choose Photo..
+                </button>
 
-                <label>Image Preview: </label>
+                <label>
+                    Image Preview:
+                </label>
                 <img [src]="imgURL" *ngIf="imgURL">
 
             </div>
