@@ -48,17 +48,6 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddCors(options =>
-           options.AddPolicy("AllowCors",
-           builder =>
-           {
-               builder
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-           }
-           ));
-
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -100,7 +89,10 @@ namespace api
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
 
-            app.UseCors("AllowCors");
+            app.UseCors(builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyMethod());
 
             if (env.IsDevelopment())
             {
@@ -109,6 +101,7 @@ namespace api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

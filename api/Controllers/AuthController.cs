@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("v1/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -43,6 +43,15 @@ namespace api.Controllers
         {
             this._logger.LogInformation("Attempting to retrieve user with id: " + ID);
 
+            this._logger.LogInformation("Checking permissions..");
+
+            int currentUserID = int.Parse(User.Identity.Name);
+            if (ID != currentUserID  && !User.IsInRole(Role.Admin))
+            {
+                this._logger.LogError("Insufficient permissions.");
+                return Forbid();
+            }
+
             Users user = this._userService.GetUser(ID);
 
             if (user != null)
@@ -57,7 +66,7 @@ namespace api.Controllers
         }
 
         //GET: v1/auth/getAllUsers
-        //[Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.Admin)]
         [HttpGet("getAllUsers")]
         public ActionResult<List<Users>> GetAll()
         {
@@ -79,7 +88,7 @@ namespace api.Controllers
         }
 
         //POST: v1/auth/authenticateUser
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("authenticateUser")]
         public ActionResult<Users> AuthenticateUser([FromBody] AuthenticateModel user)
         {
@@ -100,7 +109,7 @@ namespace api.Controllers
         }
 
         //POST: v1/auth/createUser
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("createUser")]
         public ActionResult<Users> CreateUser(Users user)
         {
@@ -123,7 +132,7 @@ namespace api.Controllers
         }
 
         //PUT: v1/auth/changePassword
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPut("changePassword")]
         public ActionResult<Users> ChangePassword(Users user)
         {
