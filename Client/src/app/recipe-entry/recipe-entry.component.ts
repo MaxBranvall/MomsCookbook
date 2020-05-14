@@ -131,10 +131,6 @@ export class RecipeEntryComponent implements OnInit {
     console.log(x);
   }
 
-  showModel() {
-    console.log(JSON.stringify(this.model));
-  }
-
   private initializeRecipe() {
     this.RecipeID = this.currentRecipe.RecipeID;
     this.model = this.currentRecipe;
@@ -356,7 +352,6 @@ export class RecipeEntryComponent implements OnInit {
 
   addSubStep(index?: number) {
     const i = +index;
-    console.log(this.LocalSubStepID.toString());
     this.model.SubSteps.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
   }
 

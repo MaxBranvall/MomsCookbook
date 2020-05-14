@@ -22,7 +22,7 @@
                 placeholder="Name of Recipe"
                 (change)="log(name)">
                 <div class="alertbox"
-                    *ngIf="name.errors.required && name.touched">
+                    *ngIf="name.errors?.required && name.touched">
                     Name is required!
                 </div>
 
