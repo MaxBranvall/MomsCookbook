@@ -14,7 +14,6 @@ using api.Services;
 namespace api.Controllers
 {
 
-    //[EnableCors("AllowCors")]
     [Route("v1/[controller]")]
     [ApiController]
     public class RecipesController : ControllerBase
