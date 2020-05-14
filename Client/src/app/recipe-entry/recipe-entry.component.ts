@@ -220,7 +220,7 @@ export class RecipeEntryComponent implements OnInit {
 
   clearEmptyElements() {
     this.model.Steps.forEach(step => {
-        if (this.isEmptyOrNull(step.Contents)) {
+        if (this.isEmptyOrNull(step.Contents.trim())) {
           this.model.Steps.splice(this.model.Steps.indexOf(step), 1);
         }
       });
@@ -229,25 +229,25 @@ export class RecipeEntryComponent implements OnInit {
 
       console.log(JSON.stringify(subStep));
 
-      if (this.isEmptyOrNull(subStep.Contents)) {
+      if (this.isEmptyOrNull(subStep.Contents.trim())) {
         this.model.SubSteps.splice(this.model.SubSteps.indexOf(subStep), 1);
       }
     });
 
     this.model.Tips.forEach(tip => {
-      if (this.isEmptyOrNull(tip.Contents)) {
+      if (this.isEmptyOrNull(tip.Contents.trim())) {
         this.model.Tips.splice(this.model.Tips.indexOf(tip), 1);
       }
     });
 
     this.model.SubTips.forEach(subTip => {
-      if (this.isEmptyOrNull(subTip.Contents)) {
+      if (this.isEmptyOrNull(subTip.Contents.trim())) {
         this.model.SubTips.splice(this.model.SubTips.indexOf(subTip), 1);
       }
     });
 
     this.model.Ingredients.forEach(ingredient => {
-      if (this.isEmptyOrNull(ingredient.Contents)) {
+      if (this.isEmptyOrNull(ingredient.Contents.trim())) {
         this.model.Ingredients.splice(this.model.Ingredients.indexOf(ingredient), 1);
       }
     });
