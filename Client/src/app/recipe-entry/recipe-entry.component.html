@@ -30,10 +30,12 @@
                     Category:
                 </label>
                 <select
+                    required
                     [(ngModel)]="model.Category"
+                    #category="ngModel"
                     name="Category-{{model.RecipeID}}"
                     (change)="validateCategory()">
-                    <option *ngFor="let cat of categories">
+                    <option *ngFor="let cat of categories" value={{cat.value}}>
                         {{cat.title}}
                     </option>
                 </select>
@@ -131,7 +133,7 @@
                             </td>
 
                         </tr>
-                        <tr *ngIf="quantityAlert || unitAlert || quantityAlert && unitAlert">
+                        <tr *ngIf="(quantityAlert || unitAlert) || (quantityAlert && unitAlert)">
                             <td colspan="3">
                                 <div [hidden]="!quantityAlert" class="alertbox quantityAlert">Quantity must be a number.</div>
                                 <div [hidden]="!unitAlert" class="alertbox unitAlert">Please select a valid unit.</div>

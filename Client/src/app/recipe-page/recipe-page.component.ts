@@ -3,7 +3,6 @@ import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
-import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 @Component({
   selector: 'app-recipe-page',
@@ -25,13 +24,11 @@ export class RecipePageComponent implements OnInit {
 
   sortSubItems() {
     this.recipe.SubSteps.sort((n1, n2) => {
-      if (n1.SubStepID > n2.SubStepID)
-      {
+      if (n1.SubStepID > n2.SubStepID) {
         return 1;
       }
 
-      if (n1.SubStepID < n2.SubStepID)
-      {
+      if (n1.SubStepID < n2.SubStepID) {
         return -1;
       }
 
@@ -40,13 +37,11 @@ export class RecipePageComponent implements OnInit {
     });
 
     this.recipe.SubTips.sort((n1, n2) => {
-      if (n1.SubTipID > n2.SubTipID)
-      {
+      if (n1.SubTipID > n2.SubTipID) {
         return 1;
       }
 
-      if (n1.SubTipID < n2.SubTipID)
-      {
+      if (n1.SubTipID < n2.SubTipID) {
         return -1;
       }
 
