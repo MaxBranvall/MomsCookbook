@@ -4,6 +4,8 @@ import { AuthenticationService } from '../Services/authentication.service';
 import { RecipeService } from '../Services/recipe.service';
 import { categories } from '../Models/categories';
 import { environment } from '../../environments/environment';
+import { Users } from '../Entities/Users';
+import { Role } from '../_helpers/role.enum';
 
 @Component({
   selector: 'app-home-page',
@@ -13,14 +15,16 @@ import { environment } from '../../environments/environment';
 export class HomePageComponent implements OnInit {
   categories = categories;
   env = environment.apiURL;
+  currentUser: Users;
 
   constructor(private auth: AuthenticationService, private recipeservice: RecipeService) {}
 
   ngOnInit() {
+    this.currentUser = this.auth.currentUserValue;
   }
 
-  authlogin() {
-    this.auth.login('admin', 'admin').subscribe();
+  get isAdmin() {
+    return this.currentUser && this.currentUser.Role === Role.Admin;
   }
 
 }

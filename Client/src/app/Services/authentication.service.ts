@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,7 +17,7 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<Users>;
   private currentUser: Observable<Users>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<Users>(JSON.parse(localStorage.getItem(LocalStorageItem.CurrentUser)));
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -34,11 +35,9 @@ export class AuthenticationService {
     return this.http.post<any>(this.api + 'auth/authenticateuser', { username, password })
     .pipe(map(user => {
         if (user && user.Token) {
-          console.log(user);
           localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
-
         return user;
       }));
   }
@@ -46,6 +45,7 @@ export class AuthenticationService {
   logout() {
     localStorage.removeItem(LocalStorageItem.CurrentUser);
     this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
 
 }
