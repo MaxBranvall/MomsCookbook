@@ -31,3 +31,16 @@ label {
 input {
     font-size: 2em;
 }
+
+.createAccountText {
+
+    span {
+        cursor: pointer;
+    }
+
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: underline;
+    color: blue;
+    margin-top: 1em;
+}
