@@ -1,10 +1,17 @@
 <app-main-header></app-main-header>
 
+{{ diagnostic }}
+
 <div class="main-container">
     <h2 class="title">Login</h2>
 
     <div class="form-outer">
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <form
+            *ngIf="!toggleCreateAccount"
+            method="POST"
+            (ngSubmit)="onSubmit()"
+            #loginForm="ngForm" >
+
             <div class="form-inner">
                 <div class="section">
                     <label for="username">Username: </label>
@@ -17,8 +24,94 @@
                     [(ngModel)]="model.password" placeholder="Password" required>
                 </div>
                 <button type="submit" class="materialButton" [disabled]=!loginForm.valid>Log In</button>
+                <div class="createAccountText">
+                    <span (click)="toggleCreateAccount = true">Create Account</span>
+                </div>
             </div>
         </form>
+
+        <form
+            *ngIf="toggleCreateAccount"
+            method="POST"
+            (ngSubmit)="onCreateAccount()"
+            #createAccountForm="ngForm">
+
+            <div class="form-inner">
+                <div class="section">
+                    <label for="username">Username: </label>
+                    <input
+                        class="input"
+                        type="text"
+                        id="username"
+                        name="Name"
+                        [(ngModel)]="newAccount.Username"
+                        placeholder="Username"
+                        required>
+                </div>
+                <div class="section">
+                    <label for="password">Password: </label>
+                    <input
+                        class="password"
+                        type="password"
+                        id="password"
+                        name="Password"
+                        [(ngModel)]="newAccount.Password"
+                        placeholder="Password"
+                        required>
+                    <label for="confirm-password">Confirm Password: </label>
+                    <input
+                    class="password"
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="ConfirmPassword"
+                    required>
+                </div>
+                <div class="section name-section">
+                    <label for="first-name">First Name: </label>
+                    <input
+                        class="nameInput"
+                        type="text"
+                        id="first-name"
+                        name="first-name"
+                        [(ngModel)]="newAccount.FirstName"
+                        placeholder="Tony"
+                        required>
+                    <label for="last-name">Last Name: </label>
+                    <input
+                        class="nameInput"
+                        type="text"
+                        id="last-name"
+                        name="last-name"
+                        [(ngModel)]="newAccount.LastName"
+                        placeholder="Gunk"
+                        required>
+                </div>
+                <div class="section">
+                    <label for="role">Role: </label>
+                    <input
+                        type="radio"
+                        name="role"
+                        id="User"
+                        value="User"
+                        [(ngModel)]="newAccount.Role">
+                    <label class="radioLabel" for="User">User</label>
+                    <input
+                        type="radio"
+                        name="role"
+                        id="Admin"
+                        value="Admin"
+                        [(ngModel)]="newAccount.Role">
+                    <label class="radioLabel" for="Admin">Admin</label>
+                </div>
+
+                <button type="submit" class="materialButton" [disabled]=!createAccountForm.valid>Create Account</button>
+
+            </div>
+
+        </form>
+
     </div>
+
 
 </div>
