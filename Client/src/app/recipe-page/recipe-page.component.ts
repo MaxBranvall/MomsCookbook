@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FullRecipe } from '../Models/FullRecipe';
+import { Router } from '@angular/router';
 
+import { FullRecipe } from '../Models/FullRecipe';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 
@@ -14,12 +15,21 @@ export class RecipePageComponent implements OnInit {
   title: string;
   recipe: FullRecipe;
 
-  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService) { }
+  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
+              private router: Router) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.recipe = this.persDataService.getCurrentRecipe();
     this.sortSubItems();
     this.title = this.recipe.Name;
+  }
+
+  deleteRecipe() {
+    this.recipeService.deleteRecipe(this.recipe.RecipeID).subscribe(
+      resp => {
+        this.router.navigate(['/' + this.recipe.Category]);
+      }
+    );
   }
 
   sortSubItems() {

@@ -62,6 +62,10 @@ export class RecipeService {
     return this.http.put<FullRecipe>(this.apiURL + 'Recipes/updateRecipe', recipe);
   }
 
+  deleteRecipe(ID: number): Observable<HttpResponse<FullRecipe>> {
+    return this.http.delete<FullRecipe>(this.apiURL + 'Recipes/' + ID, { observe: 'response' });
+  }
+
   addPhoto(file: any, ID: string) {
 
     /*
