@@ -92,7 +92,7 @@ namespace api
             app.UseCors(builder => builder
             .AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyMethod());
+            .AllowAnyHeader());
 
             if (env.IsDevelopment())
             {

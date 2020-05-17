@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 import { FullRecipe } from '../Models/FullRecipe';
+import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 @Component({
   selector: 'app-recipe-list',
@@ -30,13 +31,12 @@ export class RecipeListComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    localStorage.removeItem('currentRecipe');
+    localStorage.removeItem(LocalStorageItem.CurrentRecipe);
     this.title = this.route.snapshot.paramMap.get('categoryTitle').toString();
     this.getEntries();
   }
 
   public onSelect(recipe: FullRecipe) {
-    console.log(recipe);
     this.persDataService.setCurrentRecipe(recipe);
     this.router.navigateByUrl('/' + this.title + '/' + recipe.Name);
   }

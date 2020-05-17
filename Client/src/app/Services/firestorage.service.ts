@@ -9,7 +9,6 @@ import { FullRecipe } from '../Models/FullRecipe';
 
 import { RecipeService } from './recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
-import { TouchSequence } from 'selenium-webdriver';
 
 
 @Injectable({

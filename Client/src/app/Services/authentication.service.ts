@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Users } from '../Entities/Users';
+import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthenticationService {
   private currentUser: Observable<Users>;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<Users>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<Users>(JSON.parse(localStorage.getItem(LocalStorageItem.CurrentUser)));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -34,7 +35,7 @@ export class AuthenticationService {
     .pipe(map(user => {
         if (user && user.Token) {
           console.log(user);
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
 
@@ -43,7 +44,7 @@ export class AuthenticationService {
   }
 
   logout() {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem(LocalStorageItem.CurrentUser);
     this.currentUserSubject.next(null);
   }
 

@@ -24,13 +24,11 @@ export class RecipePageComponent implements OnInit {
 
   sortSubItems() {
     this.recipe.SubSteps.sort((n1, n2) => {
-      if (n1.SubStepID > n2.SubStepID)
-      {
+      if (n1.SubStepID > n2.SubStepID) {
         return 1;
       }
 
-      if (n1.SubStepID < n2.SubStepID)
-      {
+      if (n1.SubStepID < n2.SubStepID) {
         return -1;
       }
 
@@ -39,13 +37,11 @@ export class RecipePageComponent implements OnInit {
     });
 
     this.recipe.SubTips.sort((n1, n2) => {
-      if (n1.SubTipID > n2.SubTipID)
-      {
+      if (n1.SubTipID > n2.SubTipID) {
         return 1;
       }
 
-      if (n1.SubTipID < n2.SubTipID)
-      {
+      if (n1.SubTipID < n2.SubTipID) {
         return -1;
       }
 
