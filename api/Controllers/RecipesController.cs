@@ -101,9 +101,11 @@ namespace api.Controllers
 
         // DELETE: v1/Recipes/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult<Recipe> Delete(int id)
         {
             _recipeService.DeleteRecipe(id);
+
+            return NoContent();
         }
     }
 }
