@@ -26,8 +26,8 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  createUser(user: Users) {
-
+  createUser(user: Users): Observable<HttpResponse<Users>> {
+    return this.http.post<Users>(this.api + 'auth/createuser', user, { observe: 'response' });
   }
 
   login(username: string, password: string): Observable<HttpResponse<Users>> {

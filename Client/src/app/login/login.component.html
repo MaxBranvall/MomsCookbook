@@ -1,7 +1,5 @@
 <app-main-header></app-main-header>
 
-{{ diagnostic }}
-
 <div class="main-container">
     <h2 class="title">Login</h2>
 
@@ -58,16 +56,26 @@
                         [(ngModel)]="newAccount.Password"
                         placeholder="Password"
                         required>
+                </div>
+                <div class="section">
                     <label for="confirm-password">Confirm Password: </label>
                     <input
+                    [(ngModel)]="confirmPasswordRef"
+                    [ngClass]="{ 'invalid': (confirmPassword.value !== newAccount.Password) && confirmPassword.touched }"
                     class="password"
                     type="password"
                     id="confirmPassword"
                     name="confirmPassword"
+                    #confirmPassword="ngModel"
                     placeholder="ConfirmPassword"
                     required>
                 </div>
-                <div class="section name-section">
+                <div
+                    class="alertbox"
+                    *ngIf="(confirmPassword.value !== newAccount.Password) && confirmPassword.touched">
+                    Passwords do not match.
+                </div>
+                <div class="section">
                     <label for="first-name">First Name: </label>
                     <input
                         class="nameInput"
@@ -87,8 +95,8 @@
                         placeholder="Gunk"
                         required>
                 </div>
-                <div class="section">
-                    <label for="role">Role: </label>
+                <div class="radioSection">
+                    <label for="role">Role: <br></label>
                     <input
                         type="radio"
                         name="role"
@@ -105,7 +113,13 @@
                     <label class="radioLabel" for="Admin">Admin</label>
                 </div>
 
-                <button type="submit" class="materialButton" [disabled]=!createAccountForm.valid>Create Account</button>
+                <div class="alertbox" [hidden]="!alert">Please Correct Errors</div>
+                <button
+                    type="submit"
+                    class="materialButton"
+                    [disabled]=!createAccountForm.valid>
+                    Create Account
+                </button>
 
             </div>
 

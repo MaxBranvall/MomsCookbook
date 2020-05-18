@@ -1,5 +1,6 @@
 @import 'src/sass/components/material-textinput';
 @import 'src/sass/components/material-button';
+@import 'src/sass/components/alertbox';
 
 .main-container {
     width: 75%;
@@ -44,3 +45,24 @@ input {
     color: blue;
     margin-top: 1em;
 }
+
+.radioSection {
+    display: inline-block;
+    margin-bottom: 1em;
+
+    .radioLabel {
+        font-size: 2em;
+        font-weight: 300;
+        margin-right: 2em;
+    }
+
+}
+
+.invalid {
+    border-bottom: 1px solid red !important;
+}
+
+.alertbox {
+    margin-bottom: .5em;
+}
+
