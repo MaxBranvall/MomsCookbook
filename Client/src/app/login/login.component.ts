@@ -21,6 +21,12 @@ export class LoginComponent implements OnInit {
   private toggleCreateAccount = false;
   private confirmPasswordRef: string;
   private alert = false;
+  private loading = false;
+
+  private error = false;
+  private errorText: string;
+  private errorType: string;
+  private statusCode: number;
 
   constructor(private authService: AuthenticationService, private router: Router) { }
 
@@ -38,11 +44,19 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     this.authService.login(this.model.username, this.model.password).subscribe(x => {
+
+      alert('Logged in successfully! Returning to home screen... ');
       this.router.navigate(['/']);
+      this.loading = false;
     },
     error => {
-      alert(error.error);
+      this.loading = false;
+      this.error = true;
+      this.errorText = error.error;
+      this.errorType = error.statusText;
+      this.statusCode = error.status;
       console.log(error);
     });
   }
@@ -50,13 +64,32 @@ export class LoginComponent implements OnInit {
   onCreateAccount() {
     if (this.passwordValid()) {
       this.alert = false;
+      this.loading = true;
       this.authService.createUser(this.newAccount).subscribe(x => {
-        console.log(x);
-      });
+        if (x.status === 201) {
+          this.loading = false;
+          alert('Account created successfully! Returning to login screen..');
+          this.toggleCreateAccount = false;
+          this.router.navigate(['login']);
+        }
+      },
+      error => {
+        this.loading = false;
+        this.error = true;
+        this.errorText = error.error;
+        this.errorType = error.statusText;
+        this.statusCode = error.status;
+        console.log(error);
+      }
+      );
       return true;
     }
     this.alert = true;
     return false;
+  }
+
+  adminAlert() {
+    alert('You will not be granted admin rights until approved by an existing admin.');
   }
 
   passwordValid() {

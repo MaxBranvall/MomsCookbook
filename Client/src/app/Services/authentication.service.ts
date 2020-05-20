@@ -32,7 +32,9 @@ export class AuthenticationService {
 
   login(username: string, password: string): Observable<HttpResponse<Users>> {
 
-    return this.http.post<any>(this.api + 'auth/authenticateuser', { username, password })
+    const body = { username, password };
+
+    return this.http.post<any>(this.api + 'auth/authenticateuser', body)
     .pipe(map(user => {
         if (user && user.Token) {
           localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(user));

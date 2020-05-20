@@ -1,7 +1,8 @@
 <app-main-header></app-main-header>
 
 <div class="main-container">
-    <h2 class="title">Login</h2>
+    <h2 *ngIf="!toggleCreateAccount" class="title">Login</h2>
+    <h2 *ngIf="toggleCreateAccount" class="title">Create Account</h2>
 
     <div class="form-outer">
         <form
@@ -21,6 +22,11 @@
                     <input class="password" type="password" id="password" name="Password"
                     [(ngModel)]="model.password" placeholder="Password" required>
                 </div>
+
+                <div *ngIf="this.error" class="section errorContainer">
+                    <span class="errorText">{{ errorText }}</span>
+                </div>
+
                 <button type="submit" class="materialButton" [disabled]=!loginForm.valid>Log In</button>
                 <div class="createAccountText">
                     <span (click)="toggleCreateAccount = true">Create Account</span>
@@ -109,10 +115,14 @@
                         name="role"
                         id="Admin"
                         value="Admin"
+                        (click)="adminAlert()"
                         [(ngModel)]="newAccount.Role">
                     <label class="radioLabel" for="Admin">Admin</label>
                 </div>
 
+                <div *ngIf="this.error" class="section errorContainer">
+                    <span class="errorText">{{ errorText }}</span>
+                </div>
                 <div class="alertbox" [hidden]="!alert">Please Correct Errors</div>
                 <button
                     type="submit"
@@ -127,5 +137,8 @@
 
     </div>
 
+</div>
 
+<div *ngIf="this.loading">
+    <app-loading-screen></app-loading-screen>
 </div>
