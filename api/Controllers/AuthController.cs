@@ -151,6 +151,25 @@ namespace api.Controllers
             }
         }
 
+        //PUT: v1/auth/updateUser
+        [AllowAnonymous]
+        [HttpPut("updateUser")]
+        public ActionResult<Users> updateUser(Users user)
+        {
+            this._logger.LogInformation("Attempting to update user with id: " + user.ID);
+            Users updatedUser = this._userService.UpdateUser(user);
+
+            if (updatedUser != null)
+            {
+                this._logger.LogInformation("Successfully updated user with ID: " + updatedUser.ID);
+                return CreatedAtAction(nameof(GetUser), new { ID = updatedUser.ID }, updatedUser.WithoutPassword());
+            } else
+            {
+                this._logger.LogError("There was an issue updated user with ID: " + user.ID);
+                return BadRequest();
+            }
+        }
+
         //DELETE: v1/auth/deleteUser/5
         [HttpDelete("deleteUser/{id}")]
         public ActionResult<Users> DeleteUser(int id)
