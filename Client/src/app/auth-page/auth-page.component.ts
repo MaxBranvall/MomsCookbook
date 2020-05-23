@@ -78,7 +78,6 @@ export class AuthPageComponent implements OnInit {
         this.errorText = error.error;
         this.errorType = error.statusText;
         this.statusCode = error.status;
-        console.log(error);
       }
       );
       return true;

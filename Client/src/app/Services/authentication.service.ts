@@ -52,7 +52,8 @@ export class AuthenticationService {
   logout() {
     localStorage.removeItem(LocalStorageItem.CurrentUser);
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    alert('Successfully logged out..');
+    window.location.reload();
   }
 
 }

@@ -13,8 +13,7 @@ import { AccountPageComponent } from './account-page/account-page.component';
 const routes: Routes = [
   {
     path: '',
-    component: HomePageComponent,
-    canActivate: [AuthGuard]
+    component: HomePageComponent
   },
   {
     path: 'newentry',

@@ -89,58 +89,59 @@ $overlayOpacity: .6;
 
     // Screens larger than 600px
 
-    // .main-grid {
-    //     display: grid;
-    //     grid-template-columns: 2fr 1fr;
-    //     column-gap: 4em;
-    //     margin-top: 3em;
-    //     width: 100%;
+    .main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        column-gap: 4em;
+        margin-top: 3em;
+        width: 100%;
 
 
-    //     .categories {
-    //         justify-self: center;
-    //         grid-column: 2;
+        .categories {
+            justify-self: center;
+            grid-column: 2;
 
-    //         .category-container {
-    //             margin-top: 1.5em;
+            .category-container {
+                margin-top: 1.5em;
 
-    //             img {
-    //                 height: initial;
-    //             }
+                img {
+                    height: initial;
+                }
 
-    //         }
+            }
 
-    //         .category-container:first-child {
-    //             margin-top: 0;
-    //         }
+            .category-container:first-child {
+                margin-top: 0;
+            }
 
-    //     }
+        }
 
 
-    //     .recent-container {
-    //         h2 {
-    //             text-align: left;
-    //             font-size: 3em;
-    //             margin-top: 0;
-    //         }
+        .recent-container {
+            h2 {
+                text-align: left;
+                font-size: 3em;
+                margin-top: 0;
+            }
 
-    //         margin-left: 4em;
-    //     }
+            margin-left: 4em;
+        }
 
-    //     .recent-tiles {
-    //         grid-column: 3;
-    //         display: grid;
-    //         grid-template-columns: repeat(auto-fit, 100px);
-    //         column-gap: 1.5em;
+        .recent-tiles {
+            grid-column: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, 100px);
+            column-gap: 1.5em;
 
-    //         .tile {
-    //             img {
-    //                 height: 100px;
-    //                 margin-bottom: 1em;
-    //                 object-fit: cover;
-    //             }
-    //         }
+            .tile {
+                img {
+                    height: 100px;
+                    margin-bottom: 1em;
+                    object-fit: cover;
+                }
+            }
 
-    //     }
+        }
 
+    }
 }

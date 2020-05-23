@@ -27,4 +27,8 @@ export class HomePageComponent implements OnInit {
     return this.currentUser && this.currentUser.Role === Role.Admin;
   }
 
+  private logout() {
+    this.auth.logout();
+  }
+
 }
