@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Users } from '../Entities/Users';
+import { AuthenticationService } from '../Services/authentication.service';
+
 @Component({
   selector: 'app-account-page',
   templateUrl: './account-page.component.html',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountPageComponent implements OnInit {
 
-  constructor() { }
+  private currentUser: Users;
+
+  constructor(private auth: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.currentUser = this.auth.currentUserValue;
   }
 
 }
