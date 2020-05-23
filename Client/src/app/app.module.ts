@@ -19,8 +19,9 @@ import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 import { RecipeService} from './Services/recipe.service';
 
 import { OrderModule } from 'ngx-order-pipe';
-import { LoginComponent } from './login/login.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { AccountPageComponent } from './account-page/account-page.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
     RecipePageComponent,
     RecipeEntryComponent,
     LoadingScreenComponent,
-    LoginComponent,
+    AuthPageComponent,
+    AccountPageComponent,
   ],
   imports: [
     BrowserModule,

@@ -7,11 +7,11 @@ import { Users } from '../Entities/Users';
 import { Role } from '../_helpers/role.enum';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-auth-page',
+  templateUrl: './auth-page.component.html',
+  styleUrls: ['./auth-page.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class AuthPageComponent implements OnInit {
 
   @ViewChild('confirmPassword')
   nameInputRef: ElementRef;
@@ -38,8 +38,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  get diagnostic()
-  {
+  get diagnostic() {
     return JSON.stringify(this.newAccount);
   }
 

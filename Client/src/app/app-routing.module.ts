@@ -4,10 +4,11 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
-import { LoginComponent } from './login/login.component';
+import { AuthPageComponent } from './auth-page/auth-page.component';
 import { EntryMode } from './_helpers/entry-mode.enum';
 import { AuthGuard } from './_guards/auth.guard';
 import { Role } from './_helpers/role.enum';
+import { AccountPageComponent } from './account-page/account-page.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,11 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: AuthPageComponent
+  },
+  {
+    path: 'account/:user',
+    component: AccountPageComponent
   },
   {
     path: 'editrecipe',
