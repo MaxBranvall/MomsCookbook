@@ -17,6 +17,7 @@ using api.Helpers;
 using api.Contexts;
 using api.Interfaces;
 using api.ExtensionMethods;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
@@ -92,6 +93,22 @@ namespace api.Services
             {
                 this._context.users.Add(newUser);
                 this._context.SaveChanges();
+
+                if (newUser.Role == Role.Admin)
+                {
+                    this._logger.LogInformation("Attempting to create admin request..");
+                    newUser.Role = Role.User;
+                    this._context.users.Update(newUser);
+
+                    if (!this._createAdminRequest(newUser.ID))
+                    {
+                        this._logger.LogError("There was an issue making the admin request.");
+                        return null;
+                    }
+                    this._logger.LogInformation("Admin request created!");
+                    this._context.SaveChanges();
+                }
+
                 return newUser;
 
             }
@@ -158,6 +175,23 @@ namespace api.Services
             return existingUser;
         }
 
+        public Users UpdateUser(Users user)
+        {
+            try
+            {
+                this._context.users.Attach(user);
+                this._context.Entry(user).State = EntityState.Modified;
+                this._context.Entry(user).Property(x => x.Password).IsModified = false;
+                this._context.SaveChanges();
+            } catch (Exception ex)
+            {
+                this._logger.LogError("Caught Exception: " + ex.ToString());
+                return null;
+            }
+
+            return user;
+        }
+
         public bool DeleteUser(int id)
         {
             Users user = GetUser(id);
@@ -180,6 +214,21 @@ namespace api.Services
                 this._logger.LogError("Caught exception: " + ex);
                 return false;
             }
+        }
+
+        private bool _createAdminRequest(int userID)
+        {
+
+            try
+            {
+                this._context.adminrequest.Add(new AdminRequest() { UserID = userID });
+            } catch (Exception ex)
+            {
+                this._logger.LogError("Caught Exception: " + ex.ToString());
+                return false;
+            }
+
+            return true;
         }
 
         private string _getToken(Users user)

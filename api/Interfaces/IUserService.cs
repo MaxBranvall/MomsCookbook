@@ -13,6 +13,7 @@ namespace api.Interfaces
         Users Authenticate(string username, string password);
         Users CreateAccount(Users user);
         Users ChangePassword(Users user);
+        Users UpdateUser(Users user);
         bool DeleteUser(int id);
     }
 }
