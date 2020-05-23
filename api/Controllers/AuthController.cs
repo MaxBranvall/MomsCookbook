@@ -37,22 +37,22 @@ namespace api.Controllers
             return "Test complete!";
         }
 
-        //GET: v1/auth/getUser/5
-        [HttpGet("getUser/{id}")]
-        public ActionResult<Users> GetUser(int ID)
+        //GET: v1/auth/5
+        [HttpGet("{id}")]
+        public ActionResult<Users> GetUser(int id)
         {
-            this._logger.LogInformation("Attempting to retrieve user with id: " + ID);
+            this._logger.LogInformation("Attempting to retrieve user with id: " + id);
 
             this._logger.LogInformation("Checking permissions..");
 
             int currentUserID = int.Parse(User.Identity.Name);
-            if (ID != currentUserID  && !User.IsInRole(Role.Admin))
+            if (id != currentUserID  && !User.IsInRole(Role.Admin))
             {
                 this._logger.LogError("Insufficient permissions.");
                 return Forbid();
             }
 
-            Users user = this._userService.GetUser(ID);
+            Users user = this._userService.GetUser(id);
 
             if (user != null)
             {
@@ -60,14 +60,14 @@ namespace api.Controllers
                 return Ok(user.WithoutPassword());
             } else
             {
-                this._logger.LogError("There was an issue retrieving user with ID: " + ID);
+                this._logger.LogError("There was an issue retrieving user with ID: " + id);
                 return NotFound("User not found.");
             }
         }
 
-        //GET: v1/auth/getAllUsers
+        //GET: v1/auth
         [Authorize(Roles = Role.Admin)]
-        [HttpGet("getAllUsers")]
+        [HttpGet]
         public ActionResult<List<Users>> GetAll()
         {
             this._logger.LogInformation("Attempting to retrieve all users from database.");
@@ -83,6 +83,70 @@ namespace api.Controllers
             {
                 this._logger.LogError("Can not retrieve list of users");
                 return NotFound("Can not retrieve list of users.");
+            }
+
+        }
+
+        //POST: v1/auth
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult<Users> CreateUser(Users user)
+        {
+            this._logger.LogInformation("Attempting to create user: " + user.Username);
+
+            Users newUser = this._userService.CreateAccount(user);
+
+
+            if (newUser != null)
+            {
+                this._logger.LogInformation("Successfully created user: " + newUser.Username);
+                return CreatedAtAction(nameof(GetUser), new { ID = newUser.ID }, this._userService.GetUser(newUser.ID).WithoutPassword());
+            }
+            else
+            {
+                this._logger.LogError("There was an issue creating user: " + user.Username);
+                return BadRequest("This username already exists.");
+            }
+
+        }
+
+        //PUT: v1/auth/5
+        [AllowAnonymous]
+        [HttpPut("{id}")]
+        public ActionResult<Users> updateUser(Users user)
+        {
+            this._logger.LogInformation("Attempting to update user with id: " + user.ID);
+            Users updatedUser = this._userService.UpdateUser(user);
+
+            if (updatedUser != null)
+            {
+                this._logger.LogInformation("Successfully updated user with ID: " + updatedUser.ID);
+                return CreatedAtAction(nameof(GetUser), new { ID = updatedUser.ID }, updatedUser.WithoutPassword());
+            }
+            else
+            {
+                this._logger.LogError("There was an issue updated user with ID: " + user.ID);
+                return BadRequest();
+            }
+        }
+
+        //DELETE: v1/auth/5
+        [HttpDelete("{id}")]
+        public ActionResult<Users> DeleteUser(int id)
+        {
+            this._logger.LogInformation("Attempting to delete user with id: " + id);
+
+            bool deleteUser = this._userService.DeleteUser(id);
+
+            if (deleteUser)
+            {
+                this._logger.LogInformation("Successfully deleted user with id: " + id);
+                return NoContent();
+            }
+            else
+            {
+                this._logger.LogError("There was an error deleting user with id: " + id);
+                return BadRequest(new { message = "Could not delete user with id: " + id });
             }
 
         }
@@ -108,29 +172,6 @@ namespace api.Controllers
             }
         }
 
-        //POST: v1/auth/createUser
-        [AllowAnonymous]
-        [HttpPost("createUser")]
-        public ActionResult<Users> CreateUser(Users user)
-        {
-            this._logger.LogInformation("Attempting to create user: " + user.Username);
-
-            Users newUser = this._userService.CreateAccount(user);
-
-            
-            if (newUser != null)
-            {
-                this._logger.LogInformation("Successfully created user: " + newUser.Username);
-                return CreatedAtAction(nameof(GetUser), new { ID = newUser.ID }, this._userService.GetUser(newUser.ID).WithoutPassword());
-            }
-            else
-            {
-                this._logger.LogError("There was an issue creating user: " + user.Username);
-                return BadRequest("This username already exists.");
-            }
-
-        }
-
         //PUT: v1/auth/changePassword
         [AllowAnonymous]
         [HttpPut("changePassword")]
@@ -149,45 +190,6 @@ namespace api.Controllers
                 this._logger.LogError("There was an issue changing the password for user: " + user.Username);
                 return BadRequest();
             }
-        }
-
-        //PUT: v1/auth/updateUser
-        [AllowAnonymous]
-        [HttpPut("updateUser")]
-        public ActionResult<Users> updateUser(Users user)
-        {
-            this._logger.LogInformation("Attempting to update user with id: " + user.ID);
-            Users updatedUser = this._userService.UpdateUser(user);
-
-            if (updatedUser != null)
-            {
-                this._logger.LogInformation("Successfully updated user with ID: " + updatedUser.ID);
-                return CreatedAtAction(nameof(GetUser), new { ID = updatedUser.ID }, updatedUser.WithoutPassword());
-            } else
-            {
-                this._logger.LogError("There was an issue updated user with ID: " + user.ID);
-                return BadRequest();
-            }
-        }
-
-        //DELETE: v1/auth/deleteUser/5
-        [HttpDelete("deleteUser/{id}")]
-        public ActionResult<Users> DeleteUser(int id)
-        {
-            this._logger.LogInformation("Attempting to delete user with id: " + id);
-
-            bool deleteUser = this._userService.DeleteUser(id);
-
-            if (deleteUser)
-            {
-                this._logger.LogInformation("Successfully deleted user with id: " + id);
-                return NoContent();
-            } else
-            {
-                this._logger.LogError("There was an error deleting user with id: " + id);
-                return BadRequest(new { message = "Could not delete user with id: " + id });
-            }
-
         }
 
     }
