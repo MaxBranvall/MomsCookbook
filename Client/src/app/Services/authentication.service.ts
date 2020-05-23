@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Users } from '../Entities/Users';
 import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
+import { Controller } from '../_helpers/controller.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +27,12 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  getUser(id: number): Observable<HttpResponse<number>> {
+    return this.http.get<number>(this.api + Controller.Auth, { observe: 'response' });
+  }
+
   createUser(user: Users): Observable<HttpResponse<Users>> {
-    return this.http.post<Users>(this.api + 'auth/createuser', user, { observe: 'response' });
+    return this.http.post<Users>(this.api + Controller.Auth, user, { observe: 'response' });
   }
 
   login(username: string, password: string): Observable<HttpResponse<Users>> {
