@@ -2,7 +2,7 @@
 
 <!-- TODO: This button is only temporary. -->
 <button type="button" routerLink=newentry *ngIf="isAdmin">New Entry</button>
-<button type="button" routerLink=login >Login</button>
+<button type="button" routerLink=login *ngIf="this.currentUserValue" >Login</button>
 
 <div class="main-grid">
   <div class="category-outer">
