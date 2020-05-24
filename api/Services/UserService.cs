@@ -235,6 +235,7 @@ namespace api.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var expiration = Encoding.ASCII.GetBytes(_appSettings.Expiration);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -244,7 +245,7 @@ namespace api.Services
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(int.Parse(expiration.ToString())),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
