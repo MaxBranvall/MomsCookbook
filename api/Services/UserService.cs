@@ -28,10 +28,12 @@ namespace api.Services
         private PasswordHasher<Users> _passwordHasher;
         private RecipeContext _context;
         private readonly AppSettings _appSettings;
+        private readonly JWT_Settings _jwtSettings;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IOptions<AppSettings> appSettings, ILogger<UserService> logger, RecipeContext context)
+        public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings, ILogger<UserService> logger, RecipeContext context)
         {
+            _jwtSettings = jwtSettings.Value;
             _appSettings = appSettings.Value;
             _logger = logger;
             _context = context;
@@ -245,7 +247,9 @@ namespace api.Services
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(int.Parse(expiration.ToString())),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

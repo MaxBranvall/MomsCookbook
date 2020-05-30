@@ -30,13 +30,6 @@ namespace api.Controllers
 
         //TODO: For delete and put maybe return 204 instead of 200 or 201
 
-        // v1/auth/testget
-        [HttpGet("testget")]
-        public string Test()
-        {
-            return "Test complete!";
-        }
-
         //GET: v1/auth/5
         [HttpGet("{id}")]
         public ActionResult<Users> GetUser(int id)
@@ -111,7 +104,6 @@ namespace api.Controllers
         }
 
         //PUT: v1/auth/5
-        [AllowAnonymous]
         [HttpPut("{id}")]
         public ActionResult<Users> updateUser(Users user)
         {
@@ -173,7 +165,6 @@ namespace api.Controllers
         }
 
         //PUT: v1/auth/changePassword
-        [AllowAnonymous]
         [HttpPut("changePassword")]
         public ActionResult<Users> ChangePassword(Users user)
         {

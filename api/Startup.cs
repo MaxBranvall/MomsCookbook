@@ -46,13 +46,17 @@ namespace api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {        
 
-            // configure strongly typed settings objects
+            // configure strongly typed settings objects          
             var appSettingsSection = Configuration.GetSection("AppSettings");
+            var jwtSection = Configuration.GetSection("JWT");
+
             services.Configure<AppSettings>(appSettingsSection);
+            services.Configure<JWT_Settings>(jwtSection);
 
             // configure jwt authentication
+            var jwtSettings = jwtSection.Get<JWT_Settings>();
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
@@ -64,13 +68,23 @@ namespace api
             {
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
+                x.ClaimsIssuer = jwtSettings.Issuer;
+                x.Audience = jwtSettings.Audience;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience
                 };
+
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserOnly", policy => policy.RequireClaim(ClaimTypes.Role, Role.Admin));
             });
 
             services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));

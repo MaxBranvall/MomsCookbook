@@ -44,7 +44,7 @@ namespace api.Controllers
         [HttpGet("categories/{category}")]
         public ActionResult<IEnumerable<FullRecipe>> GetCategory(string category)
         {
-            _logger.LogInformation("Get category called");
+            _logger.LogInformation("Get category called");         
             return Ok(this._recipeService.GetAllRecipesByCategory(category));
         }
 
