@@ -13,9 +13,6 @@ import { Role } from '../_helpers/role.enum';
 })
 export class AuthPageComponent implements OnInit {
 
-  @ViewChild('confirmPassword')
-  nameInputRef: ElementRef;
-
   private newAccount: Users;
   private model: AuthenticateModel;
   private toggleCreateAccount = false;

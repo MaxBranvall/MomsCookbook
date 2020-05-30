@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY, throwError, of } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { FullRecipe } from '../Models/FullRecipe';
@@ -7,6 +7,7 @@ import { Recipe } from '../Entities/Recipe';
 import { FirebaseURL } from '../Models/FirebaseURL';
 
 import { environment } from '../../environments/environment';
+import { catchError, retry } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -38,14 +39,14 @@ export class RecipeService {
     /*
       Retrieves a FULL recipe by it's name.
      */
-    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID, { observe : 'response'});
+    return this.http.get<FullRecipe>(this.apiURL + 'Recipes/' + ID, { observe : 'response' });
   }
 
-  addRecipe(entry: FullRecipe): Observable<FullRecipe> {
+  addRecipe(entry: FullRecipe): Observable<HttpResponse<FullRecipe>> {
     /*
       Adds a new recipe to the database.
      */
-    return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry);
+    return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry, { observe : 'response' });
   }
 
   addDownloadURL(downloadURL: string, id: number): Observable<HttpResponse<FullRecipe>> {

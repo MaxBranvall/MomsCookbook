@@ -45,21 +45,15 @@ export class RecipeListComponent implements OnInit {
 
     this.loading = true;
 
-    await this.recipeService.getAllEntriesByCategory(this.title).toPromise().then(res => {
-
-      this.loading = false;
-      if (res.status === 404) {
-        this.noEntries = true;
-        console.error('Could not get recipes by category.');
-      } else {
-        this.entries = res.body;
-
-        if (this.entries.length === 0) {
+    this.recipeService.getAllEntriesByCategory(this.title).subscribe(
+      res => {
+        this.loading = false;
+        if (res.status === 0) {
           this.noEntries = true;
+        } else {
+          this.entries = res.body;
         }
-
       }
-
-    });
+      );
+     }
   }
-}

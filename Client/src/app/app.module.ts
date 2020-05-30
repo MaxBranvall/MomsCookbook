@@ -21,6 +21,7 @@ import { RecipeService} from './Services/recipe.service';
 import { OrderModule } from 'ngx-order-pipe';
 import { AuthPageComponent } from './auth-page/auth-page.component';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { HttperrorInterceptor } from './_helpers/httperror.interceptor';
 import { AccountPageComponent } from './account-page/account-page.component';
 
 
@@ -46,7 +47,11 @@ import { AccountPageComponent } from './account-page/account-page.component';
     AngularFireStorageModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
     RecipeService
   ],
   bootstrap: [AppComponent]
