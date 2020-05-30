@@ -179,7 +179,7 @@ export class RecipeEntryComponent implements OnInit {
     } else {
       this.recipeService.addRecipe(this.model).subscribe(
         recipe => {
-          this.RecipeID = recipe.RecipeID;
+          this.RecipeID = recipe.body.RecipeID;
           this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
         }
       );
@@ -207,7 +207,7 @@ export class RecipeEntryComponent implements OnInit {
     } else  {
       this.recipeService.addRecipe(this.model).subscribe(
         result => {
-          this.RecipeID = result.RecipeID;
+          this.RecipeID = result.body.RecipeID;
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
