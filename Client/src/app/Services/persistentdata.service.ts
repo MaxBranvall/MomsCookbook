@@ -22,4 +22,12 @@ export class PersistentdataService {
     return JSON.parse(localStorage.getItem('currentRecipe'));
   }
 
+  setPendingRecipe(recipe: FullRecipe): void {
+    localStorage.setItem('pendingRecipe', JSON.stringify(recipe));
+  }
+
+  getPendingRecipe(): FullRecipe {
+    return JSON.parse(localStorage.getItem('pendingRecipe'));
+  }
+
 }
