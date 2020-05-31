@@ -116,8 +116,7 @@ export class RecipeEntryComponent implements OnInit {
         if (this.mode === 'editing') {
           this.currentRecipe = this.persDataService.getCurrentRecipe();
           this.initialize();
-        }
-        if (this.persDataService.getPendingRecipe() !== null) {
+        } else if (this.persDataService.getPendingRecipe() !== null) {
           this.currentRecipe = this.persDataService.getPendingRecipe();
           this.initialize();
         }
