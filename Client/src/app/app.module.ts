@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
@@ -20,6 +20,7 @@ import { RecipeService} from './Services/recipe.service';
 import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 
 import { OrderModule } from 'ngx-order-pipe';
+import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
 
 
 @NgModule({
@@ -46,6 +47,10 @@ import { OrderModule } from 'ngx-order-pipe';
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandlerService
     },
     RecipeService
   ],

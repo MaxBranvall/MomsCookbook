@@ -57,8 +57,9 @@ export class RecipeListComponent implements OnInit {
       }, error => {
         this.loading = false;
         this.noEntries = true;
-        alert('Entries for category ' + this.title + 'could not be retrieved from the server.' +
-        '\nError Details \nStatus ' + error.status + '\nMessage ' + error.message);
+        alert('Entries for category ' + this.title + ' could not be retrieved from the server.' +
+        '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
+        this.router.navigate(['/']);
       }
     );
   }

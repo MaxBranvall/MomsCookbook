@@ -13,7 +13,6 @@ import { Observable } from 'rxjs';
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -113,14 +112,15 @@ export class RecipeEntryComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(
       x => {
-        this.mode = null;
+        this.mode = JSON.parse(JSON.stringify(x.mode));
         if (this.mode === 'editing') {
           this.currentRecipe = this.persDataService.getCurrentRecipe();
+          this.initialize();
         }
         if (this.persDataService.getPendingRecipe() !== null) {
           this.currentRecipe = this.persDataService.getPendingRecipe();
+          this.initialize();
         }
-        this.initialize();
       }
     );
 
@@ -247,7 +247,7 @@ export class RecipeEntryComponent implements OnInit {
     alert('There was an error submitting your recipe '  + this.model.Name +
            '. Your recipe was saved and will be filled in the next time you come to this page.' +
            '\nNote: If your recipe included an image, you will have to reselect your image.' +
-           '\n\nError Details: \nStatus ' + error.status + '\nMessage ' + error.message);
+           '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
   }
 
   navigateToNewEntry(category: string, name: string) {
