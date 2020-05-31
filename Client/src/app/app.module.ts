@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
@@ -17,6 +17,7 @@ import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 
 import { RecipeService} from './Services/recipe.service';
+import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 
 import { OrderModule } from 'ngx-order-pipe';
 
@@ -40,7 +41,14 @@ import { OrderModule } from 'ngx-order-pipe';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule
   ],
-  providers: [RecipeService],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    RecipeService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
