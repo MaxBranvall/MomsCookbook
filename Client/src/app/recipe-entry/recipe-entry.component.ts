@@ -118,28 +118,37 @@ export class RecipeEntryComponent implements OnInit {
         this.mode = JSON.parse(JSON.stringify(x.mode));
 
         if (this.mode === EntryMode.EditEntry) {
-          this.currentRecipe = JSON.parse(localStorage.getItem(LocalStorageItem.CurrentRecipe));
+          this.currentRecipe = this.persDataService.getCurrentRecipe();
+          this.initializeRecipe();
+          if (this.persDataService.getPendingRecipe() !== null) {
+          this.currentRecipe = this.persDataService.getPendingRecipe();
           this.initializeRecipe();
         }
 
+        }
       }
     );
-
-  }
-
-  log(x) {
-    console.log(x);
   }
 
   private initializeRecipe() {
     this.RecipeID = this.currentRecipe.RecipeID;
     this.model = this.currentRecipe;
     this.imgURL = this.currentRecipe.ImagePath;
-    this.LocalStepID = this.model.Steps[this.model.Steps.length - 1].LocalStepID;
-    this.LocalSubStepID = this.model.SubSteps[this.model.SubSteps.length - 1].SubStepID;
-    this.LocalTipID = this.model.Tips[this.model.Tips.length - 1].LocalTipID;
-    this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
-    this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
+    if (this.model.Steps.length > 0) {
+      this.LocalStepID = this.model.Steps[this.model.Steps.length - 1].LocalStepID;
+    }
+    if (this.model.SubSteps.length > 0) {
+      this.LocalSubStepID = this.model.SubSteps[this.model.SubSteps.length - 1].SubStepID;
+    }
+    if (this.model.Tips.length > 0) {
+      this.LocalTipID = this.model.Tips[this.model.Tips.length - 1].LocalTipID;
+    }
+    if (this.model.SubTips.length > 0) {
+      this.localSubTipID = this.model.SubTips[this.model.SubTips.length - 1].SubTipID;
+    }
+    if (this.model.Ingredients.length > 0) {
+      this.LocalIngredientID = this.model.Ingredients[this.model.Ingredients.length - 1].LocalIngredientID;
+    }
   }
 
   onSubmit() {
@@ -151,6 +160,7 @@ export class RecipeEntryComponent implements OnInit {
     if (this.validateModel()) {
 
       this.globalAlert = false;
+      this.persDataService.setPendingRecipe(this.model);
 
       if (this.mainImage !== undefined) {
         this.submitWithImage();
@@ -173,14 +183,22 @@ export class RecipeEntryComponent implements OnInit {
       this.recipeService.updateRecipe(this.model).subscribe(
         recipe => {
           this.RecipeID = recipe.RecipeID;
+          this.persDataService.setPendingRecipe(null);
           this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+        }, error => {
+          this.localLoading = false;
+          this._handleSubmitError(error);
         }
       );
     } else {
       this.recipeService.addRecipe(this.model).subscribe(
         recipe => {
           this.RecipeID = recipe.body.RecipeID;
+          this.persDataService.setPendingRecipe(null);
           this.storageService.uploadSingleFile(this.mainImage, this.RecipeID, this.model);
+        }, error => {
+          this.localLoading = false;
+          this._handleSubmitError(error);
         }
       );
     }
@@ -194,29 +212,43 @@ export class RecipeEntryComponent implements OnInit {
       this.recipeService.updateRecipe(this.model).subscribe(
         result => {
           this.RecipeID = result.RecipeID;
-
-          // TODO: refactor as to not repeat myself here and in the lines in else.
+          this.persDataService.setPendingRecipe(null);
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
               this.navigateToNewEntry(this.model.Category, this.model.Name);
             }
           );
+        }, error => {
+          this.localLoading = false;
+          this._handleSubmitError(error);
         }
       );
     } else  {
       this.recipeService.addRecipe(this.model).subscribe(
         result => {
           this.RecipeID = result.body.RecipeID;
+          this.persDataService.setPendingRecipe(null);
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
               this.navigateToNewEntry(this.model.Category, this.model.Name);
             }
           );
+        }, error => {
+          this.localLoading = false;
+          this._handleSubmitError(error);
         }
       );
     }
+  }
+
+  private _handleSubmitError(error: any): void {
+    console.error(error);
+    alert('There was an error submitting your recipe '  + this.model.Name +
+           '. Your recipe was saved and will be filled in the next time you come to this page.' +
+           '\nNote: If your recipe included an image, you will have to reselect your image.' +
+           '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
   }
 
   navigateToNewEntry(category: string, name: string) {

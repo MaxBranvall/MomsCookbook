@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
@@ -20,9 +20,10 @@ import { RecipeService} from './Services/recipe.service';
 
 import { OrderModule } from 'ngx-order-pipe';
 import { AuthPageComponent } from './auth-page/auth-page.component';
-import { JwtInterceptor } from './_helpers/jwt.interceptor';
-import { HttperrorInterceptor } from './_helpers/httperror.interceptor';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 import { AccountPageComponent } from './account-page/account-page.component';
+import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
 
 
 @NgModule({
@@ -51,6 +52,15 @@ import { AccountPageComponent } from './account-page/account-page.component';
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandlerService
     },
     RecipeService
   ],

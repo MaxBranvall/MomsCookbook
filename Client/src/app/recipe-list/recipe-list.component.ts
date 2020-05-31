@@ -48,12 +48,14 @@ export class RecipeListComponent implements OnInit {
     this.recipeService.getAllEntriesByCategory(this.title).subscribe(
       res => {
         this.loading = false;
-        if (res.status === 0) {
-          this.noEntries = true;
-        } else {
-          this.entries = res.body;
-        }
+        this.entries = res.body;
+      }, error => {
+        this.loading = false;
+        this.noEntries = true;
+        alert('Entries for category ' + this.title + ' could not be retrieved from the server.' +
+        '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
+        this.router.navigate(['/']);
       }
-      );
-     }
+    );
   }
+}
