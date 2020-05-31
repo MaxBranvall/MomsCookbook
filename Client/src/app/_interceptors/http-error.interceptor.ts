@@ -24,6 +24,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             console.error('CORS error...');
             return throwError(error);
             break;
+          case 401:
+            console.error('Unauthorized..');
+            return throwError(error);
           case 404:
             return throwError(error);
             break;
