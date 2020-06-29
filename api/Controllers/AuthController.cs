@@ -98,7 +98,7 @@ namespace api.Controllers
             else
             {
                 this._logger.LogError("There was an issue creating user: " + user.Username);
-                return BadRequest("This username already exists.");
+                return BadRequest("This username or email address already exists.");
             }
 
         }

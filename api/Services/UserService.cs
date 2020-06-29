@@ -74,11 +74,13 @@ namespace api.Services
 
             Users newUser;
 
-            if (_checkValidity(user.Username))
+            // TODO: Condense these two checks into one method to prevent calling database multiple times here.
+            if (_checkValidUsername(user.Username) && _checkValidEmail(user.EmailAddress))
             {
                 newUser = new Users
                 {
                     Username = user.Username,
+                    EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Role = user.Role
@@ -258,7 +260,7 @@ namespace api.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private bool _checkValidity(string username)
+        private bool _checkValidUsername(string username)
         {
 
             //maybe move to extension method
@@ -268,6 +270,22 @@ namespace api.Services
             foreach (Users user in allUsers)
             {
                 if (user.Username == username)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
+        private bool _checkValidEmail(string email)
+        {
+            List<Users> allUsers = GetAllUsers();
+
+            foreach (Users user in allUsers)
+            {
+                if (user.EmailAddress == email)
                 {
                     return false;
                 }
