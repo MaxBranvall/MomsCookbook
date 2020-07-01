@@ -11,13 +11,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using api.Entities;
 using api.Models;
 using api.Helpers;
 using api.Contexts;
 using api.Interfaces;
 using api.ExtensionMethods;
-using Microsoft.EntityFrameworkCore;
+using Email;
 
 namespace api.Services
 {
@@ -54,7 +55,7 @@ namespace api.Services
                 if (_passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Success)
                 {
                     _logger.LogInformation("Correct password! Generating token.");
-                    user.Token = _getToken(user);
+                    user.Token = _getAuthToken(user);
                     return user;
                 }
                 else
@@ -112,6 +113,12 @@ namespace api.Services
                     this._logger.LogInformation("Admin request created!");
                     this._context.SaveChanges();
                 }
+
+                
+
+                Mail email = new Mail();
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Token: " + _getAccountCreationToken(newUser));
+                email.SendMessage();
 
                 return newUser;
 
@@ -235,7 +242,7 @@ namespace api.Services
             return true;
         }
 
-        private string _getToken(Users user)
+        private string _getAuthToken(Users user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -249,7 +256,7 @@ namespace api.Services
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(7),                
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -257,6 +264,29 @@ namespace api.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string _getAccountCreationToken(Users user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var expiration = Encoding.ASCII.GetBytes(_appSettings.Expiration);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.ID.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.LastName),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddSeconds(30),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 

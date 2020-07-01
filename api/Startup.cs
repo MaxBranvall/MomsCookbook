@@ -77,7 +77,9 @@ namespace api
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience
+                    ValidAudience = jwtSettings.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
 
             });
