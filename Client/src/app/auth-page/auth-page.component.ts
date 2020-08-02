@@ -72,7 +72,7 @@ export class AuthPageComponent implements OnInit {
       error => {
         this.loading = false;
         this.error = true;
-        this.errorText = error.error;
+        this.errorText = error.message;
         this.errorType = error.statusText;
         this.statusCode = error.status;
       }

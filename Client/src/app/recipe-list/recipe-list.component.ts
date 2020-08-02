@@ -49,6 +49,11 @@ export class RecipeListComponent implements OnInit {
       res => {
         this.loading = false;
         this.entries = res.body;
+
+        if (this.entries.length === 0) {
+          this.noEntries = true;
+        }
+
       }, error => {
         this.loading = false;
         this.noEntries = true;
