@@ -41,9 +41,9 @@ namespace api.Services
             _passwordHasher = new PasswordHasher<Users>();
         }
 
-        public Users Authenticate(string username, string password)
+        public Users Authenticate(string emailAddress, string password)
         {
-            var user = _context.users.SingleOrDefault(x => x.Username == username);
+            var user = _context.users.SingleOrDefault(x => x.EmailAddress == emailAddress);
 
             if (user == null)
             {
@@ -60,7 +60,7 @@ namespace api.Services
                 }
                 else
                 {
-                    _logger.LogError("Failed. Wrong username and/or password.");
+                    _logger.LogError("Failed. Wrong email address and/or password.");
                     return null;
                 }
             } catch (Exception ex)
@@ -75,12 +75,10 @@ namespace api.Services
 
             Users newUser;
 
-            // TODO: Condense these two checks into one method to prevent calling database multiple times here.
-            if (_checkValidUsername(user.Username) && _checkValidEmail(user.EmailAddress))
+            if (_checkValidEmail(user.EmailAddress))
             {
                 newUser = new Users
                 {
-                    Username = user.Username,
                     EmailAddress = user.EmailAddress,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -117,7 +115,7 @@ namespace api.Services
                 
 
                 Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Token: " + _getAccountCreationToken(newUser));
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://www.momscookbook.net/authenticate/" + newUser.ID + "/" + _getAccountCreationToken(newUser));
                 email.SendMessage();
 
                 return newUser;
@@ -253,6 +251,7 @@ namespace api.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.ID.ToString()),
+                    new Claim(ClaimTypes.Email, user.EmailAddress),
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
@@ -278,10 +277,11 @@ namespace api.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.ID.ToString()),
+                    new Claim(ClaimTypes.Email, user.EmailAddress),
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddHours(2),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -290,27 +290,9 @@ namespace api.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private bool _checkValidUsername(string username)
-        {
-
-            //maybe move to extension method
-
-            List<Users> allUsers = GetAllUsers();
-
-            foreach (Users user in allUsers)
-            {
-                if (user.Username == username)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-
-        }
-
         private bool _checkValidEmail(string email)
         {
+
             List<Users> allUsers = GetAllUsers();
 
             foreach (Users user in allUsers)

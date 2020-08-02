@@ -49,7 +49,7 @@ namespace api.Controllers
 
             if (user != null)
             {
-                this._logger.LogInformation($"Successfully retrieved user with ID: {user.ID} and username: {user.Username}");
+                this._logger.LogInformation($"Successfully retrieved user with ID: {user.ID} and email address: {user.EmailAddress}");
                 return Ok(user.WithoutPassword());
             } else
             {
@@ -85,20 +85,20 @@ namespace api.Controllers
         [HttpPost]
         public ActionResult<Users> CreateUser(Users user)
         {
-            this._logger.LogInformation("Attempting to create user: " + user.Username);
+            this._logger.LogInformation("Attempting to create user: " + user.EmailAddress);
 
             Users newUser = this._userService.CreateAccount(user);
 
 
             if (newUser != null)
             {
-                this._logger.LogInformation("Successfully created user: " + newUser.Username);
+                this._logger.LogInformation("Successfully created user: " + newUser.EmailAddress);
                 return CreatedAtAction(nameof(GetUser), new { ID = newUser.ID }, this._userService.GetUser(newUser.ID).WithoutPassword());
             }
             else
             {
-                this._logger.LogError("There was an issue creating user: " + user.Username);
-                return BadRequest("This username or email address already exists.");
+                this._logger.LogError("There was an issue creating user: " + user.EmailAddress);
+                return BadRequest("A user with this email address already exists.");
             }
 
         }
@@ -149,18 +149,18 @@ namespace api.Controllers
         public ActionResult<Users> AuthenticateUser([FromBody] AuthenticateModel user)
         {
 
-           this._logger.LogInformation("Attempting to authenticate user: " + user.Username);
+           this._logger.LogInformation("Attempting to authenticate user: " + user.EmailAddress);
 
-            Users user1 = this._userService.Authenticate(user.Username, user.Password);
+            Users user1 = this._userService.Authenticate(user.EmailAddress, user.Password);
 
             if (user1 != null)
             {
-                this._logger.LogInformation("Succesfully authenticated user: " + user.Username);
+                this._logger.LogInformation("Succesfully authenticated user: " + user.EmailAddress);
                 return Ok(user1.WithoutPassword());
             } else
             {
-                this._logger.LogError("Can not authenticate user: " + user.Username);
-                return Unauthorized("Incorrect username and/or password.");
+                this._logger.LogError("Can not authenticate user: " + user.EmailAddress);
+                return Unauthorized("Incorrect email address and/or password.");
             }
         }
 
@@ -168,17 +168,17 @@ namespace api.Controllers
         [HttpPut("changePassword")]
         public ActionResult<Users> ChangePassword(Users user)
         {
-            this._logger.LogInformation("Attempting to change password for user: " + user.Username);
+            this._logger.LogInformation("Attempting to change password for user: " + user.EmailAddress);
 
             Users userNewPassword = this._userService.ChangePassword(user);
 
             if (userNewPassword != null)
             {
-                this._logger.LogInformation("Successfully changed password for user: " + userNewPassword.Username);
+                this._logger.LogInformation("Successfully changed password for user: " + userNewPassword.EmailAddress);
                 return CreatedAtAction(nameof(GetUser), new { ID = userNewPassword.ID }, userNewPassword.WithoutPassword());
             } else
             {
-                this._logger.LogError("There was an issue changing the password for user: " + user.Username);
+                this._logger.LogError("There was an issue changing the password for user: " + user.EmailAddress);
                 return BadRequest();
             }
         }
