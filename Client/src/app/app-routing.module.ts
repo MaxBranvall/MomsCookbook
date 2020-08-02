@@ -9,6 +9,7 @@ import { EntryMode } from './_helpers/entry-mode.enum';
 import { AuthGuard } from './_guards/auth.guard';
 import { Role } from './_helpers/role.enum';
 import { AccountPageComponent } from './account-page/account-page.component';
+import { NewaccountComponent } from './newaccount/newaccount.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
     path: 'editrecipe',
     component: RecipeEntryComponent,
     data : {mode : EntryMode.EditEntry}
+  },
+  {
+    path: 'newaccount',
+    component: NewaccountComponent
   },
   {
     path: ':categoryTitle',

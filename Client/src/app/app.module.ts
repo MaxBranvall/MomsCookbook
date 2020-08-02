@@ -24,6 +24,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 import { AccountPageComponent } from './account-page/account-page.component';
 import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
+import { NewaccountComponent } from './newaccount/newaccount.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { GlobalErrorHandlerService } from './Services/global-error-handler.servi
     LoadingScreenComponent,
     AuthPageComponent,
     AccountPageComponent,
+    NewaccountComponent,
   ],
   imports: [
     BrowserModule,
