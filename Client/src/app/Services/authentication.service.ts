@@ -35,9 +35,9 @@ export class AuthenticationService {
     return this.http.post<Users>(this.api + Controller.Auth, user, { observe: 'response' });
   }
 
-  login(username: string, password: string): Observable<HttpResponse<Users>> {
+  login(emailaddress: string, password: string): Observable<HttpResponse<Users>> {
 
-    const body = { username, password };
+    const body = { emailaddress, password };
 
     return this.http.post<any>(this.api + 'auth/authenticateuser', body)
     .pipe(map(user => {

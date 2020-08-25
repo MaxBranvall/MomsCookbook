@@ -36,12 +36,12 @@ export class AuthPageComponent implements OnInit {
   }
 
   get diagnostic() {
-    return JSON.stringify(this.newAccount);
+    return JSON.stringify(this.model);
   }
 
   onSubmit() {
     this.loading = true;
-    this.authService.login(this.model.username, this.model.password).subscribe(x => {
+    this.authService.login(this.model.EmailAddress, this.model.Password).subscribe(x => {
 
       alert('Logged in successfully! Returning to home screen... ');
       this.router.navigate(['/']);

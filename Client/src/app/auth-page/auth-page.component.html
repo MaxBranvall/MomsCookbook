@@ -13,14 +13,14 @@
 
             <div class="form-inner">
                 <div class="section">
-                    <label for="username">Username: </label>
-                    <input class="input" type="text" id="username" name="Name"
-                    [(ngModel)]="model.username" placeholder="Username" required>
+                    <label for="EmailAddress">Email Address: </label>
+                    <input class="input" type="text" id="EmailAddress" name="Name"
+                    [(ngModel)]="model.EmailAddress" placeholder="Email Address" required>
                 </div>
                 <div class="section">
-                    <label for="password">Password: </label>
-                    <input class="password" type="password" id="password" name="Password"
-                    [(ngModel)]="model.password" placeholder="Password" required>
+                    <label for="Password">Password: </label>
+                    <input class="Password" type="Password" id="Password" name="Password"
+                    [(ngModel)]="model.Password" placeholder="Password" required>
                 </div>
 
                 <div *ngIf="this.error" class="section errorContainer">
@@ -42,14 +42,14 @@
 
             <div class="form-inner">
                 <div class="section">
-                    <label for="username">Username: </label>
+                    <label for="EmailAddress">Email Address: </label>
                     <input
                         class="input"
                         type="text"
-                        id="username"
+                        id="EmailAddress"
                         name="Name"
-                        [(ngModel)]="newAccount.Username"
-                        placeholder="Username"
+                        [(ngModel)]="newAccount.EmailAddress"
+                        placeholder="Email Address"
                         required>
                 </div>
                 <div class="section">
@@ -73,7 +73,7 @@
                     id="confirmPassword"
                     name="confirmPassword"
                     #confirmPassword="ngModel"
-                    placeholder="ConfirmPassword"
+                    placeholder="Confirm Password"
                     required>
                 </div>
                 <div
@@ -130,6 +130,10 @@
                     [disabled]=!createAccountForm.valid>
                     Create Account
                 </button>
+
+                <div class="loginText">
+                    <span (click)="toggleCreateAccount = false">Login</span>
+                </div>
 
             </div>
 

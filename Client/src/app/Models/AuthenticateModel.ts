@@ -1,4 +1,4 @@
 export class AuthenticateModel {
-    username: string;
-    password: string;
+    EmailAddress: string;
+    Password: string;
 }

@@ -40,7 +40,7 @@ const routes: Routes = [
     data : {mode : EntryMode.EditEntry}
   },
   {
-    path: 'newaccount',
+    path: 'authenticate/:id/:token',
     component: NewaccountComponent
   },
   {
