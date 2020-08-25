@@ -30,6 +30,26 @@ namespace api.Controllers
 
         //TODO: For delete and put maybe return 204 instead of 200 or 201
 
+        //PUT: v1/verify/5
+        [Authorize("Verification")]
+        [HttpPut("verify/{id}")]
+        public ActionResult<Users> VerifyEmail(int id)
+        {
+            this._logger.LogInformation("Attempting to verify user with id: " + id);
+
+            Users user = this._userService.GetUser(id);
+
+            if (user != null)
+            {
+                Users verifiedUser = this._userService.VerifyUser(user);
+                return CreatedAtAction(nameof(VerifyEmail), id, verifiedUser.WithoutPassword());
+            } else
+            {
+                this._logger.LogError("There was an error retrieving user with ID: " + id);
+                return NotFound("User not found.");
+            }
+        }
+
         //GET: v1/auth/5
         [HttpGet("{id}")]
         public ActionResult<Users> GetUser(int id)
@@ -61,7 +81,7 @@ namespace api.Controllers
         //GET: v1/auth
         [Authorize(Roles = Role.Admin)]
         [HttpGet]
-        public ActionResult<List<Users>> GetAll()
+        public ActionResult<List<Users>> GetAllUsers()
         {
             this._logger.LogInformation("Attempting to retrieve all users from database.");
 
@@ -105,7 +125,7 @@ namespace api.Controllers
 
         //PUT: v1/auth/5
         [HttpPut("{id}")]
-        public ActionResult<Users> updateUser(Users user)
+        public ActionResult<Users> UpdateUser(Users user)
         {
             this._logger.LogInformation("Attempting to update user with id: " + user.ID);
             Users updatedUser = this._userService.UpdateUser(user);

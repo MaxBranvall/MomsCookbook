@@ -112,10 +112,11 @@ namespace api.Services
                     this._context.SaveChanges();
                 }
 
-                
+                String token = _getAccountCreationToken(newUser);
+                newUser.Token = token;
 
                 Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://www.momscookbook.net/authenticate/" + newUser.ID + "/" + _getAccountCreationToken(newUser));
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://www.momscookbook.net/authenticate/" + newUser.ID + "/" + token);
                 email.SendMessage();
 
                 return newUser;
@@ -201,6 +202,26 @@ namespace api.Services
             return user;
         }
 
+        public Users VerifyUser(Users user)
+        {
+
+            user.Verified = true;
+
+            try
+            {
+                this._context.users.Attach(user);
+                this._context.Entry(user).State = EntityState.Modified;
+                this._context.Entry(user).Property(x => x.Verified).IsModified = true;
+                this._context.SaveChanges();
+            } catch (Exception ex)
+            {
+                this._logger.LogError("Caught exception: " + ex.ToString());
+                return null;
+            }
+
+            return user;
+        }
+
         public bool DeleteUser(int id)
         {
             Users user = GetUser(id);
@@ -279,7 +300,8 @@ namespace api.Services
                     new Claim(ClaimTypes.Name, user.ID.ToString()),
                     new Claim(ClaimTypes.Email, user.EmailAddress),
                     new Claim(ClaimTypes.NameIdentifier, user.LastName),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim("Verified", Verified.False.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 Issuer = _jwtSettings.Issuer,

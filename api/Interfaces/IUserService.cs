@@ -14,6 +14,7 @@ namespace api.Interfaces
         Users CreateAccount(Users user);
         Users ChangePassword(Users user);
         Users UpdateUser(Users user);
+        Users VerifyUser(Users user);
         bool DeleteUser(int id);
     }
 }

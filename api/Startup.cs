@@ -87,6 +87,7 @@ namespace api
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("UserOnly", policy => policy.RequireClaim(ClaimTypes.Role, Role.Admin));
+                options.AddPolicy("Verification", policy => policy.RequireClaim("Verified", Verified.False.ToString()));
             });
 
             services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
