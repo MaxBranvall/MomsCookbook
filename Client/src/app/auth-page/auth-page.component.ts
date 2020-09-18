@@ -6,6 +6,8 @@ import { AuthenticationService } from '../Services/authentication.service';
 import { Users } from '../Entities/Users';
 import { Role } from '../_helpers/role.enum';
 
+import {default as decode } from 'jwt-decode';
+
 @Component({
   selector: 'app-auth-page',
   templateUrl: './auth-page.component.html',
