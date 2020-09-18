@@ -16,5 +16,6 @@ namespace api.Interfaces
         Users UpdateUser(Users user);
         Users VerifyUser(Users user);
         bool DeleteUser(int id);
+        string GetChangePasswordToken(string email);
     }
 }

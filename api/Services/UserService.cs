@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
@@ -18,7 +14,7 @@ using api.Helpers;
 using api.Contexts;
 using api.Interfaces;
 using api.ExtensionMethods;
-using Email;
+using EmailHelper;
 
 namespace api.Services
 {
@@ -28,17 +24,46 @@ namespace api.Services
 
         private PasswordHasher<Users> _passwordHasher;
         private RecipeContext _context;
+        private ITokenBuilder _tokenBuilder;
         private readonly AppSettings _appSettings;
         private readonly JWT_Settings _jwtSettings;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings, ILogger<UserService> logger, RecipeContext context)
+        public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings, 
+                            ILogger<UserService> logger, RecipeContext context, ITokenBuilder tokenBuilder)
         {
             _jwtSettings = jwtSettings.Value;
             _appSettings = appSettings.Value;
             _logger = logger;
             _context = context;
+            _tokenBuilder = tokenBuilder;
             _passwordHasher = new PasswordHasher<Users>();
+        }
+
+        public string GetChangePasswordToken(string email)
+        {
+
+            //Email token to user
+
+            Users user;
+
+            if (!_checkValidEmail(email))
+            {
+
+                try
+                {
+
+                    user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
+                    return this._tokenBuilder.GetChangePasswordToken(user);
+
+                } catch (Exception ex)
+                {
+                    this._logger.LogError("Caught exception: " + ex);
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         public Users Authenticate(string emailAddress, string password)
@@ -55,7 +80,7 @@ namespace api.Services
                 if (_passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Success)
                 {
                     _logger.LogInformation("Correct password! Generating token.");
-                    user.Token = _getAuthToken(user);
+                    user.Token = _tokenBuilder.GetAuthToken(user);
                     return user;
                 }
                 else
@@ -112,7 +137,7 @@ namespace api.Services
                     this._context.SaveChanges();
                 }
 
-                String token = _getAccountCreationToken(newUser);
+                String token = _tokenBuilder.GetAccountCreationToken(newUser);
                 newUser.Token = token;
 
                 Mail email = new Mail();
@@ -259,57 +284,6 @@ namespace api.Services
             }
 
             return true;
-        }
-
-        private string _getAuthToken(Users user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var expiration = Encoding.ASCII.GetBytes(_appSettings.Expiration);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.ID.ToString()),
-                    new Claim(ClaimTypes.Email, user.EmailAddress),
-                    new Claim(ClaimTypes.NameIdentifier, user.LastName),
-                    new Claim(ClaimTypes.Role, user.Role)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),                
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
-        }
-
-        private string _getAccountCreationToken(Users user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var expiration = Encoding.ASCII.GetBytes(_appSettings.Expiration);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.ID.ToString()),
-                    new Claim(ClaimTypes.Email, user.EmailAddress),
-                    new Claim(ClaimTypes.NameIdentifier, user.LastName),
-                    new Claim(ClaimTypes.Role, user.Role),
-                    new Claim("Verified", Verified.False.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(2),
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
         private bool _checkValidEmail(string email)

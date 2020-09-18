@@ -30,7 +30,7 @@ namespace api.Controllers
 
         //TODO: For delete and put maybe return 204 instead of 200 or 201
 
-        //PUT: v1/verify/5
+        //PUT: v1/auth/verify/5
         [Authorize("Verification")]
         [HttpPut("verify/{id}")]
         public ActionResult<Users> VerifyEmail(int id)
@@ -185,6 +185,7 @@ namespace api.Controllers
         }
 
         //PUT: v1/auth/changePassword
+        [Authorize("ChangePassword")]
         [HttpPut("changePassword")]
         public ActionResult<Users> ChangePassword(Users user)
         {
@@ -201,6 +202,32 @@ namespace api.Controllers
                 this._logger.LogError("There was an issue changing the password for user: " + user.EmailAddress);
                 return BadRequest();
             }
+        }
+
+        //GET: v1/auth/getChangePasswordToken
+        [AllowAnonymous]
+        [HttpGet("getChangePasswordToken")]
+        public ActionResult<string> GetChangePasswordToken([FromBody] GetChangePasswordTokenModel user)
+        {
+            string token = this._userService.GetChangePasswordToken(user.EmailAddress);
+
+            if (token != null)
+            {
+                this._logger.LogInformation("Successfully retrieved change password token for: " + user.EmailAddress);
+                return Ok(token);
+            } else
+            {
+                this._logger.LogError("Could not retrieve change password token for user: " + user.EmailAddress);
+                return NotFound();
+            }
+        }
+
+        //GET: v1/auth/verifyChangePasswordToken
+        [Authorize("ChangePassword")]
+        [HttpGet("verifyChangePasswordToken")]
+        public ActionResult VerifyChangePasswordToken()
+        {
+            return Ok();
         }
 
     }

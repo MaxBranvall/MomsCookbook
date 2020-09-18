@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api
 {
@@ -88,11 +89,15 @@ namespace api
             {
                 options.AddPolicy("UserOnly", policy => policy.RequireClaim(ClaimTypes.Role, Role.Admin));
                 options.AddPolicy("Verification", policy => policy.RequireClaim("Verified", Verified.False.ToString()));
+                options.AddPolicy("ChangePassword", policy => policy.Requirements.Add(new ChangePasswordRequirement()));
             });
+
+            services.AddTransient<IAuthorizationHandler, ChangePasswordRequirementHandler>();
 
             services.AddDbContext<RecipeContext>(options => options.UseMySql(_connectionString));
 
             services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<ITokenBuilder, TokenBuilder>();
             services.AddTransient<IUserService, UserService>();
 
             services.AddControllers();
