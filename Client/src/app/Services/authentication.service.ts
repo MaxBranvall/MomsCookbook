@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Users } from '../Entities/Users';
+import { ForgotPasswordModel } from '../Models/ForgotPasswordModel';
 import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 import { Controller } from '../_helpers/controller.enum';
 
@@ -47,6 +48,11 @@ export class AuthenticationService {
         }
         return user;
       }));
+  }
+
+  sendForgotPasswordRequest(emailAddress: string): Observable<HttpResponse<string>> {
+
+    return this.http.post<string>(this.api + Controller.Auth + '/getChangePasswordToken', { emailAddress }, { observe: 'response' });
   }
 
   logout() {

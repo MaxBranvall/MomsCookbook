@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthenticateModel } from '../Models/AuthenticateModel';
+import { ForgotPasswordModel } from '../Models/ForgotPasswordModel';
 import { AuthenticationService } from '../Services/authentication.service';
 import { Users } from '../Entities/Users';
 import { Role } from '../_helpers/role.enum';
@@ -16,8 +17,11 @@ import {default as decode } from 'jwt-decode';
 export class AuthPageComponent implements OnInit {
 
   private newAccount: Users;
+  private forgotPassword: ForgotPasswordModel;
   private model: AuthenticateModel;
+  private default = true;
   private toggleCreateAccount = false;
+  private toggleForgotPassword = false;
   private confirmPasswordRef: string;
   private alert = false;
   private loading = false;
@@ -31,6 +35,7 @@ export class AuthPageComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.forgotPassword = new ForgotPasswordModel();
     this.model = new AuthenticateModel();
     this.newAccount = new Users();
     this.newAccount.Role = Role.User;
@@ -59,6 +64,24 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
+  toggleCreateAccountLayout() {
+    this.default = false;
+    this.toggleForgotPassword = false;
+    this.toggleCreateAccount = true;
+  }
+
+  toggleResetPasswordLayout() {
+    this.default = false;
+    this.toggleCreateAccount = false;
+    this.toggleForgotPassword = true;
+  }
+
+  toggleDefaultLayout() {
+    this.default = true;
+    this.toggleCreateAccount = false;
+    this.toggleForgotPassword = false;
+  }
+
   onCreateAccount() {
     if (this.passwordValid()) {
       this.alert = false;
@@ -74,7 +97,7 @@ export class AuthPageComponent implements OnInit {
       error => {
         this.loading = false;
         this.error = true;
-        this.errorText = error.message;
+        this.errorText = error.error;
         this.errorType = error.statusText;
         this.statusCode = error.status;
       }
@@ -82,6 +105,25 @@ export class AuthPageComponent implements OnInit {
       return true;
     }
     this.alert = true;
+    return false;
+  }
+
+  onForgotPassword() {
+    this.loading = true;
+    this.authService.sendForgotPasswordRequest(this.forgotPassword.EmailAddress).subscribe(x => {
+      if (x.status === 200 || x.status === 204) {
+        this.loading = false;
+        alert('A link has been sent to your email to reset your password.');
+        return true;
+      }
+    }, error => {
+      this.loading = false;
+      this.error = true;
+      this.errorText = error.error;
+      this.errorType = error.statusText;
+      this.statusCode = error.status;
+    }
+    );
     return false;
   }
 

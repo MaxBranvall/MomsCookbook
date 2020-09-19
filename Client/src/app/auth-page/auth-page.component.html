@@ -6,7 +6,7 @@
 
     <div class="form-outer">
         <form
-            *ngIf="!toggleCreateAccount"
+            *ngIf="default"
             method="POST"
             (ngSubmit)="onSubmit()"
             #loginForm="ngForm" >
@@ -15,7 +15,9 @@
                 <div class="section">
                     <label for="EmailAddress">Email Address: </label>
                     <input class="input" type="text" id="EmailAddress" name="Name"
-                    [(ngModel)]="model.EmailAddress" placeholder="Email Address" required>
+                    [(ngModel)]="model.EmailAddress" placeholder="Email Address"
+                    pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
+                    required>
                 </div>
                 <div class="section">
                     <label for="Password">Password: </label>
@@ -28,10 +30,42 @@
                 </div>
 
                 <button type="submit" class="materialButton" [disabled]=!loginForm.valid>Log In</button>
-                <div class="createAccountText">
-                    <span (click)="toggleCreateAccount = true">Create Account</span>
+                <div class="createAccountText layoutLink">
+                    <span (click)="toggleCreateAccountLayout()">Create Account</span>
+                </div>
+                <div class="forgotPasswordText layoutLink">
+                    <span (click)="toggleResetPasswordLayout()">Forgot Password?</span>
                 </div>
             </div>
+        </form>
+
+        <form
+            *ngIf="toggleForgotPassword"
+            method="POST"
+            (ngSubmit)="onForgotPassword()"
+            #forgotPasswordForm="ngForm">
+
+            <div class="form-inner">
+                <div class="section">
+                    <label for="EmailAddress">Email Address: </label>
+                    <input
+                        class="input"
+                        type="text"
+                        id="EmailAddress"
+                        name="EmailAddress"
+                        [(ngModel)]="forgotPassword.EmailAddress"
+                        placeholder="Email Address"
+                        pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
+                        required>
+                </div>
+
+                <button type="submit" class="materialButton" [disabled]=!forgotPasswordForm.valid>Submit</button>
+                <div class="loginText">
+                    <span (click)="toggleDefaultLayout()">Login</span>
+                </div>
+
+            </div>
+
         </form>
 
         <form
@@ -50,6 +84,7 @@
                         name="Name"
                         [(ngModel)]="newAccount.EmailAddress"
                         placeholder="Email Address"
+                        pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
                         required>
                 </div>
                 <div class="section">
@@ -107,21 +142,21 @@
                         type="radio"
                         name="role"
                         id="User"
-                        value="User"
+                        value="user"
                         [(ngModel)]="newAccount.Role">
                     <label class="radioLabel" for="User">User</label>
                     <input
                         type="radio"
                         name="role"
                         id="Admin"
-                        value="Admin"
+                        value="admin"
                         (click)="adminAlert()"
                         [(ngModel)]="newAccount.Role">
                     <label class="radioLabel" for="Admin">Admin</label>
                 </div>
 
                 <div *ngIf="this.error" class="section errorContainer">
-                    <span class="errorText">{{ errorType }}</span>
+                    <span class="errorText">{{ errorText }}</span>
                 </div>
                 <div class="alertbox" [hidden]="!alert">Please Correct Errors</div>
                 <button
@@ -132,7 +167,7 @@
                 </button>
 
                 <div class="loginText">
-                    <span (click)="toggleCreateAccount = false">Login</span>
+                    <span (click)="toggleDefaultLayout()">Login</span>
                 </div>
 
             </div>
