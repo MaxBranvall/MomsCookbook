@@ -123,45 +123,47 @@ namespace api.Controllers
 
         }
 
+        //TODO uncomment once you write an authorization policy for this. Let user update their own profile.
         //PUT: v1/auth/5
-        [HttpPut("{id}")]
-        public ActionResult<Users> UpdateUser(Users user)
-        {
-            this._logger.LogInformation("Attempting to update user with id: " + user.ID);
-            Users updatedUser = this._userService.UpdateUser(user);
+        //[HttpPut("{id}")]
+        //public ActionResult<Users> UpdateUser(Users user)
+        //{
+        //    this._logger.LogInformation("Attempting to update user with id: " + user.ID);
+        //    Users updatedUser = this._userService.UpdateUser(user);
 
-            if (updatedUser != null)
-            {
-                this._logger.LogInformation("Successfully updated user with ID: " + updatedUser.ID);
-                return CreatedAtAction(nameof(GetUser), new { ID = updatedUser.ID }, updatedUser.WithoutPassword());
-            }
-            else
-            {
-                this._logger.LogError("There was an issue updated user with ID: " + user.ID);
-                return BadRequest();
-            }
-        }
+        //    if (updatedUser != null)
+        //    {
+        //        this._logger.LogInformation("Successfully updated user with ID: " + updatedUser.ID);
+        //        return CreatedAtAction(nameof(GetUser), new { ID = updatedUser.ID }, updatedUser.WithoutPassword());
+        //    }
+        //    else
+        //    {
+        //        this._logger.LogError("There was an issue updated user with ID: " + user.ID);
+        //        return BadRequest();
+        //    }
+        //}
 
+        //TODO uncomment once you write an authorization policy for this
         //DELETE: v1/auth/5
-        [HttpDelete("{id}")]
-        public ActionResult<Users> DeleteUser(int id)
-        {
-            this._logger.LogInformation("Attempting to delete user with id: " + id);
+        //[HttpDelete("{id}")]
+        //public ActionResult<Users> DeleteUser(int id)
+        //{
+        //    this._logger.LogInformation("Attempting to delete user with id: " + id);
 
-            bool deleteUser = this._userService.DeleteUser(id);
+        //    bool deleteUser = this._userService.DeleteUser(id);
 
-            if (deleteUser)
-            {
-                this._logger.LogInformation("Successfully deleted user with id: " + id);
-                return NoContent();
-            }
-            else
-            {
-                this._logger.LogError("There was an error deleting user with id: " + id);
-                return BadRequest(new { message = "Could not delete user with id: " + id });
-            }
+        //    if (deleteUser)
+        //    {
+        //        this._logger.LogInformation("Successfully deleted user with id: " + id);
+        //        return NoContent();
+        //    }
+        //    else
+        //    {
+        //        this._logger.LogError("There was an error deleting user with id: " + id);
+        //        return BadRequest(new { message = "Could not delete user with id: " + id });
+        //    }
 
-        }
+        //}
 
         //POST: v1/auth/authenticateUser
         [AllowAnonymous]
@@ -206,7 +208,7 @@ namespace api.Controllers
 
         //GET: v1/auth/getChangePasswordToken
         [AllowAnonymous]
-        [HttpGet("getChangePasswordToken")]
+        [HttpPost("getChangePasswordToken")]
         public ActionResult<string> GetChangePasswordToken([FromBody] GetChangePasswordTokenModel user)
         {
             string token = this._userService.GetChangePasswordToken(user.EmailAddress);
@@ -214,7 +216,7 @@ namespace api.Controllers
             if (token != null)
             {
                 this._logger.LogInformation("Successfully retrieved change password token for: " + user.EmailAddress);
-                return Ok(token);
+                return Ok();
             } else
             {
                 this._logger.LogError("Could not retrieve change password token for user: " + user.EmailAddress);
@@ -224,7 +226,7 @@ namespace api.Controllers
 
         //GET: v1/auth/verifyChangePasswordToken
         [Authorize("ChangePassword")]
-        [HttpGet("verifyChangePasswordToken")]
+        [HttpPut("verifyChangePasswordToken")]
         public ActionResult VerifyChangePasswordToken()
         {
             return Ok();
