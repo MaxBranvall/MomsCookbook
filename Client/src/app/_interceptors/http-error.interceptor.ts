@@ -26,7 +26,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             break;
           case 400:
             console.error('Bad Request..');
-            return throwError(error.message);
+            return throwError(error);
             break;
           case 401:
             console.error('Unauthorized..');
