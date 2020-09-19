@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Users } from '../Entities/Users';
 import { AuthenticationService } from '../Services/authentication.service';
+import { Role } from '../_helpers/role.enum';
 
 @Component({
   selector: 'app-account-page',
@@ -11,11 +12,21 @@ import { AuthenticationService } from '../Services/authentication.service';
 export class AccountPageComponent implements OnInit {
 
   private currentUser: Users;
+  private isAdmin = false;
 
   constructor(private auth: AuthenticationService) { }
 
   ngOnInit(): void {
     this.currentUser = this.auth.currentUserValue;
+
+    if (this.currentUser.Role === Role.Admin) {
+      this.isAdmin = true;
+    }
+
+  }
+
+  notSupported() {
+    alert('This feature is not available yet.');
   }
 
 }

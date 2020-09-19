@@ -1,5 +1,9 @@
+@import '../../sass/components/material-button';
+
 .main {
     display: grid;
+    width: 90%;
+    margin: 0 auto;
 }
 
 .title {
@@ -11,4 +15,13 @@
 .subTitle {
     font-size: 1.5rem;
     text-align: center;
+}
+
+.detailContainer {
+    font-size: 2em;
+}
+
+.materialButton {
+    max-width: 33%;
+    margin-bottom: 5%;
 }
