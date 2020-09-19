@@ -19,8 +19,7 @@
                 id="name"
                 type="text"
                 class="textinput"
-                placeholder="Name of Recipe"
-                (change)="log(name)">
+                placeholder="Name of Recipe">
                 <div class="alertbox"
                     *ngIf="name.errors?.required && name.touched">
                     Name is required!
