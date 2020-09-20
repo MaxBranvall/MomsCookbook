@@ -141,7 +141,7 @@ namespace api.Services
                 newUser.Token = token;
 
                 Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://www.momscookbook.net/authenticate/" + newUser.ID + "/" + token);
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://localhost:4200/verifyEmail/" + newUser.ID + "/" + token);
                 email.SendMessage();
 
                 return newUser;
@@ -243,6 +243,8 @@ namespace api.Services
                 this._logger.LogError("Caught exception: " + ex.ToString());
                 return null;
             }
+
+            user.Token = this._tokenBuilder.GetAuthToken(user);
 
             return user;
         }
