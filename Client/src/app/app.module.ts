@@ -25,6 +25,7 @@ import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 import { AccountPageComponent } from './account-page/account-page.component';
 import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
 import { NewaccountComponent } from './newaccount/newaccount.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { NewaccountComponent } from './newaccount/newaccount.component';
     AuthPageComponent,
     AccountPageComponent,
     NewaccountComponent,
+    VerifyEmailComponent,
   ],
   imports: [
     BrowserModule,

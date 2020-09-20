@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, retry } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Users } from '../Entities/Users';
@@ -53,6 +53,12 @@ export class AuthenticationService {
   sendForgotPasswordRequest(emailAddress: string): Observable<HttpResponse<string>> {
 
     return this.http.post<string>(this.api + Controller.Auth + '/getChangePasswordToken', { emailAddress }, { observe: 'response' });
+  }
+
+  verifyEmail(id: number): Observable<HttpResponse<string>> {
+    return this.http.put<HttpResponse<string>>(this.api + Controller.Auth + '/verify/' + id, { observe: 'response' }).pipe(
+      retry(3)
+    );
   }
 
   logout() {

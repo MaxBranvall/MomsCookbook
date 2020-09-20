@@ -10,6 +10,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { Role } from './_helpers/role.enum';
 import { AccountPageComponent } from './account-page/account-page.component';
 import { NewaccountComponent } from './newaccount/newaccount.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 const routes: Routes = [
   {
@@ -40,8 +41,8 @@ const routes: Routes = [
     data : {mode : EntryMode.EditEntry}
   },
   {
-    path: 'authenticate/:id/:token',
-    component: NewaccountComponent
+    path: 'verifyEmail/:id/:token',
+    component: VerifyEmailComponent
   },
   {
     path: ':categoryTitle',
