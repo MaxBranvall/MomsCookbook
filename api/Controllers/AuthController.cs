@@ -30,26 +30,6 @@ namespace api.Controllers
 
         //TODO: For delete and put maybe return 204 instead of 200 or 201
 
-        //PUT: v1/auth/verify/5
-        [Authorize("Verification")]
-        [HttpPut("verify/{id}")]
-        public ActionResult<Users> VerifyEmail(int id)
-        {
-            this._logger.LogInformation("Attempting to verify user with id: " + id);
-
-            Users user = this._userService.GetUser(id);
-
-            if (user != null)
-            {
-                Users verifiedUser = this._userService.VerifyUser(user);
-                return CreatedAtAction(nameof(VerifyEmail), id, verifiedUser.WithoutPassword());
-            } else
-            {
-                this._logger.LogError("There was an error retrieving user with ID: " + id);
-                return NotFound("User not found.");
-            }
-        }
-
         //GET: v1/auth/5
         [HttpGet("{id}")]
         public ActionResult<Users> GetUser(int id)
@@ -109,7 +89,6 @@ namespace api.Controllers
 
             Users newUser = this._userService.CreateAccount(user);
 
-
             if (newUser != null)
             {
                 this._logger.LogInformation("Successfully created user: " + newUser.EmailAddress);
@@ -166,6 +145,7 @@ namespace api.Controllers
         //}
 
         //POST: v1/auth/authenticateUser
+
         [AllowAnonymous]
         [HttpPost("authenticateUser")]
         public ActionResult<Users> AuthenticateUser([FromBody] AuthenticateModel user)
@@ -183,6 +163,27 @@ namespace api.Controllers
             {
                 this._logger.LogError("Can not authenticate user: " + user.EmailAddress);
                 return Unauthorized("Incorrect email address and/or password.");
+            }
+        }
+
+        //PUT: v1/auth/verify/5
+        [Authorize("Verification")]
+        [HttpPut("verify/{id}")]
+        public ActionResult<Users> VerifyEmail(int id)
+        {
+            this._logger.LogInformation("Attempting to verify user with id: " + id);
+
+            Users user = this._userService.GetUser(id);
+
+            if (user != null)
+            {
+                Users verifiedUser = this._userService.VerifyUser(user);
+                return CreatedAtAction(nameof(VerifyEmail), id, verifiedUser.WithoutPassword());
+            }
+            else
+            {
+                this._logger.LogError("There was an error retrieving user with ID: " + id);
+                return NotFound("User not found.");
             }
         }
 
