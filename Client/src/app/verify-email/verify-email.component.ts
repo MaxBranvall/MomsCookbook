@@ -20,12 +20,11 @@ export class VerifyEmailComponent implements OnInit {
 
   ngOnInit(): void {
 
-    localStorage.removeItem(LocalStorageItem.CurrentUser);
-
     this.route.params.subscribe(params => {
       this.user.ID = params.id;
       this.user.Token = params.token;
     });
+
     this.sendRequest();
 
   }

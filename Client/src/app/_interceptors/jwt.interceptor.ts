@@ -17,6 +17,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
+    this.authService.refreshUser();
     const currentUser = this.authService.currentUserValue;
     const isApiURL = request.url.startsWith(environment.apiURL);
     if (currentUser && isApiURL) {

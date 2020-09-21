@@ -28,6 +28,10 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  refreshUser() {
+    this.currentUserSubject.next(JSON.parse(localStorage.getItem(LocalStorageItem.CurrentUser)));
+  }
+
   getUser(id: number): Observable<HttpResponse<number>> {
     return this.http.get<number>(this.api + Controller.Auth, { observe: 'response' });
   }
