@@ -26,6 +26,7 @@ import { AccountPageComponent } from './account-page/account-page.component';
 import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
 import { NewaccountComponent } from './newaccount/newaccount.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
     AccountPageComponent,
     NewaccountComponent,
     VerifyEmailComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,

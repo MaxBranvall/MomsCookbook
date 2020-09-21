@@ -9,8 +9,8 @@ import { EntryMode } from './_helpers/entry-mode.enum';
 import { AuthGuard } from './_guards/auth.guard';
 import { Role } from './_helpers/role.enum';
 import { AccountPageComponent } from './account-page/account-page.component';
-import { NewaccountComponent } from './newaccount/newaccount.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 const routes: Routes = [
   {
@@ -43,6 +43,10 @@ const routes: Routes = [
   {
     path: 'verifyEmail/:id/:token',
     component: VerifyEmailComponent
+  },
+  {
+    path: 'forgotPassword/:id/:token',
+    component: ForgotPasswordComponent
   },
   {
     path: ':categoryTitle',

@@ -55,8 +55,18 @@ export class AuthenticationService {
   }
 
   sendForgotPasswordRequest(emailAddress: string): Observable<HttpResponse<string>> {
-
     return this.http.post<string>(this.api + Controller.Auth + '/getChangePasswordToken', { emailAddress }, { observe: 'response' });
+  }
+
+  verifyForgotPasswordToken(): Observable<HttpResponse<string>> {
+    return this.http.get<string>(this.api + Controller.Auth + '/verifyChangePasswordToken', { observe: 'response' }).pipe(
+      retry(3)
+    );
+  }
+
+  resetPassword(user: Users): Observable<HttpResponse<Users>> {
+    const body = user;
+    return this.http.put<Users>(this.api + Controller.Auth + '/changePassword', user, { observe: 'response' });
   }
 
   verifyEmail(id: number): Observable<HttpResponse<string>> {
