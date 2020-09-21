@@ -27,17 +27,36 @@ namespace api.Services
         private ITokenBuilder _tokenBuilder;
         private readonly AppSettings _appSettings;
         private readonly JWT_Settings _jwtSettings;
+        private readonly URLs _urls;
         private readonly ILogger<UserService> _logger;
+        private readonly string env;
+        private string url;
 
-        public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings, 
-                            ILogger<UserService> logger, RecipeContext context, ITokenBuilder tokenBuilder)
+        public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings,
+                            ILogger<UserService> logger, IOptions<URLs> urls, RecipeContext context, ITokenBuilder tokenBuilder)
         {
             _jwtSettings = jwtSettings.Value;
             _appSettings = appSettings.Value;
+            _urls = urls.Value;
             _logger = logger;
             _context = context;
             _tokenBuilder = tokenBuilder;
             _passwordHasher = new PasswordHasher<Users>();
+            env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            if (env == "Development")
+            {
+                url = this._urls.Development;
+            } else if (env == "Beta")
+            {
+                url = this._urls.Beta;
+            } else if (env == "Production")
+            {
+                url = this._urls.Production;
+            }
+
+            this._logger.LogInformation(url);
+
         }
 
         public string GetChangePasswordToken(string email)
@@ -54,6 +73,9 @@ namespace api.Services
                 {
 
                     user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
+                    Mail emailService = new Mail();
+                    emailService.ComposeEmail(user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "/" + this._tokenBuilder.GetChangePasswordToken(user));
+                    emailService.SendMessage();
                     return this._tokenBuilder.GetChangePasswordToken(user);
 
                 } catch (Exception ex)
@@ -141,7 +163,7 @@ namespace api.Services
                 newUser.Token = token;
 
                 Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: http://localhost:4200/verifyEmail/" + newUser.ID + "/" + token);
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "/" + token);
                 email.SendMessage();
 
                 return newUser;
@@ -207,6 +229,8 @@ namespace api.Services
             this._context.users.Attach(existingUser);
             this._context.Entry(existingUser).Property(x => x.Password).IsModified = true;
             this._context.SaveChanges();
+
+            existingUser.Token = this._tokenBuilder.GetAuthToken(existingUser);
             return existingUser;
         }
 

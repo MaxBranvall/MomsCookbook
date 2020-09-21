@@ -42,6 +42,10 @@ namespace api
             {
                 _connectionString = configuration.GetConnectionString("MySQLConnection");
             }
+            else if (env.IsEnvironment("Beta"))
+            {
+                _connectionString = configuration.GetConnectionString("BetaConnection");
+            }
 
         }
 
@@ -52,9 +56,11 @@ namespace api
             // configure strongly typed settings objects          
             var appSettingsSection = Configuration.GetSection("AppSettings");
             var jwtSection = Configuration.GetSection("JWT");
+            var urlSection = Configuration.GetSection("URLs");
 
             services.Configure<AppSettings>(appSettingsSection);
             services.Configure<JWT_Settings>(jwtSection);
+            services.Configure<URLs>(urlSection);
 
             // configure jwt authentication
             var jwtSettings = jwtSection.Get<JWT_Settings>();

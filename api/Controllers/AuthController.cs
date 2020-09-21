@@ -10,6 +10,7 @@ using api.Interfaces;
 using api.ExtensionMethods;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
+using api.Helpers;
 
 namespace api.Controllers
 {
@@ -26,6 +27,7 @@ namespace api.Controllers
         {
             _userService = userService;
             _logger = logger;
+
         }
 
         //TODO: For delete and put maybe return 204 instead of 200 or 201
@@ -193,6 +195,7 @@ namespace api.Controllers
         public ActionResult<Users> ChangePassword(Users user)
         {
             this._logger.LogInformation("Attempting to change password for user: " + user.EmailAddress);
+            this._logger.LogInformation(user.Password);
 
             Users userNewPassword = this._userService.ChangePassword(user);
 
@@ -217,7 +220,7 @@ namespace api.Controllers
             if (token != null)
             {
                 this._logger.LogInformation("Successfully retrieved change password token for: " + user.EmailAddress);
-                return Ok();
+                return NoContent();
             } else
             {
                 this._logger.LogError("Could not retrieve change password token for user: " + user.EmailAddress);
@@ -227,10 +230,10 @@ namespace api.Controllers
 
         //GET: v1/auth/verifyChangePasswordToken
         [Authorize("ChangePassword")]
-        [HttpPut("verifyChangePasswordToken")]
+        [HttpGet("verifyChangePasswordToken")]
         public ActionResult VerifyChangePasswordToken()
         {
-            return Ok();
+            return NoContent();
         }
 
     }
