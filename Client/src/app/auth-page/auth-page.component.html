@@ -76,7 +76,7 @@
 
             <div class="form-inner">
                 <div class="section">
-                    <label for="EmailAddress">Email Address: </label>
+                    <label for="EmailAddress" class="reqField">Email Address: </label>
                     <input
                         class="input"
                         type="text"
@@ -88,7 +88,7 @@
                         required>
                 </div>
                 <div class="section">
-                    <label for="password">Password: </label>
+                    <label for="password" class="reqField">Password: </label>
                     <input
                         class="password"
                         type="password"
@@ -99,7 +99,7 @@
                         required>
                 </div>
                 <div class="section">
-                    <label for="confirm-password">Confirm Password: </label>
+                    <label for="confirm-password" class="reqField">Confirm Password: </label>
                     <input
                     [(ngModel)]="confirmPasswordRef"
                     [ngClass]="{ 'invalid': (confirmPassword.value !== newAccount.Password) && confirmPassword.touched }"
@@ -117,7 +117,7 @@
                     Passwords do not match.
                 </div>
                 <div class="section">
-                    <label for="first-name">First Name: </label>
+                    <label for="first-name" class="reqField">First Name: </label>
                     <input
                         class="nameInput"
                         type="text"
@@ -126,7 +126,7 @@
                         [(ngModel)]="newAccount.FirstName"
                         placeholder="Tony"
                         required>
-                    <label for="last-name">Last Name: </label>
+                    <label for="last-name" class="reqField">Last Name: </label>
                     <input
                         class="nameInput"
                         type="text"
