@@ -8,7 +8,7 @@ namespace api.Helpers
     public class URLs
     {
         public string Development { get; set; }
-        public string Beta { get; set; }
+        public string Staging { get; set; }
         public string Production { get; set; }
     }
 }

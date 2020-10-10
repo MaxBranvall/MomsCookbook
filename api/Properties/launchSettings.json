@@ -41,13 +41,13 @@
       },
       "applicationUrl": "http://api.momscookbook.net"
     },
-    "beta": {
+    "staging": {
       "commandName": "Project",
       "launchUrl": "api/Recipes",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Beta"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "applicationUrl": "http://api.beta.momscookbook.net"
+      "applicationUrl": "http://mbranvall-001-site6.atempurl.com/api"
     }
   }
 }

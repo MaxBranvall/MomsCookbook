@@ -47,15 +47,13 @@ namespace api.Services
             if (env == "Development")
             {
                 url = this._urls.Development;
-            } else if (env == "Beta")
+            } else if (env == "Staging")
             {
-                url = this._urls.Beta;
+                url = this._urls.Staging;
             } else if (env == "Production")
             {
                 url = this._urls.Production;
             }
-
-            this._logger.LogInformation(url);
 
         }
 
@@ -74,7 +72,7 @@ namespace api.Services
 
                     user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
                     Mail emailService = new Mail();
-                    emailService.ComposeEmail(user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "/" + this._tokenBuilder.GetChangePasswordToken(user));
+                    emailService.ComposeEmail(user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
                     emailService.SendMessage();
                     return this._tokenBuilder.GetChangePasswordToken(user);
 
@@ -163,7 +161,7 @@ namespace api.Services
                 newUser.Token = token;
 
                 Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "/" + token);
+                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "?token=" + token);
                 email.SendMessage();
 
                 return newUser;

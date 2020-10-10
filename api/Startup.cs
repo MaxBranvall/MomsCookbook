@@ -42,9 +42,9 @@ namespace api
             {
                 _connectionString = configuration.GetConnectionString("MySQLConnection");
             }
-            else if (env.IsEnvironment("Beta"))
+            else if (env.IsStaging())
             {
-                _connectionString = configuration.GetConnectionString("BetaConnection");
+                _connectionString = configuration.GetConnectionString("StagingConnection");
             }
 
         }
