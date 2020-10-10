@@ -32,6 +32,10 @@ const routes: Routes = [
     component: AuthPageComponent
   },
   {
+    path: 'verifyEmail/:id',
+    component: VerifyEmailComponent
+  },
+  {
     path: 'account/:user',
     component: AccountPageComponent
   },
@@ -41,11 +45,7 @@ const routes: Routes = [
     data : {mode : EntryMode.EditEntry}
   },
   {
-    path: 'verifyEmail/:id/:token',
-    component: VerifyEmailComponent
-  },
-  {
-    path: 'forgotPassword/:id/:token',
+    path: 'forgotPassword/:id',
     component: ForgotPasswordComponent
   },
   {

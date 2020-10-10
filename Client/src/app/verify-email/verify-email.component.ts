@@ -12,9 +12,9 @@ import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 })
 export class VerifyEmailComponent implements OnInit {
 
-  private loading = false;
-  private verified = false;
-  private user = new Users();
+ public loading = false;
+ public verified = false;
+ public user = new Users();
 
   constructor(private authService: AuthenticationService, private route: ActivatedRoute) { }
 
@@ -22,6 +22,9 @@ export class VerifyEmailComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.user.ID = params.id;
+    });
+
+    this.route.queryParams.subscribe(params => {
       this.user.Token = params.token;
     });
 

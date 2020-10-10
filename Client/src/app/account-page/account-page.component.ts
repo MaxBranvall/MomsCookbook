@@ -11,8 +11,8 @@ import { Role } from '../_helpers/role.enum';
 })
 export class AccountPageComponent implements OnInit {
 
-  private currentUser: Users;
-  private isAdmin = false;
+  public currentUser: Users;
+  public isAdmin = false;
 
   constructor(private auth: AuthenticationService) { }
 

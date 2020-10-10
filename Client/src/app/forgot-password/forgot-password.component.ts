@@ -15,8 +15,8 @@ export class ForgotPasswordComponent implements OnInit {
   // TODO: Refactor whole class
   // TODO: add loading indicator
 
-  private user = new Users()
-  private confirmPasswordRef: string;
+  public user = new Users()
+  public confirmPasswordRef: string;
 
   constructor(private route: ActivatedRoute, private authService: AuthenticationService) { }
 
@@ -25,9 +25,12 @@ export class ForgotPasswordComponent implements OnInit {
     this.route.params.subscribe( params => {
       // tslint:disable-next-line: radix
       this.user.ID = parseInt(params.id);
-      this.user.Token = params.token;
     }
     );
+
+    this.route.queryParams.subscribe(params => {
+      this.user.Token = params.token;
+    });
 
     localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(this.user));
 

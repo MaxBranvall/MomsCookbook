@@ -5,5 +5,6 @@ export class Users {
     FirstName: string;
     LastName: string;
     Role: string;
+    Verified: boolean;
     Token?: string;
 }

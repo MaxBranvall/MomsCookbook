@@ -16,20 +16,20 @@ import {default as decode } from 'jwt-decode';
 })
 export class AuthPageComponent implements OnInit {
 
-  private newAccount: Users;
-  private forgotPassword: ForgotPasswordModel;
-  private model: AuthenticateModel;
-  private default = true;
-  private toggleCreateAccount = false;
-  private toggleForgotPassword = false;
-  private confirmPasswordRef: string;
-  private alert = false;
-  private loading = false;
+  public newAccount: Users;
+  public forgotPassword: ForgotPasswordModel;
+  public model: AuthenticateModel;
+  public default = true;
+  public toggleCreateAccount = false;
+  public toggleForgotPassword = false;
+  public confirmPasswordRef: string;
+  public alert = false;
+  public loading = false;
 
-  private error = false;
-  private errorText: string;
-  private errorType: string;
-  private statusCode: number;
+  public error = false;
+  public errorText: string;
+  public errorType: string;
+  public statusCode: number;
 
   constructor(private authService: AuthenticationService, private router: Router) { }
 

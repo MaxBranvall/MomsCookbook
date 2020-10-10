@@ -218,8 +218,8 @@
             </div>
 
             <div [hidden]="!globalAlert" class="alertbox globalAlert">Please fix errors then submit again.</div>
-            <button *ngIf="this.mode !== 'editing'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
-            <button *ngIf="this.mode === 'editing'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Update Recipe</button>
+            <button *ngIf="this.mode !== 'editentry'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
+            <button *ngIf="this.mode === 'editentry'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Update Recipe</button>
 
             <div *ngIf="this.localLoading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$" [Image]="this.Image">
