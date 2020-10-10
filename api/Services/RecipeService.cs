@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Interfaces;
-using api.Models;
-using api.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Serilog;
+using api.Interfaces;
+using api.Entities;
+using api.Models;
+using api.Contexts;
 
 namespace api.Services
 {

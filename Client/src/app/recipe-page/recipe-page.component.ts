@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FullRecipe } from '../Models/FullRecipe';
+import { Router } from '@angular/router';
 
+import { FullRecipe } from '../Models/FullRecipe';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
 
@@ -14,23 +15,30 @@ export class RecipePageComponent implements OnInit {
   title: string;
   recipe: FullRecipe;
 
-  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService) { }
+  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
+              private router: Router) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.recipe = this.persDataService.getCurrentRecipe();
     this.sortSubItems();
     this.title = this.recipe.Name;
   }
 
+  deleteRecipe() {
+    this.recipeService.deleteRecipe(this.recipe.RecipeID).subscribe(
+      resp => {
+        this.router.navigate(['/' + this.recipe.Category]);
+      }
+    );
+  }
+
   sortSubItems() {
     this.recipe.SubSteps.sort((n1, n2) => {
-      if (n1.SubStepID > n2.SubStepID)
-      {
+      if (n1.SubStepID > n2.SubStepID) {
         return 1;
       }
 
-      if (n1.SubStepID < n2.SubStepID)
-      {
+      if (n1.SubStepID < n2.SubStepID) {
         return -1;
       }
 
@@ -39,13 +47,11 @@ export class RecipePageComponent implements OnInit {
     });
 
     this.recipe.SubTips.sort((n1, n2) => {
-      if (n1.SubTipID > n2.SubTipID)
-      {
+      if (n1.SubTipID > n2.SubTipID) {
         return 1;
       }
 
-      if (n1.SubTipID < n2.SubTipID)
-      {
+      if (n1.SubTipID < n2.SubTipID) {
         return -1;
       }
 

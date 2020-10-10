@@ -4,3 +4,4 @@ Client/src/assets/images/mainimages
 Client/src/environments/
 api/appsettings.Development.json
 api/logs/
+EmailHelper/

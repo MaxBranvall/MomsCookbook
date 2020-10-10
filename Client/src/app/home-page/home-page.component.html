@@ -1,7 +1,9 @@
 <app-main-header></app-main-header>
 
 <!-- TODO: This button is only temporary. -->
-<button type="button" routerLink=newentry>New Entry</button>
+<button type="button" routerLink=newentry *ngIf="isAdmin">New Entry</button>
+<button type="button" routerLink=login *ngIf="!this.currentUser" >Login</button>
+<button type="button" (click)="logout()" *ngIf="this.currentUser">Logout</button>
 
 <div class="main-grid">
   <div class="category-outer">

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY, throwError, of } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { FullRecipe } from '../Models/FullRecipe';
-import { Recipe } from '../Models/Recipe';
+import { Recipe } from '../Entities/Recipe';
 import { FirebaseURL } from '../Models/FirebaseURL';
 
 import { environment } from '../../environments/environment';
+import { catchError, retry } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class RecipeService {
     /*
       Adds a new recipe to the database.
      */
-    return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry, { observe: 'response' });
+    return this.http.post<FullRecipe>(this.apiURL + 'Recipes', entry, { observe : 'response' });
   }
 
   addDownloadURL(downloadURL: string, id: number): Observable<HttpResponse<FullRecipe>> {
@@ -60,6 +61,10 @@ export class RecipeService {
 
   updateRecipe(recipe: FullRecipe): Observable<FullRecipe> {
     return this.http.put<FullRecipe>(this.apiURL + 'Recipes/updateRecipe', recipe);
+  }
+
+  deleteRecipe(ID: number): Observable<HttpResponse<FullRecipe>> {
+    return this.http.delete<FullRecipe>(this.apiURL + 'Recipes/' + ID, { observe: 'response' });
   }
 
   addPhoto(file: any, ID: string) {

@@ -1,6 +1,8 @@
 <app-main-header></app-main-header>
 <main>
     <button type="button" routerLink="../../editrecipe">Edit Recipe</button>
+    <!-- TODO: show a confirmation dialogue first -->
+    <button type="button" (click)="deleteRecipe()">Delete Recipe</button>
     <div class="recipe-outer-wrapper">
         <h2>{{recipe.Name}}</h2>
         <img class="recipe-image" src="../../assets/placeholders/loading.gif" [hidden]="recipe.ImageLoaded">

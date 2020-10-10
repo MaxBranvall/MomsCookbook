@@ -17,10 +17,16 @@ import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeEntryComponent } from './recipe-entry/recipe-entry.component';
 
 import { RecipeService} from './Services/recipe.service';
-import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
 
 import { OrderModule } from 'ngx-order-pipe';
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { HttpErrorInterceptor } from './_interceptors/http-error.interceptor';
+import { AccountPageComponent } from './account-page/account-page.component';
 import { GlobalErrorHandlerService } from './Services/global-error-handler.service';
+import { NewaccountComponent } from './newaccount/newaccount.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 
 @NgModule({
@@ -32,6 +38,11 @@ import { GlobalErrorHandlerService } from './Services/global-error-handler.servi
     RecipePageComponent,
     RecipeEntryComponent,
     LoadingScreenComponent,
+    AuthPageComponent,
+    AccountPageComponent,
+    NewaccountComponent,
+    VerifyEmailComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +54,11 @@ import { GlobalErrorHandlerService } from './Services/global-error-handler.servi
     AngularFireStorageModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

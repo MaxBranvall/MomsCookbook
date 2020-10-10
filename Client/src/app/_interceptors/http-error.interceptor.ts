@@ -17,13 +17,22 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
       catchError((error: any) => {
-        console.error(error);
 
         switch (error.status) {
           case 0:
             console.error('CORS error...');
             return throwError(error);
             break;
+          case 400:
+            console.error('Bad Request..');
+            return throwError(error);
+            break;
+          case 401:
+            console.error('Unauthorized..');
+            return throwError(error);
+          case 403:
+            console.error('Forbidden..');
+            return throwError(error);
           case 404:
             return throwError(error);
             break;

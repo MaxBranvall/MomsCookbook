@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using api.Models;
+using api.Entities;
 
 namespace api.Contexts
 {
@@ -15,6 +15,8 @@ namespace api.Contexts
         public DbSet<SubSteps> substeps { get; set; }
         public DbSet<Tips> tips { get; set; }
         public DbSet<SubTips> subtips { get; set; }
+        public DbSet<Users> users { get; set; }
+        public DbSet<AdminRequest> adminrequest { get; set; }
 
     }
 }
