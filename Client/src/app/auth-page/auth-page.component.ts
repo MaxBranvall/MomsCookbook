@@ -80,6 +80,13 @@ export class AuthPageComponent implements OnInit {
     this.default = true;
     this.toggleCreateAccount = false;
     this.toggleForgotPassword = false;
+}
+
+  clearAlertsAndFields() {
+    this.error = null;
+    this.model.EmailAddress = null;
+    this.model.Password = null;
+    this.forgotPassword.EmailAddress = null;
   }
 
   onCreateAccount() {
@@ -114,6 +121,7 @@ export class AuthPageComponent implements OnInit {
       if (x.status === 200 || x.status === 204) {
         this.loading = false;
         alert('A link has been sent to your email to reset your password.');
+        this.clearAlertsAndFields();
         this.toggleDefaultLayout();
         return true;
       }
