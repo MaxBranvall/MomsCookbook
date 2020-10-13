@@ -114,6 +114,7 @@ export class AuthPageComponent implements OnInit {
       if (x.status === 200 || x.status === 204) {
         this.loading = false;
         alert('A link has been sent to your email to reset your password.');
+        this.toggleDefaultLayout();
         return true;
       }
     }, error => {
