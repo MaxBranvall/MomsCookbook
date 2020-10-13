@@ -90,7 +90,7 @@ export class AuthPageComponent implements OnInit {
         if (x.status === 201) {
           this.loading = false;
           alert('Account created successfully! Returning to login screen..');
-          this.toggleCreateAccount = false;
+          this.toggleDefaultLayout();
           this.router.navigate(['login']);
         }
       },
