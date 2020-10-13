@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FullRecipe } from '../Models/FullRecipe';
@@ -10,7 +10,7 @@ import { PersistentdataService } from '../Services/persistentdata.service';
   templateUrl: './recipe-page.component.html',
   styleUrls: ['./recipe-page.component.scss']
 })
-export class RecipePageComponent implements OnInit {
+export class RecipePageComponent implements OnInit, OnDestroy {
 
   title: string;
   recipe: FullRecipe;
@@ -73,6 +73,10 @@ export class RecipePageComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  ngOnDestroy() {
+    this.persDataService.setCurrentRecipe(null);
   }
 
 }
