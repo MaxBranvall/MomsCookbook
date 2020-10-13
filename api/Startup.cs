@@ -40,7 +40,7 @@ namespace api
             }
             else if (env.IsDevelopment())
             {
-                _connectionString = configuration.GetConnectionString("MySQLConnection");
+                _connectionString = configuration.GetConnectionString("DevConnection");
             }
             else if (env.IsStaging())
             {
