@@ -20,6 +20,7 @@ export class HomePageComponent implements OnInit {
   constructor(private auth: AuthenticationService, private recipeservice: RecipeService) {}
 
   ngOnInit() {
+    this.auth.refreshUser();
     this.currentUser = this.auth.currentUserValue;
   }
 
