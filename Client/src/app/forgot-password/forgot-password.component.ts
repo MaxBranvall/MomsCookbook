@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Users } from '../Entities/Users';
 import { AuthenticationService } from '../Services/authentication.service';
@@ -18,17 +18,17 @@ export class ForgotPasswordComponent implements OnInit {
   public user = new Users()
   public confirmPasswordRef: string;
 
-  constructor(private route: ActivatedRoute, private authService: AuthenticationService) { }
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthenticationService) { }
 
   ngOnInit(): void {
 
-    this.route.params.subscribe( params => {
+    this.activatedRoute.params.subscribe( params => {
       // tslint:disable-next-line: radix
       this.user.ID = parseInt(params.id);
     }
     );
 
-    this.route.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(params => {
       this.user.Token = params.token;
     });
 
@@ -47,13 +47,12 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   submit() {
-    this.user.Token = null;
-    this.user.EmailAddress = 'test@test.com';
     this.authService.resetPassword(this.user).subscribe( res =>
       {
+        localStorage.setItem(LocalStorageItem.CurrentUser, null);
         if (res.status === 201) {
-          localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(res.body));
           alert('Password successfully reset.');
+          this.router.navigate(['/login']);
         } else {
           alert('Password not reset.');
         }
