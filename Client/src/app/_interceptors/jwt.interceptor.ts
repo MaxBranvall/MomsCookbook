@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { AuthenticationService } from '../Services/authentication.service';
+import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -20,7 +21,14 @@ export class JwtInterceptor implements HttpInterceptor {
     this.authService.refreshUser();
     const currentUser = this.authService.currentUserValue;
     const isApiURL = request.url.startsWith(environment.apiURL);
-    if (currentUser && isApiURL) {
+    if (localStorage.getItem(LocalStorageItem.ResetPassword)) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem(LocalStorageItem.ResetPassword)).Token
+        }
+      });
+    }
+    else if (currentUser && isApiURL) {
       request = request.clone({
         setHeaders: {
           Authorization: 'Bearer ' + currentUser.Token

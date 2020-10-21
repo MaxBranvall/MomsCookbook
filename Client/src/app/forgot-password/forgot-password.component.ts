@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Users } from '../Entities/Users';
@@ -10,12 +10,12 @@ import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss']
 })
-export class ForgotPasswordComponent implements OnInit {
+export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   // TODO: Refactor whole class
   // TODO: add loading indicator
 
-  public user = new Users()
+  public user = new Users();
   public confirmPasswordRef: string;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthenticationService) { }
@@ -32,7 +32,7 @@ export class ForgotPasswordComponent implements OnInit {
       this.user.Token = params.token;
     });
 
-    localStorage.setItem(LocalStorageItem.CurrentUser, JSON.stringify(this.user));
+    localStorage.setItem(LocalStorageItem.ResetPassword, JSON.stringify(this.user));
 
     this.authService.verifyForgotPasswordToken().subscribe( res =>
       {
@@ -49,14 +49,18 @@ export class ForgotPasswordComponent implements OnInit {
   submit() {
     this.authService.resetPassword(this.user).subscribe( res =>
       {
-        localStorage.setItem(LocalStorageItem.CurrentUser, null);
+        localStorage.removeItem(LocalStorageItem.ResetPassword);
         if (res.status === 201) {
           alert('Password successfully reset.');
           this.router.navigate(['/login']);
         } else {
           alert('Password not reset.');
         }
-      })
+      });
+  }
+
+  ngOnDestroy() {
+    localStorage.removeItem(LocalStorageItem.ResetPassword);
   }
 
 }

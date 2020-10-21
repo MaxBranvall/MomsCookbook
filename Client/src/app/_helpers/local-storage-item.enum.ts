@@ -1,4 +1,5 @@
 export enum LocalStorageItem {
     CurrentRecipe = 'CurrentRecipe',
-    CurrentUser = 'CurrentUser'
+    CurrentUser = 'CurrentUser',
+    ResetPassword = 'ResetPassword'
 }
