@@ -59,6 +59,10 @@
                         required>
                 </div>
 
+                <div *ngIf="this.error" class="section errorContainer">
+                    <span class="errorText">{{ errorText }}</span>
+                </div>
+
                 <button type="submit" class="materialButton" [disabled]=!forgotPasswordForm.valid>Submit</button>
                 <div class="loginText">
                     <span (click)="toggleDefaultLayout()">Login</span>
