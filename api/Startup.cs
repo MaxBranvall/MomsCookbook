@@ -1,4 +1,12 @@
 using System;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,14 +20,6 @@ using api.Models;
 using api.Entities;
 using api;
 using api.Helpers;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
 namespace api
 {
@@ -57,10 +57,12 @@ namespace api
             var appSettingsSection = Configuration.GetSection("AppSettings");
             var jwtSection = Configuration.GetSection("JWT");
             var urlSection = Configuration.GetSection("URLs");
+            var emailSettingsSection = Configuration.GetSection("EmailSettings");
 
             services.Configure<AppSettings>(appSettingsSection);
             services.Configure<JWT_Settings>(jwtSection);
             services.Configure<URLs>(urlSection);
+            services.Configure<EmailSettings>(emailSettingsSection);
 
             // configure jwt authentication
             var jwtSettings = jwtSection.Get<JWT_Settings>();
