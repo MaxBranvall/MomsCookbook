@@ -27,21 +27,27 @@ namespace api.Services
         private ITokenBuilder _tokenBuilder;
         private readonly AppSettings _appSettings;
         private readonly JWT_Settings _jwtSettings;
+        private readonly EmailSettings _emailSettings;
         private readonly URLs _urls;
         private readonly ILogger<UserService> _logger;
         private readonly string env;
         private string url;
+        private Mail _emailService;
 
         public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings,
-                            ILogger<UserService> logger, IOptions<URLs> urls, RecipeContext context, ITokenBuilder tokenBuilder)
+                            ILogger<UserService> logger, IOptions<URLs> urls, IOptions<EmailSettings> emailSettings,
+                            RecipeContext context, ITokenBuilder tokenBuilder)
         {
             _jwtSettings = jwtSettings.Value;
             _appSettings = appSettings.Value;
+            _emailSettings = emailSettings.Value;
             _urls = urls.Value;
             _logger = logger;
             _context = context;
             _tokenBuilder = tokenBuilder;
             _passwordHasher = new PasswordHasher<Users>();
+            _emailService = new Mail(this._emailSettings.NameOfSender, this._emailSettings.Sender, this._emailSettings.SenderPassword, this._emailSettings.Host, this._emailSettings.Port);
+
             env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             if (env == "Development")
@@ -71,14 +77,16 @@ namespace api.Services
                 {
 
                     user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
-                    Mail emailService = new Mail();
-                    emailService.ComposeEmail(user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
-                    emailService.SendMessage();
+                    string userFullName = user.FirstName + " " + user.LastName;
+                    this._emailService.ComposeEmail(userFullName, user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
+                    this._emailService.SendMessage();
+
                     return this._tokenBuilder.GetChangePasswordToken(user);
 
                 } catch (Exception ex)
                 {
                     this._logger.LogError("Caught exception: " + ex);
+
                     return null;
                 }
             }
@@ -160,9 +168,9 @@ namespace api.Services
                 String token = _tokenBuilder.GetAccountCreationToken(newUser);
                 newUser.Token = token;
 
-                Mail email = new Mail();
-                email.ComposeEmail(newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "?token=" + token);
-                email.SendMessage();
+                string userFullName = newUser.FirstName + " " + newUser.LastName;
+                this._emailService.ComposeEmail(userFullName, newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "?token=" + token);
+                this._emailService.SendMessage();
 
                 return newUser;
 
