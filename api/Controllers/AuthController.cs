@@ -224,7 +224,7 @@ namespace api.Controllers
             } else
             {
                 this._logger.LogError("Could not retrieve change password token for user: " + user.EmailAddress);
-                return NotFound();
+                return NotFound("Email not found.");
             }
         }
 
