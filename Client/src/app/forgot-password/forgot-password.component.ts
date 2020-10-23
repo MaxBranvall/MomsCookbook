@@ -48,6 +48,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
         console.log(res.status);
 
+        this.loading = false;
+
         if (res.status === 204) {
           console.log('good');
         }
@@ -62,8 +64,14 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+
+    this.loading = true;
+
     this.authService.resetPassword(this.user).subscribe( res =>
       {
+
+        this.loading = false;
+
         localStorage.removeItem(LocalStorageItem.ResetPassword);
         if (res.status === 201) {
           alert('Password successfully reset.');
