@@ -1,8 +1,9 @@
 <app-main-header></app-main-header>
 
 <div class="main-container">
-    <h2 *ngIf="!toggleCreateAccount" class="title">Login</h2>
+    <h2 *ngIf="!toggleCreateAccount && !toggleForgotPassword" class="title">Login</h2>
     <h2 *ngIf="toggleCreateAccount" class="title">Create Account</h2>
+    <h2 *ngIf="toggleForgotPassword" class="title">Forgot Password</h2>
 
     <div class="form-outer">
         <form
