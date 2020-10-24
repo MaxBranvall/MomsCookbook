@@ -7,6 +7,7 @@ import { PersistentdataService } from '../Services/persistentdata.service';
 import { AuthenticationService } from '../Services/authentication.service';
 import { Users } from '../Entities/Users';
 import { Role } from '../_helpers/role.enum';
+import { FireStorageService } from '../Services/firestorage.service';
 
 @Component({
   selector: 'app-recipe-page',
@@ -27,7 +28,8 @@ export class RecipePageComponent implements OnInit, OnDestroy {
   isAdmin = false;
 
   constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
-              private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) { }
+              private authService: AuthenticationService, private fireService: FireStorageService,
+              private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
 
@@ -53,9 +55,8 @@ export class RecipePageComponent implements OnInit, OnDestroy {
     this.authService.refreshUser();
     const user: Users = this.authService.currentUserValue;
 
+    // My first fancy conditional statement!!
     this.isAdmin = true ? user !== null && user.Role === Role.Admin : false;
-
-    console.log(this.isAdmin);
 
   }
 
@@ -70,6 +71,8 @@ export class RecipePageComponent implements OnInit, OnDestroy {
           this.router.navigate(['/' + this.recipe.Category]);
         }
       );
+
+      this.fireService.deleteImage(this.recipe.ImagePath);
     }
   }
 
