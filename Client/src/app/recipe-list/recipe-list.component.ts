@@ -37,8 +37,7 @@ export class RecipeListComponent implements OnInit {
   }
 
   public onSelect(recipe: FullRecipe) {
-    this.persDataService.setCurrentRecipe(recipe);
-    this.router.navigateByUrl('/' + this.title + '/' + recipe.Name);
+    this.router.navigateByUrl('/' + this.title + '/' + recipe.RecipeID + '/' + recipe.Name);
   }
 
   async getEntries() {
