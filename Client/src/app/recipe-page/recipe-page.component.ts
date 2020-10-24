@@ -24,7 +24,7 @@ export class RecipePageComponent implements OnInit, OnDestroy {
   */
   recipe: FullRecipe = {} as FullRecipe;
 
-  private isAdmin = false;
+  isAdmin = false;
 
   constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
               private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) { }
