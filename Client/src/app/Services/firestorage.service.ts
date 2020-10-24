@@ -3,7 +3,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 
 import { finalize } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { FullRecipe } from '../Models/FullRecipe';
 
@@ -21,6 +21,22 @@ export class FireStorageService {
 
   public downloadURL: Observable<string>;
   public uploadPercent$: Observable<number>;
+
+  deleteImage(filePath: string) {
+    const storageRef = this.storage.storage.refFromURL(filePath);
+
+    storageRef.delete().then(
+      res => {
+        console.log('Firebase: Image deleted successfully!');
+      }
+    ).catch(
+      err => {
+        console.error('Firebase: Image not deleted..');
+        throwError(`Firebase image not deleted.\nURL:\n${filePath}\n` +
+        'Screenshot this screen and send it to Branflake for manual deletion.');
+      }
+    )
+  }
 
   async uploadSingleFile(file: File, recipeID: number, entry: FullRecipe) {
 
@@ -59,7 +75,7 @@ export class FireStorageService {
 
   private goToNewEntry(recipe: FullRecipe) {
     this.persDataService.setCurrentRecipe(recipe);
-    this.router.navigateByUrl('/' + recipe.Category + '/' + recipe.Name);
+    this.router.navigateByUrl('/' + recipe.Category + '/' +  recipe.RecipeID + '/' + recipe.Name);
   }
 
   private getDateTimeString(): string {

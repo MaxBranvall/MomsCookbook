@@ -215,7 +215,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.RecipeID, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.RecipeID, this.model.Name);
             }
           );
         }, error => {
@@ -231,7 +231,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.RecipeID, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.RecipeID, this.model.Name);
             }
           );
         }, error => {
