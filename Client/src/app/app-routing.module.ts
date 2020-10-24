@@ -42,7 +42,10 @@ const routes: Routes = [
   {
     path: 'editrecipe',
     component: RecipeEntryComponent,
-    data : {mode : EntryMode.EditEntry}
+    data :
+    {
+      mode : EntryMode.EditEntry
+    }
   },
   {
     path: 'forgotPassword/:id',
@@ -53,7 +56,7 @@ const routes: Routes = [
     component: RecipeListComponent
   },
   {
-    path: ':categoryTitle/:recipeName',
+    path: ':categoryTitle/:id/:recipeName',
     component: RecipePageComponent
   },
 ];
