@@ -18,9 +18,18 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   public user = new Users();
   public confirmPasswordRef: string;
 
+  public loading = false;
+
+  public error = false;
+  public errorText: string;
+  public errorType: string;
+  public statusCode: number;
+
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthenticationService) { }
 
   ngOnInit(): void {
+
+    this.loading = true;
 
     this.activatedRoute.params.subscribe( params => {
       // tslint:disable-next-line: radix
@@ -36,19 +45,33 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     this.authService.verifyForgotPasswordToken().subscribe( res =>
       {
+
+        console.log(res.status);
+
+        this.loading = false;
+
         if (res.status === 204) {
           console.log('good');
         }
         else {
-          alert('Invalid Token');
+          console.log('Invalid token');
         }
+      }, error => {
+        alert('Invalid Token. Please return to forgot password menu to request a new one.');
+        this.router.navigate(['/login']);
       }
       );
   }
 
   submit() {
+
+    this.loading = true;
+
     this.authService.resetPassword(this.user).subscribe( res =>
       {
+
+        this.loading = false;
+
         localStorage.removeItem(LocalStorageItem.ResetPassword);
         if (res.status === 201) {
           alert('Password successfully reset.');
@@ -56,7 +79,15 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
         } else {
           alert('Password not reset.');
         }
-      });
+      },
+      error => {
+        this.loading = false;
+        this.error = true;
+        this.errorText = error.error;
+        this.errorType = error.statusText;
+        this.statusCode = error.status;
+      }
+      );
   }
 
   ngOnDestroy() {

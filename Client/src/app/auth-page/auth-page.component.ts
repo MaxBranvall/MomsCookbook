@@ -64,31 +64,6 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
-  toggleCreateAccountLayout() {
-    this.default = false;
-    this.toggleForgotPassword = false;
-    this.toggleCreateAccount = true;
-  }
-
-  toggleResetPasswordLayout() {
-    this.default = false;
-    this.toggleCreateAccount = false;
-    this.toggleForgotPassword = true;
-  }
-
-  toggleDefaultLayout() {
-    this.default = true;
-    this.toggleCreateAccount = false;
-    this.toggleForgotPassword = false;
-}
-
-  clearAlertsAndFields() {
-    this.error = null;
-    this.model.EmailAddress = null;
-    this.model.Password = null;
-    this.forgotPassword.EmailAddress = null;
-  }
-
   onCreateAccount() {
     if (this.passwordValid()) {
       this.alert = false;
@@ -121,7 +96,6 @@ export class AuthPageComponent implements OnInit {
       if (x.status === 200 || x.status === 204) {
         this.loading = false;
         alert('A link has been sent to your email to reset your password.');
-        this.clearAlertsAndFields();
         this.toggleDefaultLayout();
         return true;
       }
@@ -145,6 +119,37 @@ export class AuthPageComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+
+  toggleCreateAccountLayout() {
+    this.clearAlertsAndFields();
+    this.default = false;
+    this.toggleForgotPassword = false;
+    this.toggleCreateAccount = true;
+  }
+
+  toggleResetPasswordLayout() {
+    this.clearAlertsAndFields();
+    this.default = false;
+    this.toggleCreateAccount = false;
+    this.toggleForgotPassword = true;
+  }
+
+  toggleDefaultLayout() {
+    this.clearAlertsAndFields();
+    this.default = true;
+    this.toggleCreateAccount = false;
+    this.toggleForgotPassword = false;
+}
+
+  clearAlertsAndFields() {
+    this.error = null;
+    this.model.EmailAddress = null;
+    this.model.Password = null;
+    this.forgotPassword.EmailAddress = null;
+    this.newAccount = new Users();
+    this.confirmPasswordRef = null;
   }
 
 }
