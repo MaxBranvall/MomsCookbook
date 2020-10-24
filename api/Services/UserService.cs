@@ -52,14 +52,16 @@ namespace api.Services
 
             if (env == "Development")
             {
-                url = this._urls.Development;
+                this.url = this._urls.Development;
             } else if (env == "Staging")
             {
-                url = this._urls.Staging;
+                this.url = this._urls.Staging;
             } else if (env == "Production")
             {
-                url = this._urls.Production;
+                this.url = this._urls.Production;
             }
+
+            this._logger.LogInformation("URL IS: " + this.url);
 
         }
 
@@ -78,7 +80,7 @@ namespace api.Services
 
                     user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
                     string userFullName = user.FirstName + " " + user.LastName;
-                    this._emailService.ComposeEmail(userFullName, user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
+                    this._emailService.ComposeEmail(userFullName, user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
                     this._emailService.SendMessage();
 
                     return this._tokenBuilder.GetChangePasswordToken(user);
@@ -169,7 +171,7 @@ namespace api.Services
                 newUser.Token = token;
 
                 string userFullName = newUser.FirstName + " " + newUser.LastName;
-                this._emailService.ComposeEmail(userFullName, newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "?token=" + token);
+                this._emailService.ComposeEmail(userFullName, newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "verifyEmail/" + newUser.ID + "?token=" + token);
                 this._emailService.SendMessage();
 
                 return newUser;
