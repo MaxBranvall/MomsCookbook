@@ -1,4 +1,5 @@
 export enum Controller {
     Recipes = 'recipes',
-    Auth = 'auth'
+    Auth = 'auth',
+    Poll = 'polling'
 }
