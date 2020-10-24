@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { FullRecipe } from '../Models/FullRecipe';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { AuthenticationService } from '../Services/authentication.service';
+import { Users } from '../Entities/Users';
+import { Role } from '../_helpers/role.enum';
 
 @Component({
   selector: 'app-recipe-page',
@@ -13,23 +16,61 @@ import { PersistentdataService } from '../Services/persistentdata.service';
 export class RecipePageComponent implements OnInit, OnDestroy {
 
   title: string;
-  recipe: FullRecipe;
+
+  /*  Initializes an empty recipe object.
+    * This stops errors from popping up while the
+    * layout is trying to populate without the recipe
+    * loaded in completely
+  */
+  recipe: FullRecipe = {} as FullRecipe;
+
+  private isAdmin = false;
 
   constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
-              private router: Router) { }
+              private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.recipe = this.persDataService.getCurrentRecipe();
-    this.sortSubItems();
-    this.title = this.recipe.Name;
+
+    let id: number;
+
+    // Get the ID of the recipe from the route, assign to id and cast to number
+    this.route.url.subscribe(res => { id = +res[1].path; } );
+
+    this.recipeService.getEntry(id).subscribe(
+      res =>
+      {
+        this.recipe = res.body;
+        this.persDataService.setCurrentRecipe(this.recipe);
+        this.sortSubItems();
+        this.title = this.recipe.Name;
+      }, error =>
+      {
+        alert('Your recipe could not be found.\nReturning to home screen.');
+        this.router.navigate(['/']);
+      }
+    );
+
+    this.authService.refreshUser();
+    const user: Users = this.authService.currentUserValue;
+
+    this.isAdmin = true ? user !== null && user.Role === Role.Admin : false;
+
+    console.log(this.isAdmin);
+
   }
 
   deleteRecipe() {
-    this.recipeService.deleteRecipe(this.recipe.RecipeID).subscribe(
-      resp => {
-        this.router.navigate(['/' + this.recipe.Category]);
-      }
-    );
+
+    const deleteConfirmation = confirm(`Are you sure you would like to delete ${this.recipe.Name}?\n` +
+                                        'This action is irreversible.');
+
+    if (deleteConfirmation) {
+      this.recipeService.deleteRecipe(this.recipe.RecipeID).subscribe(
+        resp => {
+          this.router.navigate(['/' + this.recipe.Category]);
+        }
+      );
+    }
   }
 
   sortSubItems() {
@@ -76,7 +117,7 @@ export class RecipePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.persDataService.setCurrentRecipe(null);
+    // this.persDataService.setCurrentRecipe(null);
   }
 
 }

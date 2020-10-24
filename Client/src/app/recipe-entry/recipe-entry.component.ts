@@ -215,7 +215,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.model.RecipeID, this.model.Name);
             }
           );
         }, error => {
@@ -231,7 +231,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.model.RecipeID, this.model.Name);
             }
           );
         }, error => {
@@ -250,9 +250,9 @@ export class RecipeEntryComponent implements OnInit {
            '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
   }
 
-  navigateToNewEntry(category: string, name: string) {
+  navigateToNewEntry(category: string, id: number, name: string) {
     this.localLoading = false;
-    this.router.navigateByUrl('/' + category + '/' + name);
+    this.router.navigateByUrl('/' + category + '/' + id + '/' + name);
   }
 
   clearEmptyElements() {
