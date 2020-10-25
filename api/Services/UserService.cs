@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using api.Entities;
 using api.Models;
@@ -36,7 +37,7 @@ namespace api.Services
 
         public UserService(IOptions<AppSettings> appSettings, IOptions<JWT_Settings> jwtSettings,
                             ILogger<UserService> logger, IOptions<URLs> urls, IOptions<EmailSettings> emailSettings,
-                            RecipeContext context, ITokenBuilder tokenBuilder)
+                            RecipeContext context, ITokenBuilder tokenBuilder, IHostEnvironment env)
         {
             _jwtSettings = jwtSettings.Value;
             _appSettings = appSettings.Value;
@@ -48,20 +49,16 @@ namespace api.Services
             _passwordHasher = new PasswordHasher<Users>();
             _emailService = new Mail(this._emailSettings.NameOfSender, this._emailSettings.Sender, this._emailSettings.SenderPassword, this._emailSettings.Host, this._emailSettings.Port);
 
-            env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-            if (env == "Development")
+            if (env.IsDevelopment())
             {
                 this.url = this._urls.Development;
-            } else if (env == "Staging")
+            } else if (env.IsStaging())
             {
                 this.url = this._urls.Staging;
-            } else if (env == "Production")
+            } else if (env.IsProduction())
             {
                 this.url = this._urls.Production;
             }
-
-            this._logger.LogInformation("URL IS: " + this.url);
 
         }
 
@@ -80,7 +77,7 @@ namespace api.Services
 
                     user = this._context.users.Where(user => user.EmailAddress == email).ToList()[0];
                     string userFullName = user.FirstName + " " + user.LastName;
-                    this._emailService.ComposeEmail(userFullName, user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
+                    this._emailService.ComposeEmail(userFullName, user.EmailAddress, "Forgot Password", "Click here to reset password: " + this.url + "/forgotPassword/" + user.ID + "?token=" + this._tokenBuilder.GetChangePasswordToken(user));
                     this._emailService.SendMessage();
 
                     return this._tokenBuilder.GetChangePasswordToken(user);
@@ -171,7 +168,7 @@ namespace api.Services
                 newUser.Token = token;
 
                 string userFullName = newUser.FirstName + " " + newUser.LastName;
-                this._emailService.ComposeEmail(userFullName, newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "verifyEmail/" + newUser.ID + "?token=" + token);
+                this._emailService.ComposeEmail(userFullName, newUser.EmailAddress, "New Account", "Your account was created. Link: " + this.url + "/verifyEmail/" + newUser.ID + "?token=" + token);
                 this._emailService.SendMessage();
 
                 return newUser;

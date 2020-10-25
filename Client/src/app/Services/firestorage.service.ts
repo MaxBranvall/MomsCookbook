@@ -35,7 +35,7 @@ export class FireStorageService {
         throwError(`Firebase image not deleted.\nURL:\n${filePath}\n` +
         'Screenshot this screen and send it to Branflake for manual deletion.');
       }
-    )
+    );
   }
 
   async uploadSingleFile(file: File, recipeID: number, entry: FullRecipe) {
