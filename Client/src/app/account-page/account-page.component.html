@@ -1,0 +1,20 @@
+<app-main-header></app-main-header>
+
+<div class="main">
+    <h2 class="title">Welcome {{ this.currentUser.FirstName }}!</h2>
+
+    <div class="details">
+        <h2 class="subTitle">User Details</h2>
+        <div class="detailContainer">
+            <p>Email: {{ this.currentUser.EmailAddress }}</p>
+            <p> First Name: {{ this.currentUser.FirstName }}</p>
+            <p> Last Name: {{ this.currentUser.LastName }}</p>
+            <p> Role: {{ this.currentUser.Role }}</p>
+            <p> Verified: {{ this.currentUser.Verified }}</p>
+        </div>
+    </div>
+
+    <button type="button" class="materialButton" (click)="notSupported()">Edit User Details</button>
+    <button type="button" class="materialButton" routerLink='/'>Return to Homepage</button>
+
+</div>

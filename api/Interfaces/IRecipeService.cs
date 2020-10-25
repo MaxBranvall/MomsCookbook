@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using api.Models;
+using api.Entities;
 
 namespace api.Interfaces
 {

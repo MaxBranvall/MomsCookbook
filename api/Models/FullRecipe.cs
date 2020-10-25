@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using api.Models;
+using api.Entities;
 
 namespace api.Models
 {
@@ -23,7 +23,7 @@ namespace api.Models
         public List<Tips> Tips { get; set; }
         public List<SubTips> SubTips { get; set; }
 #nullable enable
-        public List<Photo>? AdditionalPhotos { get; set; }
+        public List<AdditionalPhotos>? AdditionalPhotos { get; set; }
         public string? PrepTime { get; set; }
         public string? CookTime { get; set; }
         public long Created { get; set; }

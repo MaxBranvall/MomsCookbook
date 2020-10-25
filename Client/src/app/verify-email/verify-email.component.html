@@ -1,0 +1,10 @@
+<app-main-header></app-main-header>
+
+<div *ngIf="this.verified">
+    <h2>Your email has successfully been verified!</h2>
+    <button type="button" routerLink='/' class="materialButton">Return Home</button>
+</div>
+
+<div *ngIf="this.loading">
+    <app-loading-screen></app-loading-screen>
+</div>

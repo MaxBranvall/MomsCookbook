@@ -8,34 +8,71 @@
         <div class="form-inner-wrapper">
             <div class="main-details">
 
-                <label for="name">Recipe Name: </label>
+                <label for="name" class="reqField">
+                    Recipe Name:
+                </label>
                 <input
-                class="textinput" type="text" id="name" name="Name"
-                [(ngModel)]='model.Name' placeholder="Name of Recipe" required
-                #name="ngModel">
-                <div [hidden]="name.valid || name.pristine && name.untouched" class="alertbox">
+                required
+                [(ngModel)]='model.Name'
+                #name = "ngModel"
+                name="Name"
+                id="name"
+                type="text"
+                class="textinput"
+                placeholder="Name of Recipe">
+                <div class="alertbox"
+                    *ngIf="name.errors?.required && name.touched">
                     Name is required!
                 </div>
 
-                <label for="category">Category: </label>
-                <select [(ngModel)]="model.Category" name="Category-{{model.RecipeID}}" (change)="validateCategory()">
-                    <option *ngFor="let cat of categories">{{cat.title}}</option>
+                <label for="category" class="reqField">
+                    Category:
+                </label>
+                <select
+                    required
+                    [(ngModel)]="model.Category"
+                    #category="ngModel"
+                    name="Category-{{model.RecipeID}}"
+                    (change)="validateCategory()">
+                    <option *ngFor="let cat of categories" value={{cat.value}}>
+                        {{cat.title}}
+                    </option>
                 </select>
-                <div [hidden]="!categoryAlert" class="alertbox categoryAlert">
-                    <p>Please select a valid category.</p>
+                <div class="alertbox categoryAlert"
+                    [hidden]="!categoryAlert">
+                    <p>
+                        Please select a valid category.
+                    </p>
                 </div>
 
-                <label for="description">Description: </label>
-                <textarea id="description" name="Description"
-                [(ngModel)]='model.Description' placeholder="Description of Recipe"></textarea>
+                <label for="description">
+                    Description:
+                </label>
+                <textarea [(ngModel)]='model.Description'
+                    name="Description"
+                    id="description"
+                    placeholder="Description of Recipe">
+                </textarea>
 
-                <label for="ImagePath">Main Photo: </label>
-                <input #file style="display: none" type="file" id="ImagePath"
-                name="Photo"
-                (change)="photoPreview(file.files)">
-                <button type="button" class="materialButton" (click)="file.click()">Choose Photo..</button>
+                <label for="ImagePath">
+                    Main Photo:
+                </label>
+                <input #file
+                    style="display: none"
+                    type="file"
+                    id="ImagePath"
+                    name="Photo"
+                    (change)="photoPreview(file.files)"
+                >
+                <button type="button"
+                    class="materialButton"
+                    (click)="file.click()">
+                    Choose Photo..
+                </button>
 
-                <label>Image Preview: </label>
+                <label>
+                    Image Preview:
+                </label>
                 <img [src]="imgURL" *ngIf="imgURL">
 
             </div>
@@ -48,22 +85,22 @@
 
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" placeholder="0" id="preptimeh" name="PrepTimeH" [(ngModel)]='model.PrepTimeH' required #time="ngModel">
-                        <p *ngIf="model.PrepTimeH == 1"> Hour</p>
-                        <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null || model.PrepTimeH < 1"> Hours</p>
+                        <p *ngIf="model.PrepTimeH == 1" class="reqField"> Hour</p>
+                        <p *ngIf="model.PrepTimeH > 1 || model.PrepTimeH == 0 || model.PrepTimeH == null || model.PrepTimeH < 1" class="reqField"> Hours</p>
                         <br>
                         <input class="num-input" type="number" min="0" placeholder="0" id="preptimem" name="PrepTimeM" [(ngModel)]='model.PrepTimeM' required #time="ngModel">
-                        <p *ngIf="model.PrepTimeM == 1"> Minute</p>
-                        <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null || model.PrepTimeM < 1"> Minutes</p>
+                        <p *ngIf="model.PrepTimeM == 1" class="reqField"> Minute</p>
+                        <p *ngIf="model.PrepTimeM > 1 || model.PrepTimeM == 0 || model.PrepTimeM == null || model.PrepTimeM < 1" class="reqField"> Minutes</p>
                     </span>
 
                     <span class="num-entry">
                         <input class="num-input" type="number" min="0" def placeholder="0" id="cooktimeh" name="CookTimeH" [(ngModel)]='model.CookTimeH' required #time="ngModel">
-                        <p *ngIf="model.CookTimeH == 1"> Hour</p>
-                        <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null || model.CookTimeH < 1"> Hours</p>
+                        <p *ngIf="model.CookTimeH == 1" class="reqField"> Hour</p>
+                        <p *ngIf="model.CookTimeH > 1 || model.CookTimeH == 0 || model.CookTimeH == null || model.CookTimeH < 1" class="reqField"> Hours</p>
                         <br>
                         <input class="num-input" type="number" min="0" placeholder="0" id="cooktimem" name="CookTimeM" [(ngModel)]='model.CookTimeM' required #time="ngModel">
-                        <p *ngIf="model.CookTimeM == 1"> Minute</p>
-                        <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null || model.CookTimeM < 1"> Minutes</p>
+                        <p *ngIf="model.CookTimeM == 1" class="reqField"> Minute</p>
+                        <p *ngIf="model.CookTimeM > 1 || model.CookTimeM == 0 || model.CookTimeM == null || model.CookTimeM < 1" class="reqField"> Minutes</p>
                     </span>
 
                     <div [hidden]="!timeAlert" class="alertbox timealert">Times must not include decimals.</div>
@@ -95,7 +132,7 @@
                             </td>
 
                         </tr>
-                        <tr *ngIf="quantityAlert || unitAlert || quantityAlert && unitAlert">
+                        <tr *ngIf="(quantityAlert || unitAlert) || (quantityAlert && unitAlert)">
                             <td colspan="3">
                                 <div [hidden]="!quantityAlert" class="alertbox quantityAlert">Quantity must be a number.</div>
                                 <div [hidden]="!unitAlert" class="alertbox unitAlert">Please select a valid unit.</div>
@@ -181,8 +218,8 @@
             </div>
 
             <div [hidden]="!globalAlert" class="alertbox globalAlert">Please fix errors then submit again.</div>
-            <button *ngIf="this.mode !== 'editing'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
-            <button *ngIf="this.mode === 'editing'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Update Recipe</button>
+            <button *ngIf="this.mode !== 'editentry'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Submit</button>
+            <button *ngIf="this.mode === 'editentry'" type="submit" [disabled]="!entryForm.valid" class="materialButton">Update Recipe</button>
 
             <div *ngIf="this.localLoading">
                 <app-loading-screen [progress$]="this.storageService.uploadPercent$" [Image]="this.Image">

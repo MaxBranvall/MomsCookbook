@@ -1,36 +1,88 @@
-import { Component, OnInit } from '@angular/core';
-import { FullRecipe } from '../Models/FullRecipe';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
+import { FullRecipe } from '../Models/FullRecipe';
 import { RecipeService } from '../Services/recipe.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { AuthenticationService } from '../Services/authentication.service';
+import { Users } from '../Entities/Users';
+import { Role } from '../_helpers/role.enum';
+import { FireStorageService } from '../Services/firestorage.service';
 
 @Component({
   selector: 'app-recipe-page',
   templateUrl: './recipe-page.component.html',
   styleUrls: ['./recipe-page.component.scss']
 })
-export class RecipePageComponent implements OnInit {
+export class RecipePageComponent implements OnInit, OnDestroy {
 
   title: string;
-  recipe: FullRecipe;
 
-  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService) { }
+  /*  Initializes an empty recipe object.
+    * This stops errors from popping up while the
+    * layout is trying to populate without the recipe
+    * loaded in completely
+  */
+  recipe: FullRecipe = {} as FullRecipe;
 
-  async ngOnInit() {
-    this.recipe = this.persDataService.getCurrentRecipe();
-    this.sortSubItems();
-    this.title = this.recipe.Name;
+  isAdmin = false;
+
+  constructor(private recipeService: RecipeService, private persDataService: PersistentdataService,
+              private authService: AuthenticationService, private fireService: FireStorageService,
+              private router: Router, private route: ActivatedRoute) { }
+
+  ngOnInit() {
+
+    let id: number;
+
+    // Get the ID of the recipe from the route, assign to id and cast to number
+    this.route.url.subscribe(res => { id = +res[1].path; } );
+
+    this.recipeService.getEntry(id).subscribe(
+      res =>
+      {
+        this.recipe = res.body;
+        this.persDataService.setCurrentRecipe(this.recipe);
+        this.sortSubItems();
+        this.title = this.recipe.Name;
+      }, error =>
+      {
+        alert('Your recipe could not be found.\nReturning to home screen.');
+        this.router.navigate(['/']);
+      }
+    );
+
+    this.authService.refreshUser();
+    const user: Users = this.authService.currentUserValue;
+
+    // My first fancy conditional statement!!
+    this.isAdmin = true ? user !== null && user.Role === Role.Admin : false;
+
+  }
+
+  deleteRecipe() {
+
+    const deleteConfirmation = confirm(`Are you sure you would like to delete ${this.recipe.Name}?\n` +
+                                        'This action is irreversible.');
+
+    if (deleteConfirmation) {
+      this.recipeService.deleteRecipe(this.recipe.RecipeID).subscribe(
+        resp => {
+          this.router.navigate(['/' + this.recipe.Category]);
+        }
+      );
+
+      this.fireService.deleteImage(this.recipe.ImagePath);
+    }
   }
 
   sortSubItems() {
     this.recipe.SubSteps.sort((n1, n2) => {
-      if (n1.SubStepID > n2.SubStepID)
-      {
+      if (n1.SubStepID > n2.SubStepID) {
         return 1;
       }
 
-      if (n1.SubStepID < n2.SubStepID)
-      {
+      if (n1.SubStepID < n2.SubStepID) {
         return -1;
       }
 
@@ -39,13 +91,11 @@ export class RecipePageComponent implements OnInit {
     });
 
     this.recipe.SubTips.sort((n1, n2) => {
-      if (n1.SubTipID > n2.SubTipID)
-      {
+      if (n1.SubTipID > n2.SubTipID) {
         return 1;
       }
 
-      if (n1.SubTipID < n2.SubTipID)
-      {
+      if (n1.SubTipID < n2.SubTipID) {
         return -1;
       }
 
@@ -67,6 +117,10 @@ export class RecipePageComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  ngOnDestroy() {
+    // this.persDataService.setCurrentRecipe(null);
   }
 
 }

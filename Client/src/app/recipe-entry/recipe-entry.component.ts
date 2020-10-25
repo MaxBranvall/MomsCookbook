@@ -2,17 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { FullRecipe } from '../Models/FullRecipe';
-import { Ingredient } from '../Models/Ingredient';
-import { Step } from '../Models/Step';
-import { Tip } from '../Models/Tip';
-import { Photo } from '../Models/Photo';
+import { Ingredient } from '../Entities/Ingredient';
+import { Step } from '../Entities/Step';
+import { Tip } from '../Entities/Tip';
+import { AdditionalPhotos } from '../Entities/AdditionalPhotos';
 import { categories } from '../Models/categories';
+import { EntryMode } from '../_helpers/entry-mode.enum';
+import { LocalStorageItem } from '../_helpers/local-storage-item.enum';
 
 import { Observable } from 'rxjs';
 
 import { RecipeService } from '../Services/recipe.service';
 import { FireStorageService } from '../Services/firestorage.service';
 import { PersistentdataService } from '../Services/persistentdata.service';
+import { Recipe } from '../Entities/Recipe';
 
 @Component({
   selector: 'app-recipe-entry',
@@ -25,7 +28,7 @@ export class RecipeEntryComponent implements OnInit {
               private persDataService: PersistentdataService, private route: ActivatedRoute) {}
 
   categories = categories;
-  public mode = 'newentry';
+  public mode = EntryMode.NewEntry;
 
   public quantityAlert = false;
   public unitAlert = false;
@@ -81,8 +84,8 @@ export class RecipeEntryComponent implements OnInit {
 
   currentRecipe: FullRecipe;
 
-  photoModel = new Photo(null, null);
-  additionalPhotoList: Photo[] = [];
+  photoModel = new AdditionalPhotos(null, null, null);
+  additionalPhotoList: AdditionalPhotos[] = [];
 
   fileList: File[] = [];
 
@@ -113,19 +116,20 @@ export class RecipeEntryComponent implements OnInit {
     this.route.data.subscribe(
       x => {
         this.mode = JSON.parse(JSON.stringify(x.mode));
-        if (this.mode === 'editing') {
+
+        if (this.mode === EntryMode.EditEntry) {
           this.currentRecipe = this.persDataService.getCurrentRecipe();
-          this.initialize();
+          this.initializeRecipe();
         } else if (this.persDataService.getPendingRecipe() !== null) {
           this.currentRecipe = this.persDataService.getPendingRecipe();
-          this.initialize();
+          this.initializeRecipe();
         }
-      }
-    );
 
-  }
+        }
+      );
+    }
 
-  private initialize() {
+  private initializeRecipe() {
     this.RecipeID = this.currentRecipe.RecipeID;
     this.model = this.currentRecipe;
     this.imgURL = this.currentRecipe.ImagePath;
@@ -146,11 +150,7 @@ export class RecipeEntryComponent implements OnInit {
     }
   }
 
-  get diagnostic() {
-    return JSON.stringify(this.model.SubSteps);
-  }
-
-  async onSubmit() {
+  onSubmit() {
 
     this.setCreationTime();
     this.formatTimes();
@@ -164,6 +164,7 @@ export class RecipeEntryComponent implements OnInit {
       if (this.mainImage !== undefined) {
         this.submitWithImage();
       } else {
+        // TODO: find out whats going on here
         this.model.ImagePath = this.imgURL;
         this.submitWithoutImage();
       }
@@ -177,7 +178,7 @@ export class RecipeEntryComponent implements OnInit {
     this.Image = true;
     this.localLoading = true;
 
-    if (this.mode === 'editing') {
+    if (this.mode === EntryMode.EditEntry) {
       this.recipeService.updateRecipe(this.model).subscribe(
         recipe => {
           this.RecipeID = recipe.RecipeID;
@@ -206,7 +207,7 @@ export class RecipeEntryComponent implements OnInit {
     this.Image = false;
     this.localLoading = true;
 
-    if (this.mode === 'editing') {
+    if (this.mode === EntryMode.EditEntry) {
       this.recipeService.updateRecipe(this.model).subscribe(
         result => {
           this.RecipeID = result.RecipeID;
@@ -214,7 +215,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.RecipeID, this.model.Name);
             }
           );
         }, error => {
@@ -230,7 +231,7 @@ export class RecipeEntryComponent implements OnInit {
           this.recipeService.getEntry(this.RecipeID).subscribe(
             recipe => {
               this.persDataService.setCurrentRecipe(recipe.body);
-              this.navigateToNewEntry(this.model.Category, this.model.Name);
+              this.navigateToNewEntry(this.model.Category, this.RecipeID, this.model.Name);
             }
           );
         }, error => {
@@ -249,9 +250,9 @@ export class RecipeEntryComponent implements OnInit {
            '\n\nError Details: \nStatus: ' + error.status + '\nMessage: ' + error.message);
   }
 
-  navigateToNewEntry(category: string, name: string) {
+  navigateToNewEntry(category: string, id: number, name: string) {
     this.localLoading = false;
-    this.router.navigateByUrl('/' + category + '/' + name);
+    this.router.navigateByUrl('/' + category + '/' + id + '/' + name);
   }
 
   clearEmptyElements() {
@@ -350,8 +351,8 @@ export class RecipeEntryComponent implements OnInit {
     return await this.recipeService.addRecipe(this.model);
   }
 
-  isEmptyOrNull(s: any) {
-    if (s === null || s === undefined || s === '') {
+  isEmptyOrNull(x: any) {
+    if (x === null || x === undefined || x === '') {
       return true;
     }
     return false;
@@ -360,6 +361,7 @@ export class RecipeEntryComponent implements OnInit {
   setCreationTime() {
     if (this.isEmptyOrNull(this.model.Created)) {
       this.model.Created = new Date().getTime();
+      this.model.LastModified = new Date().getTime();
     }
 
     this.model.LastModified = new Date().getTime();
@@ -381,7 +383,6 @@ export class RecipeEntryComponent implements OnInit {
 
   addSubStep(index?: number) {
     const i = +index;
-    console.log(this.LocalSubStepID.toString());
     this.model.SubSteps.push(new Step(this.RecipeID, i, '', ++this.LocalSubStepID));
   }
 

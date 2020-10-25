@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Users } from '../Entities/Users';
+import { AuthenticationService } from '../Services/authentication.service';
+
 @Component({
   selector: 'app-main-header',
   templateUrl: './main-header.component.html',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainHeaderComponent implements OnInit {
 
-  constructor() { }
+  public currentUser: Users;
+
+  constructor(private auth: AuthenticationService) { }
 
   ngOnInit() {
+    this.currentUser = this.auth.currentUserValue;
   }
 
 }

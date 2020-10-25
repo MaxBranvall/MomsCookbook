@@ -1,7 +1,7 @@
-import { Ingredient } from './Ingredient';
-import { Step } from './Step';
-import { Tip } from './Tip';
-import { Photo } from './Photo';
+import { Ingredient } from '../Entities/Ingredient';
+import { Step } from '../Entities/Step';
+import { Tip } from '../Entities/Tip';
+import { AdditionalPhotos } from '../Entities/AdditionalPhotos';
 
 export class FullRecipe {
 
@@ -22,7 +22,7 @@ export class FullRecipe {
         public SubTips: Tip[],
         public f: File[],
         // optional parameters
-        public AdditionalPhotos?: Photo[],
+        public ExtraPhotos?: AdditionalPhotos[],
         public PrepTime?: string,
         public CookTime?: string,
         public Created?: number,
