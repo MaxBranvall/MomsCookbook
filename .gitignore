@@ -5,3 +5,4 @@ Client/src/assets/images/mainimages
 Client/src/environments/
 api/logs/
 .vscode/
+*/*.config

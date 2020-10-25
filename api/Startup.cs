@@ -116,11 +116,25 @@ namespace api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, IOptions<URLs> urls)
         {
+            URLs _url = urls.Value;
+            string origin = null;
+
+            if (env.IsDevelopment())
+            {
+                origin = _url.Development;
+            } else if (env.IsStaging())
+            {
+                origin = _url.Staging;
+            } else if (env.IsProduction())
+            {
+                origin = _url.Production;
+            }
+
 
             app.UseCors(builder => builder
-            .AllowAnyOrigin()
+            .WithOrigins(origin)
             .AllowAnyMethod()
             .AllowAnyHeader());
 
