@@ -1,5 +1,7 @@
 # Moms Cookbook
 
+Disclaimer: The desktop UI is currently rough around the edges as I mainly focused on writing the mobile UI on this site.
+
 ## Tech Stack
 - Front-end: Angular
 - Back-end: .NET Core REST API
