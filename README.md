@@ -14,7 +14,7 @@ Disclaimer: The desktop UI is currently rough around the edges as I mainly focus
 
 ## Known issues
  - Desktop site layout as mentioned above
- - Emailed link to reset password does not include base URL. To work around this, append the link included in the email to the URL. For example: https://momscookbook.netlify.app/{EMAILED_LINK_PASTED_HERE_WITHOUT_LEADING_SLASH}
+ - Emailed link to reset password does not include base URL. To work around this, append the link included in the email to the URL. For example: https://momscookbook.netlify.app/#/{EMAILED_LINK_PASTED_HERE_WITHOUT_LEADING_SLASH}
 
 ## Dependencies
 - .NET Core SDK >= 3.0 [.NET download page](https://dotnet.microsoft.com/download/dotnet-core)
