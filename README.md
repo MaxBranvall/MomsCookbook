@@ -6,7 +6,7 @@ Disclaimer: The desktop UI is currently rough around the edges as I mainly focus
 
 Here I demonstrate logging in, creating a new recipe, and viewing it.
 
-![](assets/demo.gif)
+![](demo.gif)
 
 ## Tech Stack
 - Front-end: Angular
